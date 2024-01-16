@@ -17,7 +17,7 @@ export default function page() {
               with step-by-step video tutorials. Learn by doing, crafting
               beautiful and powerful web apps from scratch. Conquer challenges,
               optimize code, and discover hidden gems that elevate your skills.
-              Join my learning journey and let's build something awesome
+              Join my learning journey and let us build something awesome
               together!
             </p>
           </Section>

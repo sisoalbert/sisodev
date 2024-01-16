@@ -13,12 +13,12 @@ export default function page({ params }: { params: { id: string } }) {
             <p className="text-pretty font-mono text-sm text-muted-foreground">
               Craving a deeper understanding of cutting-edge web development?
               Look no further! Master the powerful trio of React, React Native,
-              and Next.js with these code lab and accompanying YouTube videos.
-              Dive into practical tutorials, insightful breakdowns, and
-              real-world code examples, all presented in a clear and engaging
-              style. Whether you're a coding newbie or seasoned pro, there's
-              something for everyone to learn and grow. Let's unlock the secrets
-              of building dynamic, user-friendly applications together!{" "}
+              and Next.js with this blog and accompanying YouTube videos. Dive
+              into practical tutorials, insightful breakdowns, and real-world
+              code examples, all presented in a clear and engaging style.
+              Whether you are a coding newbie or seasoned pro, there is
+              something for everyone to learn and grow. Let us unlock the
+              secrets of building dynamic, user-friendly applications together!{" "}
             </p>
           </Section>
         </section>
