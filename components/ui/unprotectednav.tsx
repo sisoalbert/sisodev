@@ -5,12 +5,15 @@ import Link from "next/link";
 export default function UnprotectedNav() {
   return (
     <nav className="flex items-center justify-between flex-wrap bg-black p-6">
-      <div className="flex items-center flex-shrink-0 text-white mr-6">
+      <Link
+        href="/"
+        className="flex items-center flex-shrink-0 text-white mr-6"
+      >
         <SisoDevIcon />
         <span className="font-semibold text-xl tracking-tight pl-2">
           Siso Dev
         </span>
-      </div>
+      </Link>
       <div className="block lg:hidden">
         <button className="flex items-center px-3 py-2 border rounded text-slate-50 hover:text-slate-50">
           <svg
