@@ -1,3 +1,4 @@
+import { Card } from "@/components/ui/card";
 import { Section } from "@/components/ui/section";
 import UnprotectedNav from "@/components/ui/unprotectednav";
 import React from "react";
@@ -19,22 +20,27 @@ export default function page() {
             </p>
           </Section>
           <Section>
-            <div className="bg-white rounded-lg shadow-md p-4 flex items-center justify-between">
-              <div className="flex flex-col items-start">
-                <h3 className="text-lg font-medium text-gray-900">
-                  TypedDrawerNavigationApp
-                </h3>
-                <p className="text-sm text-gray-500">
-                  Drawer and stack navigation with TypeScript
-                </p>
-              </div>
+            <Card className="flex flex-col overflow-hidden border border-muted p-3 hover:bg-slate-50  justify-center ">
               <a
                 href="https://github.com/sisoalbert/TypedDrawerNavigationApp"
-                className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded"
+                className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded align-middle"
               >
                 View on GitHub
               </a>
-            </div>
+            </Card>
+          </Section>
+          <Section>
+            <Card className="flex flex-col overflow-hidden border border-muted p-3 hover:bg-slate-50 justify-center items-center">
+              <iframe
+                width="560"
+                height="315"
+                src="https://www.youtube.com/embed/sijsUy6K6Ls?si=RARjbEp7xsNqqsVD"
+                title="YouTube video player"
+                frameBorder="0"
+                allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+                allowFullScreen
+              ></iframe>
+            </Card>
           </Section>
         </section>
       </main>
