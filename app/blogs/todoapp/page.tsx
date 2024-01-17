@@ -1,69 +1,67 @@
+import CodeBlock from "@/components/codeblock";
+import { CardContent, CardHeader } from "@/components/ui/card";
+import { Section } from "@/components/ui/section";
+import UnprotectedNav from "@/components/ui/unprotectednav";
 import React from "react";
-import SyntaxHighlighter from "react-syntax-highlighter";
-import { docco } from "react-syntax-highlighter/dist/esm/styles/hljs";
-
-// function CodeBlock({ code, language }: { code: string; language: string }) {
-//   return (
-//     <pre>
-//       <code className={`language-${language}`}>{code}</code>
-//     </pre>
-//   );
-// }
-
-function CodeBlock({ code, language }: { code: string; language: string }) {
-  return (
-    <SyntaxHighlighter language="javascript" style={docco}>
-      {code}
-    </SyntaxHighlighter>
-  );
-}
-
-function BlogPost() {
-  const code = `
-    import React from 'react';
-
-    function MyComponent() 
-    {
-      return 
-      <h1>Hello, world!</h1>;
-    }
-  `;
-  return (
-    <div>
-      <SyntaxHighlighter language="javascript" style={docco}>
-        {code}
-      </SyntaxHighlighter>
-    </div>
-  );
-}
 
 export default function page() {
-  const code = `
-    import React from 'react';
-
-    function MyComponent() 
-    {
-      return 
-      <h1>Hello, world!</h1>;
-    }
-  `;
-
   return (
     <div>
-      <div className="flex flex-col gap-4 justify-center items-center p-4">
-        {" "}
-        Todo App Code
-        <br />
-        App.js
-        <CodeBlock code={appjs} language="javascript" />
-        <br />
-        Home Screen
-        <CodeBlock code={home} language="javascript" />
-        <br />
-        Package.js
-        <CodeBlock code={packagejs} language="javascript" />
-        <br />
-      </div>
+      <UnprotectedNav />
+      <main className="container relative mx-auto scroll-my-12 overflow-auto p-4 print:p-12 md:p-16">
+        <section className="mx-auto w-full max-w-2xl space-y-8 bg-white print:space-y-6">
+          <Section>
+            <h2 className="text-xl font-bold">
+              How to add drawer and stack navigation with TypeScript in react
+              navigation
+            </h2>
+            <p className="text-pretty font-mono text-sm text-muted-foreground">
+              In this tutorial we are going to implement a react native todo app
+              with typescript without using any libraries.
+            </p>
+          </Section>
+          <Section>
+            <CardHeader>
+              <div className="flex items-center justify-between gap-x-2 text-base">
+                <h3 className="inline-flex items-center justify-center gap-x-1 font-semibold leading-none">
+                  App.js
+                </h3>
+              </div>
+            </CardHeader>
+            <CardContent className="mt-2 text-xs">
+              This code defines a React application with a context (TodoContext)
+              and a reducer (todoReducer) managing a list of todos. The App
+              component initializes the todo state using a reducer, creates a
+              context provider, and renders the Home component within the
+              context provider, enabling the Home component to access and update
+              the todo state through the context.
+            </CardContent>
+            <CodeBlock code={appjs} language="javascript" />
+            <CardContent className="mt-2 text-xs">
+              This code defines a React Native component named `Home` for a Todo
+              List application. It uses the `TodoContext` to access and modify
+              the todo state managed by the context provider in the `App`
+              component. The component includes functionality for adding,
+              updating, and deleting todos. The user interface consists of a
+              text input for adding/editing todos, a button to perform the
+              add/update operation, and a list of todos displayed with options
+              to edit or delete each item. The todo data is rendered using a
+              `FlatList` component, and state management is achieved through the
+              use of React hooks such as `useState` and `useContext`.{" "}
+            </CardContent>
+            Home Screen
+            <CodeBlock code={home} language="javascript" />
+            <br />
+            <CardContent className="mt-2 text-xs">
+              No external libraries are used in this tutorial. The `useContext`
+              hook is used to access and update the todo state managed by the
+              context provider.
+            </CardContent>
+            <CodeBlock code={packagejs} language="javascript" />
+            <br />
+          </Section>
+        </section>
+      </main>
     </div>
   );
 }

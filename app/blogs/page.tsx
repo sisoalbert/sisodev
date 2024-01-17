@@ -24,6 +24,23 @@ export default function page() {
           <Section>
             <BlogCard
               title={
+                "How to build a todo app with typescript without using any libraries"
+              }
+              description={
+                "In this tutorial we are going to implement a react native todo app with typescript without using any libraries."
+              }
+              tags={[
+                "TypeScript",
+                "React Native",
+                "React Navigation",
+                "Stack Navigation",
+                "Drawer Navigation",
+              ]}
+              link="/blogs/todoapp"
+            />
+
+            <BlogCard
+              title={
                 "How to add drawer and stack navigation with TypeScript in react navigation"
               }
               description={

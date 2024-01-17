@@ -18,13 +18,13 @@ export default function UnprotectedNav() {
       >
         <SisoDevIcon />
         <span className="font-semibold text-xl tracking-tight pl-2">
-          Siso Dev!
+          Siso Dev
         </span>
       </Link>
       <div className="block lg:hidden">
         <button
           onClick={toggleMenu}
-          className="flex items-center px-3 py-2 border rounded text-slate-50 hover:text-slate-50"
+          className="flex items-center px-3 py-2 border rounded text-slate-50 hover:border-transparent hover:text-black hover:bg-white"
         >
           <svg
             className="fill-current h-3 w-3"
