@@ -1,8 +1,16 @@
 import { Section } from "@/components/ui/section";
 import UnprotectedNav from "@/components/ui/unprotectednav";
 import React from "react";
+import { analytics } from "@/firebase";
+import { logEvent } from "firebase/analytics";
 
-export default function page() {
+export default function page({ params }: { params: { id: string } }) {
+  analytics &&
+    logEvent(analytics, "page_view", {
+      page_title: "/codelabs",
+      page_path: "/codelabs",
+    });
+
   return (
     <div>
       <UnprotectedNav />

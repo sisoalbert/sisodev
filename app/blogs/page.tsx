@@ -1,9 +1,17 @@
 import { BlogCard } from "@/components/blog-card";
 import { Section } from "@/components/ui/section";
 import UnprotectedNav from "@/components/ui/unprotectednav";
+import { analytics } from "@/firebase";
+import { logEvent } from "firebase/analytics";
 import React from "react";
 
 export default function page() {
+  analytics &&
+  logEvent(analytics, "page_view", {
+    page_title: "/blogs",
+    page_path: "/blogs",
+  });
+
   return (
     <div>
       <UnprotectedNav />
