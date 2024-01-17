@@ -2,8 +2,10 @@
 import React, { useState } from "react";
 import SisoDevIcon from "../icons/SisoDevIcon";
 import Link from "next/link";
+import { usePathname } from "next/navigation";
 
 export default function UnprotectedNav() {
+  const pathname = usePathname();
   const [menuVisible, setMenuVisible] = useState(false);
 
   const toggleMenu = () => {
@@ -44,7 +46,7 @@ export default function UnprotectedNav() {
         <div className="text-sm lg:flex-grow">
           <Link
             href="/codelabs"
-            className="block mt-4 lg:inline-block lg:mt-0 text-white hover:text-cyan-500 mr-4"
+            className="block mt-4 lg:inline-block lg:mt-0 text-white hover:text-cyan-500 mr-4, ${}"
           >
             Codelabs
           </Link>

@@ -1,20 +1,14 @@
 import { BlogCard } from "@/components/blog-card";
 import { Section } from "@/components/ui/section";
 import UnprotectedNav from "@/components/ui/unprotectednav";
-import { analytics } from "@/firebase";
-import { logEvent } from "firebase/analytics";
 import React from "react";
+import BlogsAnalytics from "./analytics";
 
 export default function page() {
-  analytics &&
-  logEvent(analytics, "page_view", {
-    page_title: "/blogs",
-    page_path: "/blogs",
-  });
-
   return (
     <div>
       <UnprotectedNav />
+      <BlogsAnalytics />
       <main className="container relative mx-auto scroll-my-12 overflow-auto p-4 print:p-12 md:p-16">
         <section className="mx-auto w-full max-w-2xl space-y-8 bg-white print:space-y-6">
           <Section>
