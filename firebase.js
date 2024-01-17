@@ -22,5 +22,3 @@ export const firebaseApp =
 
 export const analytics =
   typeof window !== "undefined" ? getAnalytics(firebaseApp) : null;
-
-console.log("typeof window", typeof window);
