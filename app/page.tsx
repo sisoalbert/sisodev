@@ -8,8 +8,8 @@ import { GlobeIcon, MailIcon, PhoneIcon } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { RESUME_DATA } from "@/data/resume-data";
 import { ProjectCard } from "@/components/project-card";
-import Link from "next/link";
 import UnprotectedNav from "@/components/ui/unprotectednav";
+import HomeAnalytics from "./analytics";
 
 export const metadata: Metadata = {
   title: `${RESUME_DATA.name} | ${RESUME_DATA.about}`,
@@ -20,6 +20,7 @@ export default function Page() {
   return (
     <>
       <UnprotectedNav />
+      <HomeAnalytics />
       <main className="container relative mx-auto scroll-my-12 overflow-auto p-4 print:p-12 md:p-16">
         <section className="mx-auto w-full max-w-2xl space-y-8 bg-white print:space-y-6">
           <div className="flex items-center justify-between">

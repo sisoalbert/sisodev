@@ -2,8 +2,10 @@
 import React, { useState } from "react";
 import SisoDevIcon from "../icons/SisoDevIcon";
 import Link from "next/link";
+import { usePathname } from "next/navigation";
 
 export default function UnprotectedNav() {
+  const pathname = usePathname();
   const [menuVisible, setMenuVisible] = useState(false);
 
   const toggleMenu = () => {

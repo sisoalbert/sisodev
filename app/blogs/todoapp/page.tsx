@@ -2,9 +2,16 @@ import CodeBlock from "@/components/codeblock";
 import { Card, CardContent, CardHeader } from "@/components/ui/card";
 import { Section } from "@/components/ui/section";
 import UnprotectedNav from "@/components/ui/unprotectednav";
+import { analytics } from "@/firebase";
+import { logEvent } from "firebase/analytics";
 import React from "react";
 
 export default function page() {
+  analytics &&
+    logEvent(analytics, "page_view", {
+      page_title: "/todoapp",
+      page_path: "/todoapp",
+    });
   return (
     <div>
       <UnprotectedNav />
