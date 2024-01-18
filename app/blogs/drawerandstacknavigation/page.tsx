@@ -23,7 +23,7 @@ export default function page() {
             <Card className="flex flex-col overflow-hidden border border-muted p-3 hover:bg-slate-50  justify-center ">
               <a
                 href="https://github.com/sisoalbert/TypedDrawerNavigationApp"
-                className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded align-middle"
+                className="bg-black hover:bg-gray-700 text-white font-bold py-2 px-4 rounded align-middle text-center"
               >
                 View on GitHub
               </a>

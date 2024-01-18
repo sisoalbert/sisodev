@@ -1,5 +1,5 @@
 import CodeBlock from "@/components/codeblock";
-import { CardContent, CardHeader } from "@/components/ui/card";
+import { Card, CardContent, CardHeader } from "@/components/ui/card";
 import { Section } from "@/components/ui/section";
 import UnprotectedNav from "@/components/ui/unprotectednav";
 import React from "react";
@@ -20,6 +20,17 @@ export default function page() {
               with typescript without using any libraries.
             </p>
           </Section>
+          <Section>
+            <Card className="flex flex-col overflow-hidden border border-muted p-3 hover:bg-slate-50 w-full">
+              <a
+                href="https://github.com/sisoalbert/todoApp"
+                className="bg-black hover:bg-gray-700 text-white font-bold py-2 px-4 rounded align-middle text-center"
+              >
+                View on GitHub
+              </a>
+            </Card>
+          </Section>
+
           <Section>
             <CardHeader>
               <div className="flex items-center justify-between gap-x-2 text-base">
