@@ -19,8 +19,7 @@ export default function page() {
         <section className="mx-auto w-full max-w-2xl space-y-8 bg-white print:space-y-6">
           <Section>
             <h2 className="text-xl font-bold">
-              How to add drawer and stack navigation with TypeScript in react
-              navigation
+              Todo app with TypeScript using React Native context for state.
             </h2>
             <p className="text-pretty font-mono text-sm text-muted-foreground">
               In this tutorial we are going to implement a react native todo app
