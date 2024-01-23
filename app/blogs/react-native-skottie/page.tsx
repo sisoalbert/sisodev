@@ -49,7 +49,7 @@ export default function page() {
             <CardContent className="mt-2 text-xs">
               Skottie is a high performance library for running Lottie
               animations in Skia. 📄 Supports Lottie files (JSON) and DotLottie
-              files (.lottie) 📈 Uses Skia's GPU-acceleration 📉 Lower CPU usage
+              files (.lottie) 📈 Uses Skias GPU-acceleration 📉 Lower CPU usage
               🏃 Higher frame rates 🔗 Based on @shopify/react-native-skia.
             </CardContent>
             <CardContent className="mt-2 text-xs">
