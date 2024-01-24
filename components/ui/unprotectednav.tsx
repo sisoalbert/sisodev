@@ -65,13 +65,13 @@ export default function UnprotectedNav() {
         </div>
         <div>
           <Link
-            href="#responsive-header"
+            href="/signup"
             className="block mt-4 lg:inline-block lg:mt-0 text-white hover:text-cyan-500 pr-4"
           >
             Sign up
           </Link>
           <Link
-            href="#"
+            href="/signup"
             className="inline-block text-sm px-4 py-2 leading-none border rounded text-white border-white hover:border-transparent hover:text-black hover:bg-white mt-4 lg:mt-0"
           >
             Login
