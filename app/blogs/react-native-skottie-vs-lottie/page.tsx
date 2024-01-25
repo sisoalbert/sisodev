@@ -74,7 +74,7 @@ export default function page() {
               Skottie is a newer library and does not yet support all of the
               features of Lottie. For example, it does not support vector shapes
               or trim paths. So, which one should you choose? If you need the
-              most features and don't mind the larger file size and potentially
+              most features and do not mind the larger file size and potentially
               lower performance, then Lottie React Native is a good choice. If
               you are looking for the best performance and smallest file size,
               then React Native Skottie is a better option.
