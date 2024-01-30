@@ -9,8 +9,8 @@ import React from "react";
 export default function page() {
   analytics &&
     logEvent(analytics, "page_view", {
-      page_title: "/react-native-web-airbnb-clone",
-      page_path: "/react-native-web-airbnb-clone",
+      page_title: "/react-native-skottie",
+      page_path: "/react-native-skottie",
     });
   return (
     <div>
@@ -19,12 +19,12 @@ export default function page() {
         <section className="mx-auto w-full max-w-2xl space-y-8 bg-white print:space-y-6">
           <Section>
             <h2 className="text-xl font-bold">
-              Is This Native or Web? React Native for Web Breaks the Boundaries
+              How does react native skottie compare to react native lottie?
             </h2>
             <CardContent className="mt text-xs">Author - Siso</CardContent>
             <p className="text-pretty font-mono text-sm text-muted-foreground">
-              In this short tutorial we are going to implement an airbnb clone
-              with react native.
+              In this short tutorial we are going to implement a react native
+              skottie and lottie library.
             </p>
           </Section>
           <Section>
@@ -47,30 +47,54 @@ export default function page() {
               </div>
             </CardHeader>
             <CardContent className="mt-2 text-xs">
-              Airbnb Comes to the Web: Experience Native Performance with React
-              Native!
+              Lottie React Native vs React Native Skottie Both Lottie React
+              Native and React Native Skottie are libraries for adding Lottie
+              animations to your React Native app. However, they have some key
+              differences.
               <br />
-              Ever dreamed of building an Airbnb-like web app with the smooth
-              performance and intuitive feel of a native mobile app? Now you
-              can, thanks to the power of React Native! ✨ <br /> In this
-              showcase video, we'll take you on a journey through the process of
-              building a stunning Airbnb web app using React Native.
               <br />
-              Ensure you have Node.js and Expo CLI installed on your machine.
+              Lottie React Native <br /> More mature and feature-rich: Lottie
+              React Native has been around longer and has a larger community. It
+              supports a wider range of Lottie features, such as vector shapes,
+              masks, and trim paths. Larger file size: Lottie animations are
+              saved as JSON files, which can be quite large. This can lead to
+              slower loading times and increased app size. Potentially lower
+              performance: Lottie animations can be CPU-intensive, especially on
+              older devices.
               <br />
-              Clone this repository:
+              <br />
+              React Native Skottie
+              <br />
+              Higher performance: React Native Skottie uses Skia, a
+              high-performance 2D graphics library, to render Lottie animations.
+              This can lead to smoother animations and lower CPU usage. Smaller
+              file size: Skottie animations are saved as DotLottie files, which
+              are a binary format that is smaller than JSON. This can lead to
+              faster loading times and a smaller app size. Fewer features:
+              Skottie is a newer library and does not yet support all of the
+              features of Lottie. For example, it does not support vector shapes
+              or trim paths. So, which one should you choose? If you need the
+              most features and do not mind the larger file size and potentially
+              lower performance, then Lottie React Native is a good choice. If
+              you are looking for the best performance and smallest file size,
+              then React Native Skottie is a better option.
             </CardContent>
             <CodeBlock
-              code={
-                "git clone git@github.com:gluestack/ui-examples.git gluestack-kitchensinkcd gluestack-kitchensink"
-              }
+              code={"npm install @shopify/react-native-skia"}
               language="javascript"
             />
             <CardContent className="mt-2 text-xs">
-              Install dependencies:
+              Then install react-native-skottie
             </CardContent>
 
-            <CodeBlock code={"npm install or yarn"} language="javascript" />
+            <CodeBlock
+              code={"npm install react-native-skottie"}
+              language="javascript"
+            />
+            <CodeBlock
+              code={"yarn add lottie-react-native"}
+              language="javascript"
+            />
             <CardContent className="mt-2 text-xs">
               Here is the rest of the code
             </CardContent>
@@ -83,35 +107,57 @@ export default function page() {
 }
 
 const appjs = `
-...
-return (
-  <>
-    {/* top SafeAreaView */}
-    <SafeAreaView
-      style={{
-        backgroundColor: colorMode === "light" ? "#E5E5E5" : "#262626",
-      }}
-    />
-    {/* bottom SafeAreaView */}
-    <SafeAreaView
-      style={{
-        ...styles.container,
-        backgroundColor: colorMode === "light" ? "white" : "#171717",
-      }}
-    >
-      {/* gluestack-ui provider */}
-      <GluestackUIProvider config={config} colorMode={colorMode}>
-        <ThemeContext.Provider value={{ colorMode, toggleColorMode }}>
-          {/* main app page */}
-          <SSRProvider>
-            <HomestayPage />
-          </SSRProvider>
-        </ThemeContext.Provider>
-      </GluestackUIProvider>
-    </SafeAreaView>
-  </>
-);
-}
+import {ScrollView, Text, View} from 'react-native';
+import React from 'react';
+import LottiesAnimation from './animation3.json';
+import LottiesAnimation1 from './animation.json';
 
+import {Skottie} from 'react-native-skottie';
+import LottieView from 'lottie-react-native';
 
-...`;
+const App = () => {
+  return (
+    <View>
+      <ScrollView>
+        <Text style={{textAlign: 'center', fontSize: 30}}>
+          React Native Skottie
+        </Text>
+        <Skottie
+          style={{width: 350, height: 350}}
+          source={LottiesAnimation}
+          autoPlay={true}
+        />
+        <Text style={{textAlign: 'center', fontSize: 30}}>
+          React Native Lottie
+        </Text>
+
+        <LottieView
+          source={LottiesAnimation}
+          style={{width: 350, height: 350}}
+          autoPlay
+          loop
+        />
+        <Text style={{textAlign: 'center', fontSize: 30}}>
+          React Native Skottie
+        </Text>
+        <Skottie
+          style={{width: 350, height: 350}}
+          source={LottiesAnimation1}
+          autoPlay={true}
+        />
+        <Text style={{textAlign: 'center', fontSize: 30}}>
+          React Native Lottie
+        </Text>
+
+        <LottieView
+          source={LottiesAnimation1}
+          style={{width: 350, height: 350}}
+          autoPlay
+          loop
+        />
+      </ScrollView>
+    </View>
+  );
+};
+
+export default App;`;

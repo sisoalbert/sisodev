@@ -52,8 +52,8 @@ export default function page() {
               Ever dreamed of building an Airbnb-like web app with the smooth
               performance and intuitive feel of a native mobile app? Now you
               can, thanks to the power of React Native! ✨ <br /> In this
-              showcase video, we'll take you on a journey through the process of
-              building a stunning Airbnb web app using React Native.
+              showcase video, we will take you on a journey through the process
+              of building a stunning Airbnb web app using React Native.
               <br />
               Ensure you have Node.js and Expo CLI installed on your machine.
               <br />
