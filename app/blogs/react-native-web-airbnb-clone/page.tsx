@@ -30,7 +30,7 @@ export default function page() {
           <Section>
             <Card className="flex flex-col overflow-hidden border border-muted p-3 hover:bg-slate-50 w-full">
               <a
-                href="https://github.com/sisoalbert/test-react-native-skottie"
+                href="https://github.com/gluestack/ui-examples"
                 className="bg-black hover:bg-gray-700 text-white font-bold py-2 px-4 rounded align-middle text-center"
               >
                 View on GitHub
@@ -42,13 +42,12 @@ export default function page() {
             <CardHeader>
               <div className="flex items-center justify-between gap-x-2 text-base">
                 <h3 className="inline-flex items-center justify-center gap-x-1 font-semibold leading-none">
-                  react native skottie vs lottie
+                  Airbnb Comes to the Web: Experience Native Performance with
+                  React Native!
                 </h3>
               </div>
             </CardHeader>
             <CardContent className="mt-2 text-xs">
-              Airbnb Comes to the Web: Experience Native Performance with React
-              Native!
               <br />
               Ever dreamed of building an Airbnb-like web app with the smooth
               performance and intuitive feel of a native mobile app? Now you
@@ -61,9 +60,7 @@ export default function page() {
               Clone this repository:
             </CardContent>
             <CodeBlock
-              code={
-                "git clone git@github.com:gluestack/ui-examples.git gluestack-kitchensinkcd gluestack-kitchensink"
-              }
+              code={"git clone https://github.com/gluestack/ui-examples.git"}
               language="javascript"
             />
             <CardContent className="mt-2 text-xs">
@@ -112,6 +109,4 @@ return (
   </>
 );
 }
-
-
 ...`;
