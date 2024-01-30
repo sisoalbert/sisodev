@@ -4,6 +4,7 @@ import "./globals.css";
 import { Analytics } from "@vercel/analytics/react";
 import { analytics as firebaseanalytics } from "@/firebase";
 import { logEvent } from "firebase/analytics";
+import Script from "next/script";
 
 const inter = Inter({ subsets: ["latin"] });
 
@@ -20,6 +21,11 @@ export default function RootLayout({
 }) {
   return (
     <html lang="en">
+      <Script
+        src={`https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=${process.env.NEXT_PUBLIC_ADSENSE_PUBLISHER_ID}`}
+        async
+        crossOrigin="anonymous"
+      />
       <body className={inter.className}>
         {children}
         <Analytics />
