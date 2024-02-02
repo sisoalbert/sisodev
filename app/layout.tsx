@@ -4,6 +4,7 @@ import "./globals.css";
 import { Analytics } from "@vercel/analytics/react";
 import { analytics as firebaseanalytics } from "@/firebase";
 import { logEvent } from "firebase/analytics";
+import UnprotectedNav from "@/components/ui/unprotectednav";
 
 const inter = Inter({ subsets: ["latin"] });
 
@@ -21,6 +22,7 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body className={inter.className}>
+        <UnprotectedNav />
         {children}
         <Analytics />
       </body>

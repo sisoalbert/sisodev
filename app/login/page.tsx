@@ -13,8 +13,8 @@ function AuthComponent() {
 }
 
 export const metadata: Metadata = {
-  title: "Sign Up",
-  description: "Sign up to the Sisodev App",
+  title: "login",
+  description: "Login to the Sisodev App",
 };
 
 export default function Page() {
