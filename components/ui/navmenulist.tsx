@@ -7,7 +7,7 @@ import React from "react";
 export default function NavMenuList({ user }: { user: any }) {
   const pathname = usePathname();
   const searchParams = useSearchParams();
-  const menuVisible = searchParams.get("modal") === "true";
+  const menuVisible = searchParams.get("drawervisible") === "true";
 
   const links = [
     { name: "Blogs", href: "/blogs", icon: null },
@@ -32,13 +32,13 @@ export default function NavMenuList({ user }: { user: any }) {
               key={link.name}
               href={link.href}
               className={clsx(
-                "block mt-4 lg:inline-block lg:mt-0 text-white hover:text-cyan-500 px-4 py-2 rounded",
+                "block mt-4 lg:inline-block lg:mt-0 text-white hover:text-cyan-500 pr-4",
                 {
-                  "bg-sky-100 text-cyan-500 font-bold": pathname === link.href,
+                  " text-cyan-500 font-bold": pathname === link.href,
                 }
               )}
             >
-              <p className="hidden md:block">{link.name}</p>
+              <p>{link.name}</p>
             </Link>
           );
         })}

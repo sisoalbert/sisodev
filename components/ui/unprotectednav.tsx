@@ -7,11 +7,7 @@ import { cookies } from "next/headers";
 import { Database } from "@/database.types";
 import NavMenuList from "./navmenulist";
 
-export default async function UnprotectedNav({
-  searchParams,
-}: {
-  searchParams: { q: string };
-}) {
+export default async function UnprotectedNav() {
   const supabase = createServerComponentClient<Database>({ cookies });
 
   const {
