@@ -15,7 +15,7 @@ export default function AuthForm() {
       theme="light"
       showLinks={false}
       providers={[]}
-      redirectTo="http://localhost:3000/auth/callback"
+      redirectTo="https://sisodev.com/auth/callback"
     />
   );
 }
