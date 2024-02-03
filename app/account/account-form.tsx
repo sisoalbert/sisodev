@@ -169,7 +169,7 @@ export default function AccountForm({ user }: { user: User | null }) {
               {/* Warning you can't change your email */}
               {emailAlert && (
                 <p className="mt-2 text-sm text-red-600">
-                  You can't change your email from here
+                  You cannot change your email from here
                 </p>
               )}
             </div>
