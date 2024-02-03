@@ -12,7 +12,7 @@ export default async function Account() {
 
   return (
     <div className="flex flex-col items-center justify-center min-h-screen py-2">
-      <AccountForm user={user} />;
+      <AccountForm user={user} />
     </div>
   );
 }

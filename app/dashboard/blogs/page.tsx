@@ -1,7 +1,7 @@
 import { BlogCard } from "@/components/blog-card";
 import { Section } from "@/components/ui/section";
 import React from "react";
-import BlogsAnalytics from "./blogs/analytics";
+import BlogsAnalytics from "./analytics";
 
 export default function page() {
   return (

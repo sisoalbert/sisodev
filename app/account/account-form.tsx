@@ -13,6 +13,7 @@ export default function AccountForm({ user }: { user: User | null }) {
   const [username, setUsername] = useState<string | null>(null);
   const [website, setWebsite] = useState<string | null>(null);
   const [avatar_url, setAvatarUrl] = useState<string | null>(null);
+  const [emailAlert, setEmailAlert] = useState(false);
 
   const getProfile = useCallback(async () => {
     try {
@@ -80,84 +81,121 @@ export default function AccountForm({ user }: { user: User | null }) {
   }
 
   return (
-    <div className="form-widget">
-      <div className="">
-        <button
-          type="button"
-          className="flex items-center p-2 w-full text-base font-normal text-gray-900 rounded-lg transition duration-75 group hover:bg-gray-100 dark:text-white dark:hover:bg-gray-700"
-          aria-controls="dropdown-sales"
-          data-collapse-toggle="dropdown-sales"
-        >
-          <svg
-            aria-hidden="true"
-            className="flex-shrink-0 w-6 h-6 text-gray-400 transition duration-75 group-hover:text-gray-900 dark:text-gray-400 dark:group-hover:text-white"
-            fill="currentColor"
-            viewBox="0 0 20 20"
-            xmlns="http://www.w3.org/2000/svg"
-          >
-            <path
-              fill-rule="evenodd"
-              d="M10 2a4 4 0 00-4 4v1H5a1 1 0 00-.994.89l-1 9A1 1 0 004 18h12a1 1 0 00.994-1.11l-1-9A1 1 0 0015 7h-1V6a4 4 0 00-4-4zm2 5V6a2 2 0 10-4 0v1h4zm-6 3a1 1 0 112 0 1 1 0 01-2 0zm7-1a1 1 0 100 2 1 1 0 000-2z"
-              clip-rule="evenodd"
-            ></path>
-          </svg>
-          <span className="flex-1 ml-3 text-left whitespace-nowrap">
-            Account
-          </span>
-        </button>
-        <div className="container mx-auto p-4">
-          <div className="mb-4">
+    <div>
+      <div
+        className="absolute inset-x-0 top-[-10rem] -z-10 transform-gpu overflow-hidden blur-3xl sm:top-[-20rem]"
+        aria-hidden="true"
+      >
+        <div
+          className="relative left-1/2 -z-10 aspect-[1155/678] w-[36.125rem] max-w-none -translate-x-1/2 rotate-[30deg] bg-gradient-to-tr from-[#ff80b5] to-[#9089fc] opacity-30 sm:left-[calc(50%-40rem)] sm:w-[72.1875rem]"
+          style={{
+            clipPath:
+              "polygon(74.1% 44.1%, 100% 61.6%, 97.5% 26.9%, 85.5% 0.1%, 80.7% 2%, 72.5% 32.5%, 60.2% 62.4%, 52.4% 68.1%, 47.5% 58.3%, 45.2% 34.5%, 27.5% 76.7%, 0.1% 64.9%, 17.9% 100%, 27.6% 76.8%, 76.1% 97.7%, 74.1% 44.1%)",
+          }}
+        />
+      </div>
+      <div className="mx-auto max-w-2xl text-center">
+        <h2 className="text-3xl font-bold tracking-tight text-gray-900 sm:text-4xl">
+          Update your account
+        </h2>
+        <p className="mt-2 text-lg leading-8 text-gray-600">
+          Use this form to update your account details
+        </p>
+      </div>
+      <div className="mx-auto mt-16 max-w-xl sm:mt-20">
+        <div className="grid grid-cols-1 gap-x-8 gap-y-6 sm:grid-cols-2">
+          <div>
+            <label
+              htmlFor="fullName"
+              className="block text-sm font-semibold leading-6 text-gray-900"
+            >
+              Full name
+            </label>
+            <div className="mt-2.5">
+              <input
+                type="text"
+                name="fullName"
+                id="fullName"
+                autoComplete="given-name"
+                value={fullname || ""}
+                onChange={(e) => setFullname(e.target.value)}
+                className="block w-full rounded-md border-0 px-3.5 py-2 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-black sm:text-sm sm:leading-6"
+              />
+            </div>
+          </div>
+          <div>
+            <label
+              htmlFor="username"
+              className="block text-sm font-semibold leading-6 text-gray-900"
+            >
+              Username
+            </label>
+            <div className="mt-2.5">
+              <input
+                type="text"
+                name="username"
+                id="username"
+                autoComplete="username"
+                value={username || ""}
+                onChange={(e) => setUsername(e.target.value)}
+                className="block w-full rounded-md border-0 px-3.5 py-2 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-black sm:text-sm sm:leading-6"
+              />
+            </div>
+          </div>
+          <div className="sm:col-span-2">
             <label
               htmlFor="email"
-              className="block font-medium text-sm text-gray-700"
+              className="block text-sm font-semibold leading-6 text-gray-900"
             >
               Email
             </label>
-            <input
-              id="email"
-              type="text"
-              value={user?.email}
-              disabled
-              className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50"
-            />
+            <div className="mt-2.5">
+              <input
+                type="email"
+                name="email"
+                id="email"
+                autoComplete="email"
+                value={user?.email}
+                onChange={(e) => {
+                  // Warning you can't change your email
+                  // useTimeout for email alert
+                  setEmailAlert(true);
+                  setTimeout(() => {
+                    setEmailAlert(false);
+                  }, 2000);
+                }}
+                className="block w-full rounded-md border-0 px-3.5 py-2 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-black sm:text-sm sm:leading-6"
+              />
+              {/* Warning you can't change your email */}
+              {emailAlert && (
+                <p className="mt-2 text-sm text-red-600">
+                  You can't change your email from here
+                </p>
+              )}
+            </div>
           </div>
-          <div className="mb-4">
-            <label
-              htmlFor="fullName"
-              className="block font-medium text-sm text-gray-700"
-            >
-              Full Name
-            </label>
-            <input
-              id="fullName"
-              type="text"
-              value={fullname || ""}
-              onChange={(e) => setFullname(e.target.value)}
-              className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50"
-            />
-          </div>
-          <div className="mt-4">
+        </div>
+        <div className="mt-10">
+          <button
+            type="submit"
+            className="block w-full rounded-md bg-black px-3.5 py-2.5 text-center text-sm font-semibold text-white shadow-sm hover:bg-black/80 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-black"
+            onClick={() =>
+              updateProfile({ fullname, username, website, avatar_url })
+            }
+            disabled={loading}
+          >
+            {loading ? "Loading..." : "Update"}
+          </button>
+        </div>
+        <div className="mt-4">
+          <form action="/auth/signout" method="post">
             <button
-              className="w-full rounded-md bg-blue-500 text-white font-bold py-2 px-4 hover:bg-blue-700 focus:outline-none focus:ring focus:ring-blue-300 focus:ring-opacity-50 disabled:opacity-50"
-              onClick={() =>
-                updateProfile({ fullname, username, website, avatar_url })
-              }
-              disabled={loading}
+              className=" block w-full rounded-md bg-gray-400 text-white font-bold py-2 px-4 hover:bg-gray-600 focus:outline-none focus:ring focus:ring-gray-300 focus:ring-opacity-50"
+              type="submit"
             >
-              {loading ? "Loading ..." : "Update"}
+              Sign out
             </button>
-          </div>
-
-          <div className="mt-4">
-            <form action="/auth/signout" method="post">
-              <button
-                className="w-full rounded-md bg-gray-400 text-white font-bold py-2 px-4 hover:bg-gray-600 focus:outline-none focus:ring focus:ring-gray-300 focus:ring-opacity-50"
-                type="submit"
-              >
-                Sign out
-              </button>
-            </form>
-          </div>
+          </form>
         </div>
       </div>
     </div>
