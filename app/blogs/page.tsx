@@ -2,6 +2,7 @@ import { BlogCard } from "@/components/blog-card";
 import { Section } from "@/components/ui/section";
 import React from "react";
 import BlogsAnalytics from "./analytics";
+import { Adsense } from "@/components/adsense";
 
 export default function page() {
   return (
@@ -55,6 +56,11 @@ export default function page() {
               ]}
               link="/blogs/drawerandstacknavigation"
             />
+          </Section>
+          <Section>
+            <div className="text-center adsbygoogle mt-2">
+              {/* <Adsense  /> */}
+            </div>
           </Section>
         </section>
       </main>
