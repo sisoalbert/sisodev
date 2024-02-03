@@ -1,16 +1,26 @@
-"use client";
 import React, { useState } from "react";
 import SisoDevIcon from "../icons/SisoDevIcon";
 import Link from "next/link";
-import { usePathname } from "next/navigation";
+import NavMenuButton from "./navmenubutton";
+import { createServerComponentClient } from "@supabase/auth-helpers-nextjs";
+import { cookies } from "next/headers";
+import { Database } from "@/database.types";
 
-export default function UnprotectedNav() {
-  const pathname = usePathname();
-  const [menuVisible, setMenuVisible] = useState(false);
+export default async function UnprotectedNav() {
+  const supabase = createServerComponentClient<Database>({ cookies });
 
-  const toggleMenu = () => {
-    setMenuVisible(!menuVisible);
-  };
+  const {
+    data: { user },
+  } = await supabase.auth.getUser();
+
+  // const pathname = usePathname();
+  // const [menuVisible, setMenuVisible] = useState(false);
+
+  // const toggleMenu = () => {
+  //   setMenuVisible(!menuVisible);
+  // };
+
+  const menuVisible = false;
 
   return (
     <nav className="flex items-center justify-between flex-wrap bg-black p-6">
@@ -23,21 +33,7 @@ export default function UnprotectedNav() {
           Siso Dev
         </span>
       </Link>
-      <div className="block lg:hidden">
-        <button
-          onClick={toggleMenu}
-          className="flex items-center px-3 py-2 border rounded text-slate-50 hover:border-transparent hover:text-black hover:bg-white"
-        >
-          <svg
-            className="fill-current h-3 w-3"
-            viewBox="0 0 20 20"
-            xmlns="http://www.w3.org/2000/svg"
-          >
-            <title>Menu</title>
-            <path d="M0 3h20v2H0V3zm0 6h20v2H0V9zm0 6h20v2H0v-2z" />
-          </svg>
-        </button>
-      </div>
+      <NavMenuButton />
       <div
         className={`w-full block flex-grow lg:flex lg:items-center lg:w-auto ${
           menuVisible ? "block" : "hidden"
@@ -63,20 +59,29 @@ export default function UnprotectedNav() {
             Blogs
           </Link>
         </div>
-        <div>
+        {!user ? (
+          <div>
+            <Link
+              href="/signup"
+              className="block mt-4 lg:inline-block lg:mt-0 text-white hover:text-cyan-500 pr-4"
+            >
+              Sign up
+            </Link>
+            <Link
+              href="/login"
+              className="inline-block text-sm px-4 py-2 leading-none border rounded text-white border-white hover:border-transparent hover:text-black hover:bg-white mt-4 lg:mt-0"
+            >
+              Login
+            </Link>
+          </div>
+        ) : (
           <Link
-            href="#responsive-header"
-            className="block mt-4 lg:inline-block lg:mt-0 text-white hover:text-cyan-500 pr-4"
+            href="/account"
+            className="block mt-4 lg:inline-block lg:mt-0 text-white hover:text-cyan-500 mr-4"
           >
-            Sign up
+            {user?.email}
           </Link>
-          <Link
-            href="#"
-            className="inline-block text-sm px-4 py-2 leading-none border rounded text-white border-white hover:border-transparent hover:text-black hover:bg-white mt-4 lg:mt-0"
-          >
-            Login
-          </Link>
-        </div>
+        )}
       </div>
     </nav>
   );
