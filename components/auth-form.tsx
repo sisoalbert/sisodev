@@ -15,7 +15,7 @@ export default function AuthForm() {
       theme="light"
       showLinks={false}
       providers={[]}
-      redirectTo="https://sisodev.com/auth/callback"
+      redirectTo={`https://${window.location.origin}/dashboard`}
     />
   );
 }
