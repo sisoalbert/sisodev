@@ -13,14 +13,6 @@ export default function NavMenuButton() {
     router.push(`?drawervisible=${menuVisible}`);
   };
 
-  useEffect(() => {
-    if (menuVisible) {
-      document.body.classList.add("overflow-hidden");
-    } else {
-      document.body.classList.remove("overflow-hidden");
-    }
-  }, [menuVisible]);
-
   const searchParams = useSearchParams();
   const drawervisible = searchParams.get("drawervisible") === "true";
 
