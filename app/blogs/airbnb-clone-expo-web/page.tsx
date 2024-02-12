@@ -17,60 +17,25 @@ export default function page() {
         <section className="mx-auto w-full max-w-2xl space-y-8 bg-white print:space-y-6">
           <Section>
             <h2 className="text-xl font-bold">
-              Is This Native or Web? React Native for Web Breaks the Boundaries
+              Airbnb Clone with React Native for Web
             </h2>
             <CardContent className="mt text-xs">Author - Siso</CardContent>
             <p className="text-pretty font-mono text-sm text-muted-foreground">
               In this short tutorial we are going to implement an airbnb clone
-              with react native.
+              with react native for web.
             </p>
           </Section>
           <Section>
             <Card className="flex flex-col overflow-hidden border border-muted p-3 hover:bg-slate-50 w-full">
               <a
-                href="https://github.com/gluestack/ui-examples"
+                href="https://github.com/sisoalbert/airbnb-clone-expo-web"
                 className="bg-black hover:bg-gray-700 text-white font-bold py-2 px-4 rounded align-middle text-center"
               >
                 View on GitHub
               </a>
             </Card>
           </Section>
-
-          <Section>
-            <CardHeader>
-              <div className="flex items-center justify-between gap-x-2 text-base">
-                <h3 className="inline-flex items-center justify-center gap-x-1 font-semibold leading-none">
-                  Airbnb Comes to the Web: Experience Native Performance with
-                  React Native!
-                </h3>
-              </div>
-            </CardHeader>
-            <CardContent className="mt-2 text-xs">
-              <br />
-              Ever dreamed of building an Airbnb-like web app with the smooth
-              performance and intuitive feel of a native mobile app? Now you
-              can, thanks to the power of React Native! ✨ <br /> In this
-              showcase video, we will take you on a journey through the process
-              of building a stunning Airbnb web app using React Native.
-              <br />
-              Ensure you have Node.js and Expo CLI installed on your machine.
-              <br />
-              Clone this repository:
-            </CardContent>
-            <CodeBlock
-              code={"git clone https://github.com/gluestack/ui-examples.git"}
-              language="javascript"
-            />
-            <CardContent className="mt-2 text-xs">
-              Install dependencies:
-            </CardContent>
-
-            <CodeBlock code={"npm install or yarn"} language="javascript" />
-            <CardContent className="mt-2 text-xs">
-              Here is the rest of the code
-            </CardContent>
-            <CodeBlock code={appjs} language="javascript" />
-          </Section>
+          <CodeBlock code={appjs} language="javascript" />
         </section>
       </main>
     </div>

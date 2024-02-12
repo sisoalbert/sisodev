@@ -4,6 +4,8 @@ import { ThemeSupa } from "@supabase/auth-ui-shared";
 import { createClientComponentClient } from "@supabase/auth-helpers-nextjs";
 import { Database } from "../database.types";
 
+export const dynamic = "force-dynamic";
+
 export default function AuthForm() {
   const supabase = createClientComponentClient<Database>();
 
@@ -15,7 +17,7 @@ export default function AuthForm() {
       theme="light"
       showLinks={false}
       providers={[]}
-      redirectTo={`https://${window.location.origin}/dashboard`}
+      redirectTo={`https://sisodev.com/dashboard`}
     />
   );
 }
