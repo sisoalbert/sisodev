@@ -2,7 +2,6 @@ import { BlogCard } from "@/components/blog-card";
 import { Section } from "@/components/ui/section";
 import React from "react";
 import BlogsAnalytics from "./analytics";
-import { Adsense } from "@/components/adsense";
 
 export default function page() {
   return (
@@ -10,9 +9,6 @@ export default function page() {
       <BlogsAnalytics />
       <main className="container relative mx-auto scroll-my-12 overflow-auto p-4 print:p-12 md:p-16">
         <section className="mx-auto w-full max-w-2xl space-y-8 bg-white print:space-y-6">
-          <Section>
-            <h1 color="red">This will come from the hashnode headless site </h1>
-          </Section>
           <Section>
             <h2 className="text-xl font-bold">Blogs</h2>
             <p className="text-pretty font-mono text-sm text-muted-foreground">
@@ -59,11 +55,6 @@ export default function page() {
               ]}
               link="/blogs/drawerandstacknavigation"
             />
-          </Section>
-          <Section>
-            <div className="text-center adsbygoogle mt-2">
-              {/* <Adsense  /> */}
-            </div>
           </Section>
         </section>
       </main>
