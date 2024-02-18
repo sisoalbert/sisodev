@@ -1,18 +1,22 @@
 import Image from "next/image";
 import type { Metadata } from "next";
+
 import { getPostBySlug } from "@/lib/posts";
+import { Post } from "@/types/posts";
 
 interface PostParams {
-  params: { postSlug: string };
+  params: { id: string };
 }
 
 export async function generateMetadata({
   params,
 }: PostParams): Promise<Metadata> {
-  const post = await getPostBySlug(params.postSlug);
+  console.log("params", params);
+
+  const post = await getPostBySlug(params.id);
   return {
-    title: `${post.title} - Quester Studios`,
-    description: post.seo?.description || `Read ${post.title} on Studios`,
+    title: `${post.title} `,
+    description: post.seo?.description || `Read ${post.title} `,
 
     // IMPORTANT: Remove this from your own project if using this as a starting template
     // This is a demo repository so this helps avoid duplicate content
@@ -27,8 +31,9 @@ export async function generateMetadata({
   };
 }
 
-export default async function PostPage({ params }: PostParams) {
-  const post = await getPostBySlug(params.postSlug);
+export default async function Post({ params }: PostParams) {
+  const post = await getPostBySlug(params.id);
+
   return (
     <>
       <div className="max-w-5xl xl:max-w-7xl xl:grid xl:grid-cols-[2fr_1fr] gap-12 mt-12 mb-24">
