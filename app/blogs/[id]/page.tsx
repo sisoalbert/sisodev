@@ -1,8 +1,9 @@
 import Image from "next/image";
 import type { Metadata } from "next";
 
-import { getPostBySlug } from "@/lib/posts";
+import { getPostBySlug } from "@/lib/blogpost";
 import { Post } from "@/types/posts";
+import Container from "@/components/Container";
 
 interface PostParams {
   params: { id: string };
@@ -11,8 +12,6 @@ interface PostParams {
 export async function generateMetadata({
   params,
 }: PostParams): Promise<Metadata> {
-  console.log("params", params);
-
   const post = await getPostBySlug(params.id);
   return {
     title: `${post.title} `,
@@ -33,10 +32,9 @@ export async function generateMetadata({
 
 export default async function Post({ params }: PostParams) {
   const post = await getPostBySlug(params.id);
-
   return (
     <>
-      <div className="max-w-5xl xl:max-w-7xl xl:grid xl:grid-cols-[2fr_1fr] gap-12 mt-12 mb-24">
+      <Container className="max-w-5xl xl:max-w-7xl xl:grid xl:grid-cols-[2fr_1fr] gap-12 mt-12 mb-24">
         <aside className="mb-12 xl:order-2">
           <Image
             width="984"
@@ -87,7 +85,7 @@ export default async function Post({ params }: PostParams) {
             }}
           />
         </article>
-      </div>
+      </Container>
     </>
   );
 }
