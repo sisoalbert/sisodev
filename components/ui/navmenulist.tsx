@@ -34,7 +34,8 @@ export default function NavMenuList({ user }: { user: any }) {
               className={clsx(
                 "block mt-4 lg:inline-block lg:mt-0 text-white hover:text-cyan-500 pr-4",
                 {
-                  " text-cyan-500 font-bold": pathname === link.href,
+                  "text-cyan-500 font-bold border-l-cyan-500 black border-l-4":
+                    pathname === link.href, // Apply text-cyan-500 when pathname matches link.href
                 }
               )}
             >
@@ -64,7 +65,7 @@ export default function NavMenuList({ user }: { user: any }) {
           className={clsx(
             "block mt-4 lg:inline-block lg:mt-0 text-white hover:text-cyan-500 px-4 py-2 rounded",
             {
-              "bg-sky-100 text-cyan-500 font-bold": pathname === "/account",
+              " text-cyan-500 font-bold": pathname === "/account",
             }
           )}
         >

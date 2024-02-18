@@ -3,67 +3,56 @@ import { Section } from "@/components/ui/section";
 import React from "react";
 import BlogsAnalytics from "./analytics";
 import { Adsense } from "@/components/adsense";
+import Link from "next/link";
+import { geAllBlogs } from "@/lib/blogs";
+import Image from "next/image";
 
-export default function page() {
+export default async function page() {
+  const blogs = await geAllBlogs();
+
   return (
-    <div>
-      <BlogsAnalytics />
+    <>
       <main className="container relative mx-auto scroll-my-12 overflow-auto p-4 print:p-12 md:p-16">
         <section className="mx-auto w-full max-w-2xl space-y-8 bg-white print:space-y-6">
-          <Section>
-            <h2 className="text-xl font-bold">Blogs</h2>
-            <p className="text-pretty font-mono text-sm text-muted-foreground">
-              Ready to transform your dev game? Get your hands dirty with
-              practical guides on React, React Native, and Next.js, all paired
-              with step-by-step video tutorials. Learn by doing, crafting
-              beautiful and powerful web apps from scratch. Conquer challenges,
-              optimize code, and discover hidden gems that elevate your skills.
-              Join my learning journey and let us build something awesome
-              together!
-            </p>
-          </Section>
-          <Section>
-            <BlogCard
-              title={
-                "How to build a todo app with typescript without using any libraries"
-              }
-              description={
-                "In this tutorial we are going to implement a react native todo app with typescript without using any libraries."
-              }
-              tags={[
-                "TypeScript",
-                "React Native",
-                "React Navigation",
-                "Stack Navigation",
-                "Drawer Navigation",
-              ]}
-              link="/blogs/todoapp"
-            />
-
-            <BlogCard
-              title={
-                "How to add drawer and stack navigation with TypeScript in react navigation"
-              }
-              description={
-                "In this tutorial we are going to implement react navigation with typescript."
-              }
-              tags={[
-                "TypeScript",
-                "React Native",
-                "React Navigation",
-                "Stack Navigation",
-                "Drawer Navigation",
-              ]}
-              link="/blogs/drawerandstacknavigation"
-            />
-          </Section>
-          <Section>
-            <div className="text-center adsbygoogle mt-2">
-              {/* <Adsense  /> */}
-            </div>
-          </Section>
+          <BlogsAnalytics />
+          <div className="max-w-4xl">
+            <h1 className="text-4xl font-bold mb-12">Blogs</h1>
+            <ul>
+              {blogs?.map((post) => {
+                return (
+                  <li key={post.id} className="grid sm:grid-cols-2 gap-8 mb-16">
+                    <Link href={`/blogs/${post.slug}`}>
+                      <Image
+                        width="600"
+                        height="400"
+                        className="rounded border border-zinc-200"
+                        src={post.coverImage.url}
+                        alt=""
+                      />
+                    </Link>
+                    <div>
+                      <h2 className="text-2xl pb-5 border-b-2 mb-5">
+                        <Link href={`/blogs/${post.slug}`}>{post.title}</Link>
+                      </h2>
+                      <p className="text-zinc-500">
+                        {new Date(post.publishedAt).toLocaleDateString(
+                          "en-us",
+                          {
+                            weekday: "long",
+                            year: "numeric",
+                            month: "short",
+                            day: "numeric",
+                          }
+                        )}
+                      </p>
+                    </div>
+                  </li>
+                );
+              })}
+            </ul>
+          </div>
         </section>
       </main>
-    </div>
+    </>
   );
 }
