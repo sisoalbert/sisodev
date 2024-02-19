@@ -11,7 +11,7 @@ export default function NavMenuList({ user }: { user: any }) {
 
   const links = [
     { name: "Blogs", href: "/blogs", icon: null },
-    { name: "Codelabs", href: "/codelabs", icon: null },
+    // { name: "Codelabs", href: "/codelabs", icon: null },
     {
       name: "Youtube",
       href: "https://www.youtube.com/@questerstudio",
