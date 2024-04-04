@@ -19,6 +19,10 @@ const nextConfig = {
         protocol: "https",
         hostname: "cdn.hashnode.com",
       },
+      {
+        protocol: "https",
+        hostname: "mir-s3-cdn-cf.behance.net",
+      },
     ],
   },
 };

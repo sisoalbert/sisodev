@@ -44,7 +44,7 @@ export default function NavMenuList({ user }: { user: any }) {
           );
         })}
       </div>
-      {!user ? (
+      {/* {!user ? (
         <div>
           <Link
             href="/signup"
@@ -71,7 +71,7 @@ export default function NavMenuList({ user }: { user: any }) {
         >
           {user?.email}
         </Link>
-      )}
+      )} */}
     </div>
   );
 }
