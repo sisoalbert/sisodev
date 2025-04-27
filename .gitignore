@@ -9,6 +9,10 @@ dist/
 web-build/
 expo-env.d.ts
 
+# app
+ios/
+android/
+.env
 # Native
 *.orig.*
 *.jks
@@ -16,6 +20,7 @@ expo-env.d.ts
 *.p12
 *.key
 *.mobileprovision
+
 
 # Metro
 .metro-health-check*
@@ -36,3 +41,12 @@ yarn-error.*
 *.tsbuildinfo
 
 app-example
+.vercel
+
+#build
+**.ipa
+**.apk
+build-*.aab
+
+# Firebase
+config/firebase/
