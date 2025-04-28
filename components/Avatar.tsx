@@ -28,8 +28,20 @@ export default function Avatar({ url, size = 150, onUpload }: Props) {
 
   async function downloadImage(path: string) {
     try {
-      // Get the public URL - simpler approach
-      const { data } = supabase.storage.from("avatars").getPublicUrl(path);
+      // Extract just the filename if a full URL was passed
+      let fileName = path;
+
+      // Check if this is a full URL
+      if (path.startsWith("http")) {
+        // Extract just the filename from the URL
+        const urlParts = path.split("/");
+        fileName = urlParts[urlParts.length - 1].split("?")[0];
+      }
+
+      console.log("Using file name:", fileName);
+
+      // Get the public URL with just the filename
+      const { data } = supabase.storage.from("avatars").getPublicUrl(fileName);
       console.log("Downloaded image:", data);
 
       if (data?.publicUrl) {
@@ -38,7 +50,7 @@ export default function Avatar({ url, size = 150, onUpload }: Props) {
         return;
       }
 
-      console.log("Failed to get public URL for:", path);
+      console.log("Failed to get public URL for:", fileName);
     } catch (error) {
       if (error instanceof Error) {
         console.log("Error downloading image: ", error.message);
