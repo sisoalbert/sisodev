@@ -6,39 +6,54 @@ import {
   ScrollView,
   TouchableOpacity,
   Text,
-  TextInput,
   useWindowDimensions,
   ActivityIndicator,
+  Pressable,
+  SafeAreaView,
+  StatusBar,
 } from "react-native";
 import { useAuth } from "../../lib/auth-provider";
 import { supabase } from "../../lib/supabase";
-import Avatar from "../../components/Avatar";
+import {
+  Avatar,
+  AvatarFallbackText,
+  AvatarImage,
+} from "@/components/ui/avatar";
+import { router } from "expo-router";
+import { FontAwesome } from "@expo/vector-icons";
+import { storage } from "../../lib/storage";
 
 function Account() {
   const { width } = useWindowDimensions();
   const { session } = useAuth();
   const [loading, setLoading] = useState(true);
-  const [uploading, setUploading] = useState(false);
   const [username, setUsername] = useState("");
-  const [website, setWebsite] = useState("");
   const [avatarUrl, setAvatarUrl] = useState("");
-  const [validationErrors, setValidationErrors] = useState<
-    Record<string, string>
-  >({});
 
   useEffect(() => {
-    if (session) getProfile();
+    if (session?.user) {
+      getProfile();
+    } else {
+      // Reset state when not authenticated
+      setLoading(false);
+      setUsername("");
+      setAvatarUrl("");
+    }
   }, [session]);
 
   async function getProfile() {
     try {
       setLoading(true);
-      if (!session?.user) throw new Error("No user on the session!");
+      // Double check session exists to prevent unnecessary API calls
+      if (!session?.user?.id) {
+        setLoading(false);
+        return;
+      }
 
       const { data, error, status } = await supabase
         .from("profiles")
         .select(`username, website, avatar_url`)
-        .eq("id", session?.user.id)
+        .eq("id", session.user.id)
         .single();
 
       if (error) {
@@ -52,7 +67,6 @@ function Account() {
 
       if (data) {
         setUsername(data.username || "");
-        setWebsite(data.website || "");
         setAvatarUrl(data.avatar_url || "");
       }
     } catch (error: any) {
@@ -84,7 +98,6 @@ function Account() {
 
       // Set the initial values
       setUsername(updates.username);
-      setWebsite("");
       setAvatarUrl("");
     } catch (error: any) {
       console.error("Error creating profile:", error.message);
@@ -93,59 +106,26 @@ function Account() {
     }
   }
 
-  async function updateProfile({
-    username,
-    website,
-    avatar_url,
-  }: {
-    username: string;
-    website: string;
-    avatar_url: string;
-  }) {
-    // Validate form
-    const errors: Record<string, string> = {};
-    if (!username.trim()) errors.username = "Username is required";
-    if (website && !website.startsWith("http"))
-      errors.website = "Website must start with http:// or https://";
-
-    if (Object.keys(errors).length > 0) {
-      setValidationErrors(errors);
-      return;
-    }
-
-    try {
-      setLoading(true);
-      if (!session?.user) throw new Error("No user on the session!");
-
-      const updates = {
-        id: session?.user.id,
-        username,
-        website,
-        avatar_url,
-        updated_at: new Date(),
-      };
-
-      const { error } = await supabase.from("profiles").upsert(updates);
-
-      if (error) {
-        throw error;
-      }
-
-      Alert.alert("Success", "Profile updated successfully!");
-      setValidationErrors({});
-    } catch (error: any) {
-      Alert.alert("Error", error.message);
-    } finally {
-      setLoading(false);
-    }
-  }
-
   const handleSignOut = async () => {
     try {
+      // Force clear the session from storage first
+      await storage.removeItem('supabase.auth.token');
+      
+      // Then attempt to sign out from Supabase
       const { error } = await supabase.auth.signOut();
-      if (error) throw error;
+      if (error) {
+        console.error("Error signing out:", JSON.stringify(error));
+        // Even if there's an error, we'll redirect to login
+      }
+      
+      // Force clear the session from context
+      if (session) {
+        router.replace('/');
+      }
     } catch (error: any) {
-      Alert.alert("Error", error.message);
+      console.error("Error signing out:", JSON.stringify(error));
+      // Even if there's an error, we'll redirect to login
+      router.replace('/');
     }
   };
 
@@ -158,11 +138,39 @@ function Account() {
 
   const containerWidth = getContainerWidth();
 
-  if (!session) {
+  if (!session?.user) {
     return (
-      <View style={[styles.container, styles.centered]}>
-        <Text>Not signed in. Please sign in to access your account.</Text>
-      </View>
+      <SafeAreaView
+        style={[
+          styles.container,
+          { width: containerWidth, alignSelf: "center" },
+        ]}
+      >
+        <View style={styles.notSignedInContainer}>
+          <FontAwesome name="user-circle" size={80} color="#CCCCCC" />
+          <Text style={styles.notSignedInText}>You are not signed in</Text>
+
+          <View style={styles.formContainer}>
+            <TouchableOpacity
+              style={[styles.button]}
+              disabled={false}
+              onPress={() => router.push("/auth/login")}
+            >
+              <Text style={styles.buttonText}>Sign In</Text>
+            </TouchableOpacity>
+            <TouchableOpacity
+              style={[styles.buttonOutline]}
+              disabled={false}
+              onPress={() => router.push("/auth/signup")}
+            >
+              <Text style={styles.buttonOutlineText}>Create Account</Text>
+            </TouchableOpacity>
+          </View>
+          <View style={styles.versionContainer}>
+            <Text style={styles.versionText}>{}</Text>
+          </View>
+        </View>
+      </SafeAreaView>
     );
   }
 
@@ -181,14 +189,28 @@ function Account() {
         ) : (
           <>
             <View style={styles.avatarContainer}>
-              <Avatar
-                size={150}
-                url={avatarUrl}
-                onUpload={(url: string) => {
-                  setAvatarUrl(url);
-                  updateProfile({ username, website, avatar_url: url });
+              <Pressable
+                onPress={() => {
+                  router.push("/account/edit-account");
                 }}
-              />
+              >
+                <Avatar size="xl">
+                  <AvatarFallbackText>{username}</AvatarFallbackText>
+                  <AvatarImage
+                    source={{
+                      uri: avatarUrl,
+                    }}
+                  />
+                </Avatar>
+              </Pressable>
+              <Pressable
+                style={styles.editButton}
+                onPress={() => {
+                  router.push("/account/edit-account");
+                }}
+              >
+                <Text>Edit</Text>
+              </Pressable>
             </View>
 
             <View style={styles.formContainer}>
@@ -199,83 +221,7 @@ function Account() {
                 </View>
               </View>
 
-              <View style={styles.formGroup}>
-                <Text style={styles.label}>Username</Text>
-                <View
-                  style={[
-                    styles.input,
-                    validationErrors.username ? styles.inputError : null,
-                  ]}
-                >
-                  <TextInput
-                    style={styles.textInput}
-                    value={username}
-                    onChangeText={(text: string) => {
-                      setUsername(text);
-                      if (validationErrors.username) {
-                        const newErrors = { ...validationErrors };
-                        delete newErrors.username;
-                        setValidationErrors(newErrors);
-                      }
-                    }}
-                    placeholder="Enter your username"
-                  />
-                </View>
-                {validationErrors.username ? (
-                  <Text style={styles.errorText}>
-                    {validationErrors.username}
-                  </Text>
-                ) : null}
-              </View>
-
-              <View style={styles.formGroup}>
-                <Text style={styles.label}>Website</Text>
-                <View
-                  style={[
-                    styles.input,
-                    validationErrors.website ? styles.inputError : null,
-                  ]}
-                >
-                  <TextInput
-                    style={styles.textInput}
-                    value={website}
-                    onChangeText={(text: string) => {
-                      setWebsite(text);
-                      if (validationErrors.website) {
-                        const newErrors = { ...validationErrors };
-                        delete newErrors.website;
-                        setValidationErrors(newErrors);
-                      }
-                    }}
-                    placeholder="https://example.com"
-                  />
-                </View>
-                {validationErrors.website ? (
-                  <Text style={styles.errorText}>
-                    {validationErrors.website}
-                  </Text>
-                ) : null}
-              </View>
-
               <View style={[styles.formGroup, styles.mt20]}>
-                <TouchableOpacity
-                  style={[
-                    styles.button,
-                    styles.primaryButton,
-                    loading || uploading ? styles.buttonDisabled : null,
-                  ]}
-                  onPress={() =>
-                    updateProfile({ username, website, avatar_url: avatarUrl })
-                  }
-                  disabled={loading || uploading}
-                >
-                  <Text style={styles.buttonText}>
-                    {loading ? "Updating..." : "Update Profile"}
-                  </Text>
-                </TouchableOpacity>
-              </View>
-
-              <View style={styles.formGroup}>
                 <TouchableOpacity
                   style={[styles.button, styles.outlineButton]}
                   onPress={handleSignOut}
@@ -306,7 +252,9 @@ const styles = StyleSheet.create({
     alignItems: "center",
     marginBottom: 30,
   },
-
+  editButton: {
+    marginTop: 16,
+  },
   formContainer: {
     width: "100%",
   },
@@ -318,19 +266,6 @@ const styles = StyleSheet.create({
     marginBottom: 8,
     fontWeight: "500",
   },
-  input: {
-    borderWidth: 1,
-    borderColor: "#DDDDDD",
-    borderRadius: 8,
-    padding: 12,
-    backgroundColor: "#FFFFFF",
-  },
-  inputError: {
-    borderColor: "#FF3B30",
-  },
-  textInput: {
-    fontSize: 16,
-  },
   disabledInput: {
     backgroundColor: "#F5F5F5",
     borderWidth: 1,
@@ -338,30 +273,17 @@ const styles = StyleSheet.create({
     borderRadius: 8,
     padding: 12,
   },
-  errorText: {
-    color: "#FF3B30",
-    fontSize: 12,
-    marginTop: 4,
-  },
   button: {
     padding: 15,
     borderRadius: 8,
     alignItems: "center",
     justifyContent: "center",
-    maxWidth: 400,
-    marginHorizontal: "auto",
-    alignSelf: "stretch",
+    backgroundColor: "#4630EB",
   },
   buttonText: {
     fontSize: 16,
     fontWeight: "600",
     color: "#FFFFFF",
-  },
-  primaryButton: {
-    backgroundColor: "#4630EB",
-  },
-  buttonDisabled: {
-    opacity: 0.6,
   },
   outlineButton: {
     borderWidth: 1,
@@ -375,6 +297,38 @@ const styles = StyleSheet.create({
   },
   mt20: {
     marginTop: 20,
+  },
+  notSignedInContainer: {
+    justifyContent: "center",
+    alignItems: "center",
+    padding: 20,
+  },
+  notSignedInText: {
+    fontSize: 18,
+    marginBottom: 20,
+  },
+  versionContainer: {
+    position: "absolute",
+    bottom: 20,
+    left: 20,
+  },
+  versionText: {
+    fontSize: 12,
+    color: "#999",
+  },
+  buttonOutline: {
+    marginTop: 16,
+    padding: 15,
+    borderRadius: 8,
+    alignItems: "center",
+    justifyContent: "center",
+    borderColor: "#4CAF50",
+    borderWidth: 1,
+    backgroundColor: "transparent",
+  },
+  buttonOutlineText: {
+    fontSize: 16,
+    color: "#4CAF50",
   },
 });
 
