@@ -1,14 +1,22 @@
-import { StyleSheet, Text, View } from "react-native";
-import React from "react";
+import {
+  Avatar,
+  AvatarBadge,
+  AvatarFallbackText,
+  AvatarImage,
+} from "@/components/ui/avatar";
 
-const Account = () => {
+function Account() {
   return (
-    <View>
-      <Text>Account</Text>
-    </View>
+    <Avatar size="md">
+      <AvatarFallbackText>Jane Doe</AvatarFallbackText>
+      <AvatarImage
+        source={{
+          uri: "https://images.unsplash.com/photo-1494790108377-be9c29b29330?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=687&q=80",
+        }}
+      />
+      <AvatarBadge />
+    </Avatar>
   );
-};
+}
 
 export default Account;
-
-const styles = StyleSheet.create({});
