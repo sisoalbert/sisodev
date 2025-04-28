@@ -23,8 +23,17 @@ export default function Header() {
         <Text className="text-xl font-bold text-gray-800">Siso Dev</Text>
       </Pressable>
 
-      {/* Notifications + Avatar */}
+      {/* create + Notifications + Avatar */}
       <View className="flex-row items-center">
+        <Pressable
+          className="mr-4"
+          onPress={() => {
+            router.replace("/codelabs/create");
+          }}
+        >
+          <MaterialIcons name="create" size={24} color="gray" />
+        </Pressable>
+
         <Pressable
           className="mr-4"
           onPress={() => {
