@@ -1,7 +1,5 @@
 import { View, ScrollView, TouchableOpacity } from "react-native";
 import React from "react";
-import { Header } from "@/components/Header";
-import { FeaturedCourse } from "@/components/FeaturedCourse";
 import { CourseCard } from "@/components/CourseCard";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { useRouter } from "expo-router";
@@ -28,7 +26,7 @@ const Discover = () => {
 
             {/* Course Cards - Centered Grid */}
             <View className="flex-row flex-wrap justify-center gap-4">
-              <TouchableOpacity 
+              <TouchableOpacity
                 className="w-[48%] md:w-[31%] lg:w-[23%]"
                 onPress={() => router.push("/react-native-basics")}
               >
@@ -43,7 +41,7 @@ const Discover = () => {
                 />
               </TouchableOpacity>
 
-              <TouchableOpacity 
+              <TouchableOpacity
                 className="w-[48%] md:w-[31%] lg:w-[23%]"
                 onPress={() => router.push("/clean-code")}
               >
@@ -57,7 +55,7 @@ const Discover = () => {
                 />
               </TouchableOpacity>
 
-              <TouchableOpacity 
+              <TouchableOpacity
                 className="w-[48%] md:w-[31%] lg:w-[23%]"
                 onPress={() => router.push("/router-setup")}
               >
@@ -72,7 +70,7 @@ const Discover = () => {
                 />
               </TouchableOpacity>
 
-              <TouchableOpacity 
+              <TouchableOpacity
                 className="w-[48%] md:w-[31%] lg:w-[23%]"
                 onPress={() => router.push("/menus")}
               >
@@ -86,7 +84,7 @@ const Discover = () => {
                 />
               </TouchableOpacity>
 
-              <TouchableOpacity 
+              <TouchableOpacity
                 className="w-[48%] md:w-[31%] lg:w-[23%]"
                 onPress={() => router.push("/how-to-guides")}
               >
