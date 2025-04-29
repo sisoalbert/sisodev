@@ -1,0 +1,44 @@
+# Unnecessary files and directories for web deployment
+node_modules
+.expo
+.expo-shared
+android
+ios
+.gradle
+build
+*.ipa
+*.apk
+*.aab
+*.app
+*.hprof
+
+# Large assets that might not be needed for web
+assets/videos
+assets/audio
+
+# Development/build files
+.vscode
+.idea
+.DS_Store
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
+# Firebase files not needed for web
+GoogleService-Info.plist
+google-services.json
+
+# Large generated files
+coverage
+*.orig
+*.log
+*.jks
+*.p8
+*.p12
+*.key
+*.mobileprovision
+*.orig.*
+
+# EAS build files
+.eas
+eas-builds

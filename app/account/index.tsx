@@ -29,7 +29,7 @@ function Account() {
   const [loading, setLoading] = useState(true);
   const [username, setUsername] = useState("");
   const [avatarUrl, setAvatarUrl] = useState("");
-
+  const appVersion = "1.0.0";
   useEffect(() => {
     if (session?.user) {
       getProfile();
@@ -109,23 +109,23 @@ function Account() {
   const handleSignOut = async () => {
     try {
       // Force clear the session from storage first
-      await storage.removeItem('supabase.auth.token');
-      
+      await storage.removeItem("supabase.auth.token");
+
       // Then attempt to sign out from Supabase
       const { error } = await supabase.auth.signOut();
       if (error) {
         console.error("Error signing out:", JSON.stringify(error));
         // Even if there's an error, we'll redirect to login
       }
-      
+
       // Force clear the session from context
       if (session) {
-        router.replace('/');
+        router.replace("/");
       }
     } catch (error: any) {
       console.error("Error signing out:", JSON.stringify(error));
       // Even if there's an error, we'll redirect to login
-      router.replace('/');
+      router.replace("/");
     }
   };
 
@@ -228,6 +228,9 @@ function Account() {
                 >
                   <Text style={styles.outlineButtonText}>Sign Out</Text>
                 </TouchableOpacity>
+                <Text style={[styles.versionText, { textAlign: "center" }]}>
+                  {appVersion}
+                </Text>
               </View>
             </View>
           </>
@@ -265,6 +268,10 @@ const styles = StyleSheet.create({
     fontSize: 16,
     marginBottom: 8,
     fontWeight: "500",
+  },
+  versionText: {
+    fontSize: 12,
+    color: "#999",
   },
   disabledInput: {
     backgroundColor: "#F5F5F5",
@@ -311,10 +318,6 @@ const styles = StyleSheet.create({
     position: "absolute",
     bottom: 20,
     left: 20,
-  },
-  versionText: {
-    fontSize: 12,
-    color: "#999",
   },
   buttonOutline: {
     marginTop: 16,

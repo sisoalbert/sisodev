@@ -1,11 +1,13 @@
 // app/codelabs/index.tsx
 import React, { useEffect, useState } from "react";
 import {
-  ScrollView,
+  FlatList,
   View,
   Text,
   Pressable,
   ActivityIndicator,
+  ListRenderItem,
+  useWindowDimensions,
 } from "react-native";
 import { useRouter } from "expo-router";
 import { CodelabCard } from "@/components/CodelabCard";
@@ -78,41 +80,65 @@ export default function CodelabsIndex() {
     fetchCodelabs();
   }, []);
 
+  // Render functions for FlatList
+  const renderEmptyList = () => (
+    <View className="py-8">
+      <Text className="text-lg text-center p-4">
+        No codelabs found. Create one to get started!
+      </Text>
+    </View>
+  );
+
+  const renderLoadingState = () => (
+    <View className="py-8 items-center">
+      <ActivityIndicator size="large" color="#0000ff" />
+    </View>
+  );
+
+  const renderErrorState = () => (
+    <View className="py-8">
+      <Text className="text-lg text-red-600 text-center">{error}</Text>
+    </View>
+  );
+
+  // Calculate number of columns based on window width (responsive grid from memory)
+  const { width } = useWindowDimensions();
+  const getNumberOfColumns = () => {
+    if (width < 600) return 2; // Mobile: 2 columns
+    if (width < 1024) return 3; // Tablet: 3 columns
+    return 4; // Desktop: 4 columns
+  };
+  
+  const numColumns = getNumberOfColumns();
+
+  // Render item for FlatList
+  const renderItem: ListRenderItem<Codelab> = ({ item }) => (
+    <View style={{ flex: 1/numColumns, padding: 4, maxWidth: 400 }}>
+      <CodelabCard
+        title={item.title}
+        description={item.description || "Click to view this codelab"}
+        imageUrl="https://images.pexels.com/photos/1181671/pexels-photo-1181671.jpeg"
+        imageAlt="Codelab Preview"
+        onPress={() => router.push(`/codelabs/${item.id}`)}
+      />
+    </View>
+  );
+
+  if (loading) return renderLoadingState();
+  if (error) return renderErrorState();
+
   return (
-    <ScrollView
-      className="p-4 bg-gray-100"
-      contentContainerStyle={{ paddingBottom: 24 }}
-    >
-      {loading ? (
-        <View className="py-8 items-center">
-          <ActivityIndicator size="large" color="#0000ff" />
-        </View>
-      ) : error ? (
-        <View className="py-8">
-          <Text className="text-lg text-red-600 text-center">{error}</Text>
-        </View>
-      ) : (
-        <View className="space-y-4">
-          {codelabs.length === 0 ? (
-            <View className="py-8">
-              <Text className="text-lg text-center p-4">
-                No codelabs found. Create one to get started!
-              </Text>
-            </View>
-          ) : (
-            codelabs.map((lab) => (
-              <CodelabCard
-                key={lab.id}
-                title={lab.title}
-                description={lab.description || "Click to view this codelab"}
-                imageUrl="https://images.pexels.com/photos/1181671/pexels-photo-1181671.jpeg"
-                imageAlt="Codelab Preview"
-                onPress={() => router.push(`/codelabs/${lab.id}`)}
-              />
-            ))
-          )}
-        </View>
-      )}
-    </ScrollView>
+    <View className="flex-1 bg-gray-100 p-4">
+      <FlatList
+        key={`flatlist-${numColumns}-columns`}
+        data={codelabs}
+        renderItem={renderItem}
+        keyExtractor={(item) => item.id}
+        numColumns={numColumns}
+        contentContainerStyle={{ paddingBottom: 24 }}
+        ListEmptyComponent={renderEmptyList}
+        columnWrapperStyle={numColumns > 1 ? { justifyContent: 'space-between' } : undefined}
+      />
+    </View>
   );
 }
