@@ -30,8 +30,18 @@ firebase deploy --only storage
 
 ## TODO
 
-- [] Add headers
-- [] Add Profile picture upload (web and react native) - TEST ON REACT NATIVE and add image cropping
+- [] Add private codelabs
+- [] Add codelabs user
+- [] Add codelabs image
+- [] Add codelabs likes and comments
+- [] Add codelabs tags
+- [] Add codelabs categories
+- [] Add codelabs search
+- [] Add codelabs pagination
+- [] Add codelabs filters
+- [] Add codelabs sorting
+- [] Add codelabs videos
+- [x] Add Profile picture upload (web and react native) - TEST ON REACT NATIVE and add image cropping
 - [ ] Add expo image placeholder
 - [ ] show password
 - [ ] Add play progress bar, history and queue
