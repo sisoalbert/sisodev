@@ -12,6 +12,7 @@ import {
 import { useRouter } from "expo-router";
 import { supabase } from "@/lib/supabase";
 import { LearningResourceCard } from "@/components/LearningResourceCard";
+import { LearningResourceCardSkeleton } from "@/components/LearningResourceCardSkeleton";
 
 interface Codelab {
   id: string;
@@ -102,7 +103,7 @@ export default function CodelabsIndex() {
 
   const renderLoadingState = () => (
     <View className="py-8 items-center">
-      <ActivityIndicator size="large" color="#0000ff" />
+      <LearningResourceCardSkeleton numCards={4} />
     </View>
   );
 
@@ -129,9 +130,13 @@ export default function CodelabsIndex() {
   const renderItem: ListRenderItem<Codelab> = ({ item }) => (
     <TouchableOpacity
       className={`px-2 ${
-        numColumns === 1 ? "w-full" : 
-        numColumns === 2 ? "w-1/2" : 
-        numColumns === 3 ? "w-1/3" : "w-1/4"
+        numColumns === 1
+          ? "w-full"
+          : numColumns === 2
+          ? "w-1/2"
+          : numColumns === 3
+          ? "w-1/3"
+          : "w-1/4"
       }`}
       style={{ marginBottom: 16 }}
       onPress={() => router.push(`/codelabs/${item.id}`)}
