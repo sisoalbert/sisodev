@@ -14,4 +14,5 @@ export interface CodelabData {
   lastUpdated: string;
   authors: string[];
   sections: Section[];
+  imageUrl?: string;
 }
