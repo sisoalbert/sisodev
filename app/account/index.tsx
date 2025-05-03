@@ -12,6 +12,7 @@ import {
   SafeAreaView,
   StatusBar,
 } from "react-native";
+import { Ionicons } from "@expo/vector-icons";
 import { useAuth } from "../../lib/auth-provider";
 import { supabase } from "../../lib/supabase";
 import {
@@ -29,7 +30,7 @@ function Account() {
   const [loading, setLoading] = useState(true);
   const [username, setUsername] = useState("");
   const [avatarUrl, setAvatarUrl] = useState("");
-  const appVersion = "1.0.0";
+  const appVersion = "1.0.0 (1)";
   useEffect(() => {
     if (session?.user) {
       getProfile();
@@ -215,10 +216,14 @@ function Account() {
 
             <View style={styles.formContainer}>
               <View style={[styles.formGroup, styles.mt20]}>
-                <Text style={styles.label}>Email</Text>
-                <View style={styles.disabledInput}>
-                  <Text>{session?.user?.email}</Text>
-                </View>
+                <Text style={styles.label}>My Content</Text>
+                <TouchableOpacity
+                  style={styles.link}
+                  onPress={() => router.push("/codelabs/mine")}
+                >
+                  <Text style={styles.linkText}>My Codelabs</Text>
+                  <Ionicons name="chevron-forward" size={16} color="#3b82f6" />
+                </TouchableOpacity>
               </View>
 
               <View style={[styles.formGroup, styles.mt20]}>
@@ -241,6 +246,22 @@ function Account() {
 }
 
 const styles = StyleSheet.create({
+  link: {
+    flexDirection: "row",
+    alignItems: "center",
+    justifyContent: "space-between",
+    paddingVertical: 12,
+    paddingHorizontal: 16,
+    backgroundColor: "#f9fafb",
+    borderRadius: 8,
+    borderWidth: 1,
+    borderColor: "#e5e7eb",
+  },
+  linkText: {
+    fontSize: 16,
+    color: "#3b82f6",
+    fontWeight: "500",
+  },
   container: {
     marginTop: 40,
     padding: 20,

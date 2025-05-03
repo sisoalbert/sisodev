@@ -1,4 +1,4 @@
-// app/codelabs/index.tsx
+// app/codelabs/mine/index.tsx
 import React, { useEffect, useState } from "react";
 import {
   FlatList,
@@ -12,6 +12,7 @@ import { useRouter } from "expo-router";
 import { supabase } from "@/lib/supabase";
 import { LearningResourceCard } from "@/components/LearningResourceCard";
 import { LearningResourceCardSkeleton } from "@/components/LearningResourceCardSkeleton";
+import { Ionicons } from "@expo/vector-icons";
 
 interface Codelab {
   id: string;
@@ -31,16 +32,31 @@ export default function CodelabsIndex() {
   const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
-    const fetchCodelabs = async () => {
+    const fetchUserCodelabs = async () => {
       try {
         setLoading(true);
         setError(null);
 
+        // Get the current user session
+        const { data: sessionData, error: sessionError } =
+          await supabase.auth.getSession();
+
+        if (sessionError) {
+          throw sessionError;
+        }
+
+        if (!sessionData?.session?.user) {
+          // Not authenticated
+          router.replace("/account");
+          return;
+        }
+
+        const userId = sessionData.session.user.id;
+
         const { data, error } = await supabase
           .from("codelabs")
           .select("*")
-          .eq("status", "published")
-          .eq("visibility", "public")
+          .eq("creator_id", userId)
           .order("last_updated", { ascending: false });
 
         if (error) {
@@ -94,15 +110,36 @@ export default function CodelabsIndex() {
       }
     };
 
-    fetchCodelabs();
+    fetchUserCodelabs();
   }, []);
 
   // Render functions for FlatList
   const renderEmptyList = () => (
-    <View className="py-8">
-      <Text className="text-lg text-center p-4">
-        No codelabs found. Create one to get started!
-      </Text>
+    <View className="py-12 px-4 items-center justify-center">
+      <View className="items-center max-w-md">
+        <View className="rounded-full bg-blue-50 p-4 mb-4">
+          <Ionicons name="document-text-outline" size={36} color="#3b82f6" />
+        </View>
+        <Text className="text-xl font-bold text-center mb-2">
+          No codelabs yet
+        </Text>
+        <Text className="text-gray-600 text-center mb-6">
+          You haven't created any codelabs yet. Create your first codelab to
+          share your knowledge with others.
+        </Text>
+        <TouchableOpacity
+          className="bg-blue-500 py-3 px-6 rounded-lg flex-row items-center"
+          onPress={() => router.push("/codelabs/create")}
+        >
+          <Ionicons
+            name="add"
+            size={18}
+            color="#fff"
+            style={{ marginRight: 8 }}
+          />
+          <Text className="text-white font-semibold">Create Codelab</Text>
+        </TouchableOpacity>
+      </View>
     </View>
   );
 
@@ -166,6 +203,21 @@ export default function CodelabsIndex() {
   return (
     <View className="flex-1 bg-gray-50">
       <View className="flex-1 mx-auto w-full max-w-screen-xl px-4 sm:px-6 md:px-8 lg:px-16">
+        <View className="flex-row justify-between items-center py-4">
+          <Text className="text-2xl font-bold text-gray-800">My Codelabs</Text>
+          <TouchableOpacity
+            className="bg-blue-500 py-2 px-4 rounded-lg flex-row items-center"
+            onPress={() => router.push("/codelabs/create")}
+          >
+            <Ionicons
+              name="add"
+              size={16}
+              color="#fff"
+              style={{ marginRight: 4 }}
+            />
+            <Text className="text-white font-semibold">Create New</Text>
+          </TouchableOpacity>
+        </View>
         <FlatList
           key={`flatlist-${numColumns}-columns`}
           data={codelabs}
