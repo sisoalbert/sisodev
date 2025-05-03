@@ -49,7 +49,7 @@ const CodelabSection: React.FC<CodelabSectionProps> = ({ section }) => {
   }, [section]);
 
   return (
-    <div className="bg-white rounded-lg shadow-md p-6 md:p-8 animate-fadeIn">
+    <div className="bg-white rounded-lg shadow-md mb-6 p-6 md:p-8 animate-fadeIn">
       <div
         ref={contentRef}
         className="prose max-w-none"

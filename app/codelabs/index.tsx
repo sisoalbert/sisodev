@@ -5,7 +5,6 @@ import {
   View,
   Text,
   TouchableOpacity,
-  ActivityIndicator,
   ListRenderItem,
   useWindowDimensions,
 } from "react-native";
@@ -22,7 +21,7 @@ interface Codelab {
   authors: string[];
   // For UI display
   description?: string;
-  imageUrl?: string;
+  image_url?: string;
 }
 
 export default function CodelabsIndex() {
@@ -59,10 +58,14 @@ export default function CodelabsIndex() {
                 const firstSection = content.sections[0];
                 // Use content text instead of title
                 if (firstSection.content) {
-                  // Strip HTML tags to get clean text
-                  description = firstSection.content
-                    .replace(/<[^>]*>/g, "")
+                  // Remove h1 title first
+                  const contentWithoutH1 = firstSection.content
+                    .replace(/<h1>.*?<\/h1>/g, "")
                     .trim();
+
+                  // Strip remaining HTML tags to get clean text
+                  description = contentWithoutH1.replace(/<[^>]*>/g, "").trim();
+
                   // Limit description length if needed
                   if (description.length > 120) {
                     description = description.substring(0, 120) + "...";
@@ -144,7 +147,11 @@ export default function CodelabsIndex() {
       <LearningResourceCard
         title={item.title}
         description={item.description || "Click to view this codelab"}
-        imageUrl="https://images.pexels.com/photos/1181671/pexels-photo-1181671.jpeg"
+        imageUrl={
+          item.image_url
+            ? item.image_url
+            : "https://images.pexels.com/photos/1181671/pexels-photo-1181671.jpeg"
+        }
         imageAlt="Codelab Preview"
         onPress={() => router.push(`/codelabs/${item.id}`)}
       />

@@ -18,17 +18,21 @@ const CodelabContent: React.FC<CodelabContentProps> = ({ data }) => {
   );
 
   return (
-    <div className="min-h-screen bg-gray-50 flex flex-col">
-      <main className="py-6">
-        <div className="flex flex-col md:flex-row">
-          <SectionNavigation
-            sections={data.sections}
-            currentSectionId={currentSectionId}
-            onSelectSection={setCurrentSectionId}
-          />
-          <div className="flex-grow">
-            <div className="max-w-4xl mx-auto">
-              <div className="mb-6">
+    <div className="h-screen w-full flex flex-col">
+      <main className="flex-1 flex flex-col overflow-hidden">
+        <div className="flex flex-col md:flex-row flex-1 h-full">
+          <div className="w-64 bg-blue-500 h-full overflow-y-auto">
+            <div className="pb-8">
+              <SectionNavigation
+                sections={data.sections}
+                currentSectionId={currentSectionId}
+                onSelectSection={setCurrentSectionId}
+              />
+            </div>
+          </div>
+          <div className="flex-1 overflow-y-auto bg-green-500">
+            <div className="max-w-4xl mx-auto pb-12">
+              <div className="mb-6 pt-4">
                 {currentSectionId === data.sections[0]?.id && (
                   <CodelabHeader data={data} />
                 )}

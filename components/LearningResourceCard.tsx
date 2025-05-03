@@ -67,6 +67,7 @@ export const LearningResourceCard = ({
           <Image
             source={{ uri: imageUrl }}
             accessibilityLabel={imageAlt}
+            resizeMode="cover"
             style={[
               styles.image,
               { transform: [{ scale: isActive ? 1.05 : 1 }] },
@@ -93,7 +94,6 @@ export const LearningResourceCard = ({
               style={[
                 styles.description,
                 isSmallMobile && styles.descriptionSmall,
-                { textAlign: "justify" },
               ]}
               numberOfLines={3}
               ellipsizeMode="tail"

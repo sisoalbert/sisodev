@@ -118,7 +118,7 @@ export default function CodelabDetails() {
   }
 
   return (
-    <View className="flex-1 bg-white">
+    <View className="flex-1 bg-white h-screen w-full">
       <CodelabContent data={codelab} />
     </View>
   );
