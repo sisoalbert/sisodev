@@ -28,10 +28,10 @@ export default function Header() {
         <Pressable
           className="mr-4"
           onPress={() => {
-            router.replace("/codelabs/create");
+            router.replace("/codelabs/add");
           }}
         >
-          <MaterialIcons name="create" size={24} color="gray" />
+          <MaterialIcons name="add" size={24} color="gray" />
         </Pressable>
 
         <Pressable
