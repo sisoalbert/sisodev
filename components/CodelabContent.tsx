@@ -209,7 +209,7 @@ const CodelabContent: React.FC<CodelabContentProps> = ({
                   <div className="flex items-center space-x-3 ">
                     <div
                       className="bg-blue-50 hover:bg-blue-100 text-blue-600 px-3 py-1.5 rounded-md cursor-pointer transition-colors flex items-center"
-                      onClick={() => router.push(`/codelabs/edit/${codelabId}`)}
+                      onClick={() => router.navigate({pathname: '/codelabs/edit', params: {id: codelabId}})}
                     >
                       <svg
                         xmlns="http://www.w3.org/2000/svg"

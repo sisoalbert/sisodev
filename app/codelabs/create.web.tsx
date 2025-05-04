@@ -24,7 +24,7 @@ export default function CodelabEditor() {
 
   const [codelabData, setCodelabData] = useState<CodelabData>({
     title: "",
-    lastUpdated: new Date().toISOString(),
+    lastUpdated: new Date().toISOString().split('T')[0], // Format as yyyy-MM-dd
     authors: [""],
     sections: [
       {
@@ -210,13 +210,22 @@ export default function CodelabEditor() {
     try {
       // Format data to match the Supabase table schema
       // Based on the schema: id, title, content, last_updated, authors
+      
+      // Format date to yyyy-MM-dd as required by the database
+      const date = new Date();
+      const formattedDate = date.getFullYear() + '-' + 
+                          String(date.getMonth() + 1).padStart(2, '0') + '-' + 
+                          String(date.getDate()).padStart(2, '0');
+      
       const dataToSave = {
         title: codelabData.title,
         content: JSON.stringify({
           sections: codelabData.sections,
         }), // Storing sections in the content field as JSON
-        last_updated: new Date().toISOString(), // Using the correct column name with underscore
+        last_updated: formattedDate, // Format date as yyyy-MM-dd
         authors: codelabData.authors, // This is already an array as expected by the schema
+        status: 'draft', // Required field
+        visibility: 'private', // Required field
       };
 
       console.log(
@@ -283,7 +292,7 @@ export default function CodelabEditor() {
       try {
         const dataToSave = {
           ...codelabData,
-          lastUpdated: new Date().toISOString(),
+          lastUpdated: new Date().toISOString().split('T')[0], // Format as yyyy-MM-dd
         };
         localStorage.setItem("codelab_draft", JSON.stringify(dataToSave));
         console.log("Saved to local storage as fallback due to error");

@@ -10,6 +10,7 @@ export interface Section {
 }
 
 export interface CodelabData {
+  id?: string;
   title: string;
   lastUpdated: string;
   authors: string[];

@@ -11,6 +11,7 @@ import { Image, Platform, Alert } from "react-native";
 interface CodeLabEditorProps {
   initialData: CodelabData;
   onSave: (data: CodelabData) => void;
+  isEditMode?: boolean;
 }
 
 // Create a custom image handler for ReactQuill
@@ -161,24 +162,38 @@ const formats = [
 const CodeLabEditor: React.FC<CodeLabEditorProps> = ({
   initialData,
   onSave,
+  isEditMode: isEditModeFromProps,
 }) => {
   const { session } = useAuth();
   const [data, setData] = useState<CodelabData>(initialData);
-  const [isEditMode, setIsEditMode] = useState(false);
+  const [isEditMode, setIsEditMode] = useState(isEditModeFromProps || !!initialData.id);
   const [isSaving, setIsSaving] = useState(false);
   const [saveError, setSaveError] = useState<string | null>(null);
   const [uploading, setUploading] = useState(false);
   const [imageUrl, setImageUrl] = useState<string>(data.imageUrl || "");
 
-  // Set the codelab data for the image handler
+  // Set the codelab data for the image handler and format date
   useEffect(() => {
-    setEditorCodelabData(initialData);
+    // Format date to yyyy-MM-dd if needed
+    const formattedData = {
+      ...initialData
+    };
+    
+    // Check if lastUpdated exists and is not already in yyyy-MM-dd format
+    if (formattedData.lastUpdated) {
+      // Handle timestamps with either 'T' separator (ISO) or space separator (Supabase)
+      if (formattedData.lastUpdated.includes('T')) {
+        // If it's an ISO timestamp with T separator
+        formattedData.lastUpdated = formattedData.lastUpdated.split('T')[0];
+      } else if (formattedData.lastUpdated.includes(' ')) {
+        // If it's a timestamp with space separator (like from Supabase: 2025-05-04 02:28:25.963+00)
+        formattedData.lastUpdated = formattedData.lastUpdated.split(' ')[0];
+      }
+    }
+    
+    setData(formattedData);
+    setEditorCodelabData(formattedData);
   }, [initialData]);
-  
-  // Update the editor codelab data when it changes
-  useEffect(() => {
-    setEditorCodelabData(data);
-  }, [data]);
 
   const handleMetadataChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
@@ -186,6 +201,12 @@ const CodeLabEditor: React.FC<CodeLabEditorProps> = ({
       setData({
         ...data,
         authors: value.split(",").map((author) => author.trim()),
+      });
+    } else if (name === "lastUpdated") {
+      // Ensure the date is in yyyy-MM-dd format
+      setData({ 
+        ...data, 
+        [name]: value // date input already enforces yyyy-MM-dd format
       });
     } else {
       setData({ ...data, [name]: value });
@@ -296,9 +317,12 @@ const CodeLabEditor: React.FC<CodeLabEditorProps> = ({
     field: keyof Section,
     value: string | number
   ) => {
-    const newSections = [...data.sections];
-    newSections[index] = { ...newSections[index], [field]: value };
-    setData({ ...data, sections: newSections });
+    // Only update if the value has actually changed
+    if (data.sections[index][field] !== value) {
+      const newSections = [...data.sections];
+      newSections[index] = { ...newSections[index], [field]: value };
+      setData({ ...data, sections: newSections });
+    }
   };
 
   const addSection = () => {
@@ -342,25 +366,48 @@ const CodeLabEditor: React.FC<CodeLabEditorProps> = ({
     setSaveError(null);
 
     try {
-      // Format data to match the Supabase table schema
-      const dataToSave = {
+      // Format date to yyyy-MM-dd as required by the database
+      const date = new Date();
+      const formattedDate = date.getFullYear() + '-' + 
+                          String(date.getMonth() + 1).padStart(2, '0') + '-' + 
+                          String(date.getDate()).padStart(2, '0');
+
+      // If we're in edit mode (from edit.web.tsx), skip database operations
+      // and let the parent component handle the update to avoid duplicate operations
+      if (isEditMode && isEditModeFromProps) {
+        console.log('Edit mode detected - delegating save to parent component');
+        // Update the lastUpdated field before passing to parent
+        const updatedData = {
+          ...data,
+          lastUpdated: formattedDate
+        };
+        // Call the onSave callback provided by the parent component
+        onSave(updatedData);
+        setIsSaving(false);
+        return;
+      }
+
+      // For creation mode, proceed with normal database operation
+      const dataToSave: any = {
         title: data.title,
         content: JSON.stringify({
           sections: data.sections,
         }),
-        last_updated: new Date().toISOString(),
+        last_updated: formattedDate, // Format date as yyyy-MM-dd
         authors: data.authors,
         image_url: imageUrl, // Add the image URL to the data saved to Supabase
-        creator_id: session?.user?.id, // Add the creator's UUID
-        status: "draft", // Default status is draft
-        visibility: "private", // Default visibility is private
+        creator_id: session?.user?.id, // Add the creator's UUID,
+        status: "draft", // REQUIRED: Default status is draft - must be included for both new and updates
+        visibility: "private", // REQUIRED: Default visibility is private - must be included for both new and updates
       };
-
-      // Insert with proper column names matching the schema
-      const { data: savedData, error } = await supabase
+      
+      console.log('Creating new codelab');
+      const result = await supabase
         .from("codelabs")
         .insert(dataToSave)
         .select();
+
+      const { data: savedData, error } = result;
 
       if (error) {
         console.error("Error saving to Supabase:", error);
@@ -376,8 +423,18 @@ const CodeLabEditor: React.FC<CodeLabEditorProps> = ({
         console.error("Could not save to local storage:", localErr);
       }
 
-      // Call the onSave callback provided by the parent component
-      onSave(data);
+      // Only for create mode: update the UI with the new data including the ID
+      if (savedData && savedData.length > 0 && savedData[0].id) {
+        // Update the local data with the ID from the server
+        const newDataWithId = {
+          ...data,
+          id: savedData[0].id
+        };
+        setData(newDataWithId);
+        onSave(newDataWithId);
+      } else {
+        onSave(data);
+      }
 
       console.log("Codelab saved successfully!");
     } catch (err) {
@@ -474,10 +531,14 @@ const CodeLabEditor: React.FC<CodeLabEditorProps> = ({
             <input
               type="date"
               name="lastUpdated"
-              value={data.lastUpdated}
+              value={data.lastUpdated ? (data.lastUpdated.includes('T') ? data.lastUpdated.split('T')[0] : 
+                     data.lastUpdated.includes(' ') ? data.lastUpdated.split(' ')[0] : data.lastUpdated) : ''}
               onChange={handleMetadataChange}
               className="w-full px-3 py-2 border rounded-md"
             />
+            <p className="mt-1 text-xs text-gray-500">
+              Format: yyyy-MM-dd (required by database)
+            </p>
           </div>
         </div>
       </div>
@@ -566,10 +627,7 @@ const CodeLabEditor: React.FC<CodeLabEditorProps> = ({
               Saving...
             </>
           ) : (
-            <>
-              <AntDesign name="save" size={20} />
-              Save Codelab
-            </>
+            <>{isEditMode ? 'Update' : 'Save'}</>
           )}
         </button>
       </div>
