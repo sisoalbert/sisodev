@@ -30,9 +30,11 @@ firebase deploy --only storage
 
 ## TODO
 
-- [] Add private codelabs
-- [] Add codelabs user
-- [] Add codelabs image
+- [ ] Add confirm email copy and confirm email link
+- [ ] Add codelabs id slug (title)
+- [x] Add private codelabs
+- [x] Add codelabs user
+- [x] Add codelabs image
 - [] Add codelabs likes and comments
 - [] Add codelabs tags
 - [] Add codelabs categories
@@ -43,9 +45,7 @@ firebase deploy --only storage
 - [] Add codelabs videos
 - [x] Add Profile picture upload (web and react native) - TEST ON REACT NATIVE and add image cropping
 - [ ] Add expo image placeholder
-- [ ] show password
-- [ ] Add play progress bar, history and queue
-- [ ] Add playback screen
+- [x] show password
 - [ ] Google/Apple login
 - [ ] Recommended events sign_up, login, share
 - [ ] Add tabs https://www.reactnativepapertabs.com/

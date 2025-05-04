@@ -2,7 +2,6 @@ import React, { useState } from "react";
 import { router } from "expo-router";
 import { CodelabData } from "@/types";
 import CodeLabEditor from "@/components/editor/CodeLabEditor";
-import { ScrollView } from "react-native";
 
 const emptyCodelab: CodelabData = {
   title: "New Codelab",

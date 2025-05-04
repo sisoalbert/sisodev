@@ -15,4 +15,5 @@ export interface CodelabData {
   authors: string[];
   sections: Section[];
   imageUrl?: string;
+  creator_id?: string;
 }

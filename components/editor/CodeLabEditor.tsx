@@ -14,6 +14,13 @@ interface CodeLabEditorProps {
 }
 
 // Create a custom image handler for ReactQuill
+// We'll need to pass the codelab data to this handler
+let editorCodelabData: CodelabData | null = null;
+
+const setEditorCodelabData = (codelabData: CodelabData) => {
+  editorCodelabData = codelabData;
+};
+
 const imageHandler = async () => {
   try {
     // Launch image picker
@@ -42,8 +49,16 @@ const imageHandler = async () => {
         ? image.fileName.split(".").pop()?.toLowerCase()
         : image.uri?.split(".").pop()?.toLowerCase() || "jpg";
 
-    // Use a unique path with a timestamp
-    const filePath = `content-${timestamp}.${fileExt}`;
+    // Use a folder-based path with a unique identifier for better organization
+    // Use similar approach as uploadImage function
+    const folderName = editorCodelabData?.title
+      ? editorCodelabData.title
+          .toLowerCase()
+          .replace(/[^a-z0-9]/g, "-")
+          .replace(/-+/g, "-")
+          .replace(/^-|-$/g, "")
+      : `content-${timestamp}`;
+    const filePath = `${folderName}/content-${timestamp}.${fileExt}`;
 
     // Convert to blob for upload
     const response = await fetch(image.uri);
@@ -155,6 +170,16 @@ const CodeLabEditor: React.FC<CodeLabEditorProps> = ({
   const [uploading, setUploading] = useState(false);
   const [imageUrl, setImageUrl] = useState<string>(data.imageUrl || "");
 
+  // Set the codelab data for the image handler
+  useEffect(() => {
+    setEditorCodelabData(initialData);
+  }, [initialData]);
+  
+  // Update the editor codelab data when it changes
+  useEffect(() => {
+    setEditorCodelabData(data);
+  }, [data]);
+
   const handleMetadataChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
     if (name === "authors") {
@@ -205,8 +230,16 @@ const CodeLabEditor: React.FC<CodeLabEditorProps> = ({
           ? image.fileName.split(".").pop()?.toLowerCase()
           : image.uri?.split(".").pop()?.toLowerCase() || "jpg";
 
-      // Use a simpler path with a timestamp for uniqueness
-      const filePath = `codelab-${timestamp}.${fileExt}`;
+      // Use a folder-based path with a unique identifier for better organization
+      // Use title if available (slugified) or creator_id + timestamp as fallback
+      const folderName = data.title
+        ? data.title
+            .toLowerCase()
+            .replace(/[^a-z0-9]/g, "-")
+            .replace(/-+/g, "-")
+            .replace(/^-|-$/g, "")
+        : `${data.creator_id || "user"}-${timestamp}`;
+      const filePath = `${folderName}/image-${timestamp}.${fileExt}`;
 
       // Convert to blob for upload
       const response = await fetch(image.uri);
@@ -318,6 +351,9 @@ const CodeLabEditor: React.FC<CodeLabEditorProps> = ({
         last_updated: new Date().toISOString(),
         authors: data.authors,
         image_url: imageUrl, // Add the image URL to the data saved to Supabase
+        creator_id: session?.user?.id, // Add the creator's UUID
+        status: "draft", // Default status is draft
+        visibility: "private", // Default visibility is private
       };
 
       // Insert with proper column names matching the schema
@@ -503,10 +539,6 @@ const CodeLabEditor: React.FC<CodeLabEditorProps> = ({
                     }
                   }}
                 />
-                <p className="text-sm text-gray-500 mt-1">
-                  Tip: Use the image button in the toolbar to add images to your
-                  content.
-                </p>
               </div>
             </div>
           </div>
@@ -545,4 +577,6 @@ const CodeLabEditor: React.FC<CodeLabEditorProps> = ({
   );
 };
 
+// Export both the component and the utility functions
+export { setEditorCodelabData, imageHandler };
 export default CodeLabEditor;

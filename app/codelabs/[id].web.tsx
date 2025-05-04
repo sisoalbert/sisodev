@@ -13,6 +13,7 @@ export default function CodelabDetails() {
   const [codelab, setCodelab] = useState<CodelabData | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
+  const [sessionData, setSessionData] = useState<any>(null);
 
   useEffect(() => {
     const fetchCodelab = async () => {
@@ -25,6 +26,16 @@ export default function CodelabDetails() {
       try {
         setLoading(true);
         setError(null);
+
+        // Get the current user session
+        const { data: sessionResult, error: sessionError } =
+          await supabase.auth.getSession();
+
+        if (sessionError) {
+          console.error("Session error:", sessionError);
+        } else {
+          setSessionData(sessionResult);
+        }
 
         // Fetch the codelab with the matching ID
         const { data, error: fetchError } = await supabase
@@ -47,6 +58,7 @@ export default function CodelabDetails() {
           lastUpdated: data.last_updated,
           authors: data.authors || [],
           sections: [],
+          creator_id: data.creator_id, // Store the creator's ID
         };
 
         // Parse the content (which contains the sections)
@@ -119,7 +131,12 @@ export default function CodelabDetails() {
 
   return (
     <View className="flex-1 bg-white h-screen w-full">
-      <CodelabContent data={codelab} />
+      <CodelabContent
+        data={codelab}
+        codelabId={id}
+        creator_id={codelab.creator_id}
+        sessionData={sessionData}
+      />
     </View>
   );
 }
