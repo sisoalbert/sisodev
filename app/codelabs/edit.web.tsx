@@ -8,7 +8,7 @@ import { useAuth } from "@/lib/auth-provider";
 
 const EditCodelab: React.FC = () => {
   const { session } = useAuth();
-  const { id: slug } = useLocalSearchParams<{ id: string }>();
+  const { id: slug, returnTo, id_for_return } = useLocalSearchParams<{ id: string; returnTo?: string; id_for_return?: string }>();
 
   const [codelab, setCodelab] = useState<CodelabData | null>(null);
   const [loading, setLoading] = useState(true);
@@ -152,7 +152,28 @@ const EditCodelab: React.FC = () => {
       console.log("Update successful");
 
       // Navigate back to the codelab detail page
-      router.push(`/codelabs/${slug}`);
+      // Navigate back using the returnTo parameter if available
+      if (returnTo && typeof returnTo === "string") {
+        const decodedReturnTo = decodeURIComponent(returnTo);
+        
+        // Handle different return paths
+        if (decodedReturnTo === "/codelabs/[id]" && id_for_return) {
+          router.push({ 
+            pathname: "/codelabs/[id]", 
+            params: { id: id_for_return }
+          });
+        } else if (decodedReturnTo === "/codelabs/mine") {
+          router.push("/codelabs/mine");
+        } else if (decodedReturnTo === "/codelabs") {
+          router.push("/codelabs");
+        } else {
+          // Default fallback - go to the updated codelab
+          router.push(`/codelabs/${slug}`);
+        }
+      } else {
+        // No returnTo parameter - go to the updated codelab
+        router.push(`/codelabs/${slug}`);
+      }
     } catch (err) {
       console.error("Error updating codelab:", err);
       alert(err instanceof Error ? err.message : "Failed to update codelab");
@@ -178,7 +199,30 @@ const EditCodelab: React.FC = () => {
           </Text>
           <div className="border-t border-gray-200 pt-6">
             <button
-              onClick={() => router.push("/codelabs")}
+              onClick={() => {
+                // Handle returning when canceling with returnTo parameter
+                if (returnTo && typeof returnTo === "string") {
+                  const decodedReturnTo = decodeURIComponent(returnTo);
+                  
+                  // Handle different return paths
+                  if (decodedReturnTo === "/codelabs/[id]" && id_for_return) {
+                    router.push({ 
+                      pathname: "/codelabs/[id]", 
+                      params: { id: id_for_return }
+                    });
+                  } else if (decodedReturnTo === "/codelabs/mine") {
+                    router.push("/codelabs/mine");
+                  } else if (decodedReturnTo === "/codelabs") {
+                    router.push("/codelabs");
+                  } else {
+                    // Default fallback
+                    router.push("/codelabs");
+                  }
+                } else {
+                  // No returnTo parameter - go to codelabs listing
+                  router.push("/codelabs");
+                }
+              }}
               className="text-blue-600 font-medium hover:text-blue-800"
             >
               ← Back to codelabs
