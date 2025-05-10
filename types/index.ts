@@ -17,4 +17,6 @@ export interface CodelabData {
   sections: Section[];
   imageUrl?: string;
   creator_id?: string;
+  status?: 'draft' | 'published';
+  visibility?: 'private' | 'public';
 }

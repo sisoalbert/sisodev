@@ -30,8 +30,12 @@ firebase deploy --only storage
 
 ## TODO
 
-- [ ] Add confirm email copy and confirm email link
+- [x] Add confirm email copy and confirm email link
+- [ ] Add delete account and cascade delete codelabs,profile,picture
+- [ ] Posthog React Native
 - [ ] Add codelabs id slug (title)
+- [ ] Add playwright tests
+- [ ] Add paid codelabs and subscription - gumroad,
 - [x] Add private codelabs
 - [x] Add codelabs user
 - [x] Add codelabs image

@@ -1,0 +1,5 @@
+/* quill-no-scroll.css */
+.ql-container {
+  height: auto !important; /* let it grow with content */
+  overflow-y: visible !important;
+}

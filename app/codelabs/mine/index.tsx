@@ -129,7 +129,7 @@ export default function CodelabsIndex() {
         </Text>
         <TouchableOpacity
           className="bg-blue-500 py-3 px-6 rounded-lg flex-row items-center"
-          onPress={() => router.push("/codelabs/create")}
+          onPress={() => router.push("/codelabs/add")}
         >
           <Ionicons
             name="add"
@@ -207,7 +207,7 @@ export default function CodelabsIndex() {
           <Text className="text-2xl font-bold text-gray-800">My Codelabs</Text>
           <TouchableOpacity
             className="bg-blue-500 py-2 px-4 rounded-lg flex-row items-center"
-            onPress={() => router.push("/codelabs/create")}
+            onPress={() => router.push("/codelabs/add")}
           >
             <Ionicons
               name="add"

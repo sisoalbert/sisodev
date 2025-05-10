@@ -7,6 +7,7 @@ import { supabase } from "@/lib/supabase";
 import { useAuth } from "@/lib/auth-provider";
 import * as ImagePicker from "expo-image-picker";
 import { Image, Platform, Alert } from "react-native";
+import "./quill-no-scroll.css";
 
 interface CodeLabEditorProps {
   initialData: CodelabData;
@@ -166,7 +167,7 @@ const CodeLabEditor: React.FC<CodeLabEditorProps> = ({
 }) => {
   const { session } = useAuth();
   const [data, setData] = useState<CodelabData>(initialData);
-  const [isEditMode, setIsEditMode] = useState(isEditModeFromProps || !!initialData.id);
+  const [isEditMode, setIsEditMode] = useState(true || !!initialData.id);
   const [isSaving, setIsSaving] = useState(false);
   const [saveError, setSaveError] = useState<string | null>(null);
   const [uploading, setUploading] = useState(false);
@@ -176,21 +177,21 @@ const CodeLabEditor: React.FC<CodeLabEditorProps> = ({
   useEffect(() => {
     // Format date to yyyy-MM-dd if needed
     const formattedData = {
-      ...initialData
+      ...initialData,
     };
-    
+
     // Check if lastUpdated exists and is not already in yyyy-MM-dd format
     if (formattedData.lastUpdated) {
       // Handle timestamps with either 'T' separator (ISO) or space separator (Supabase)
-      if (formattedData.lastUpdated.includes('T')) {
+      if (formattedData.lastUpdated.includes("T")) {
         // If it's an ISO timestamp with T separator
-        formattedData.lastUpdated = formattedData.lastUpdated.split('T')[0];
-      } else if (formattedData.lastUpdated.includes(' ')) {
+        formattedData.lastUpdated = formattedData.lastUpdated.split("T")[0];
+      } else if (formattedData.lastUpdated.includes(" ")) {
         // If it's a timestamp with space separator (like from Supabase: 2025-05-04 02:28:25.963+00)
-        formattedData.lastUpdated = formattedData.lastUpdated.split(' ')[0];
+        formattedData.lastUpdated = formattedData.lastUpdated.split(" ")[0];
       }
     }
-    
+
     setData(formattedData);
     setEditorCodelabData(formattedData);
   }, [initialData]);
@@ -204,9 +205,9 @@ const CodeLabEditor: React.FC<CodeLabEditorProps> = ({
       });
     } else if (name === "lastUpdated") {
       // Ensure the date is in yyyy-MM-dd format
-      setData({ 
-        ...data, 
-        [name]: value // date input already enforces yyyy-MM-dd format
+      setData({
+        ...data,
+        [name]: value, // date input already enforces yyyy-MM-dd format
       });
     } else {
       setData({ ...data, [name]: value });
@@ -359,139 +360,143 @@ const CodeLabEditor: React.FC<CodeLabEditorProps> = ({
     return true;
   };
 
-  const saveToSupabase = async () => {
+  // -------------------------------------------------------------------------
+  // saveToSupabase now accepts an "options" arg so we can distinguish
+  // between Save (draft/private) and Publish (published/public).
+  // -------------------------------------------------------------------------
+  const saveToSupabase = async (opts: { publish?: boolean } = {}) => {
     if (!validateForm()) return;
+
+    const publishMode = !!opts.publish; // true → Publish, false → Save
+    const targetStatus = publishMode ? "published" : "draft";
+    const targetVisibility = publishMode ? "public" : "private";
 
     setIsSaving(true);
     setSaveError(null);
 
     try {
-      // Format date to yyyy-MM-dd as required by the database
       const date = new Date();
-      const formattedDate = date.getFullYear() + '-' + 
-                          String(date.getMonth() + 1).padStart(2, '0') + '-' + 
-                          String(date.getDate()).padStart(2, '0');
+      const formattedDate =
+        date.getFullYear() +
+        "-" +
+        String(date.getMonth() + 1).padStart(2, "0") +
+        "-" +
+        String(date.getDate()).padStart(2, "0");
 
-      // If we're in edit mode (from edit.web.tsx), skip database operations
-      // and let the parent component handle the update to avoid duplicate operations
+      // ---------- EDIT MODE -------------------------------------------------
       if (isEditMode && isEditModeFromProps) {
-        console.log('Edit mode detected - delegating save to parent component');
-        // Update the lastUpdated field before passing to parent
         const updatedData = {
           ...data,
-          lastUpdated: formattedDate
+          lastUpdated: formattedDate,
+          status: targetStatus as "draft" | "published",
+          visibility: targetVisibility as "private" | "public",
         };
-        // Call the onSave callback provided by the parent component
+        // Let parent handle DB update to avoid double‑writes
         onSave(updatedData);
         setIsSaving(false);
         return;
       }
 
-      // For creation mode, proceed with normal database operation
+      // ---------- CREATE MODE ----------------------------------------------
       const dataToSave: any = {
         title: data.title,
-        content: JSON.stringify({
-          sections: data.sections,
-        }),
-        last_updated: formattedDate, // Format date as yyyy-MM-dd
+        content: JSON.stringify({ sections: data.sections }),
+        last_updated: formattedDate,
         authors: data.authors,
-        image_url: imageUrl, // Add the image URL to the data saved to Supabase
-        creator_id: session?.user?.id, // Add the creator's UUID,
-        status: "draft", // REQUIRED: Default status is draft - must be included for both new and updates
-        visibility: "private", // REQUIRED: Default visibility is private - must be included for both new and updates
+        image_url: imageUrl,
+        creator_id: session?.user?.id,
+        status: targetStatus, // ← NEW
+        visibility: targetVisibility, // ← NEW
       };
-      
-      console.log('Creating new codelab');
-      const result = await supabase
+
+      const { data: savedData, error } = await supabase
         .from("codelabs")
         .insert(dataToSave)
         .select();
 
-      const { data: savedData, error } = result;
+      if (error) throw error;
 
-      if (error) {
-        console.error("Error saving to Supabase:", error);
-        throw error;
-      }
-
-      console.log("Codelab saved successfully:", savedData);
-
-      // Fallback to local storage
-      try {
-        localStorage.setItem("codelab_draft", JSON.stringify(dataToSave));
-      } catch (localErr) {
-        console.error("Could not save to local storage:", localErr);
-      }
-
-      // Only for create mode: update the UI with the new data including the ID
+      // Update local copy with ID + new status/visibility
       if (savedData && savedData.length > 0 && savedData[0].id) {
-        // Update the local data with the ID from the server
-        const newDataWithId = {
+        const newDataWithId: CodelabData = {
           ...data,
-          id: savedData[0].id
+          id: savedData[0].id,
+          status: targetStatus as "draft" | "published",
+          visibility: targetVisibility as "private" | "public",
         };
         setData(newDataWithId);
         onSave(newDataWithId);
       } else {
-        onSave(data);
+        onSave({
+          ...data,
+          status: targetStatus as "draft" | "published",
+          visibility: targetVisibility as "private" | "public",
+        });
       }
-
-      console.log("Codelab saved successfully!");
     } catch (err) {
       console.error("Error saving codelab:", err);
-      setSaveError(
-        err instanceof Error ? err.message : "Failed to save codelab"
-      );
-      console.error("Failed to save codelab. Please try again.");
-
-      // Attempt fallback to local storage
+      setSaveError(err instanceof Error ? err.message : "Failed to save");
+      // Fallback to local storage
       try {
-        localStorage.setItem("codelab_draft", JSON.stringify(data));
-        console.log("Saved to local storage as fallback due to error");
-      } catch (localErr) {
-        console.error("Failed fallback save to local storage:", localErr);
-      }
+        localStorage.setItem(
+          "codelab_draft",
+          JSON.stringify({
+            ...data,
+            status: targetStatus,
+            visibility: targetVisibility,
+          })
+        );
+      } catch {}
     } finally {
       setIsSaving(false);
     }
   };
 
-  const handleSave = () => {
-    saveToSupabase();
-  };
+  const handleSave = () => saveToSupabase({ publish: false });
+  const handlePublish = () => saveToSupabase({ publish: true });
 
   return (
-    <div className="max-w-4xl mx-auto px-4">
+    <div className="max-w-4xl mx-auto px-4 mb-[calc(100vh/2)]">
       <div className="bg-white rounded-lg shadow-md p-6 mb-4">
         <h1 className="text-3xl font-bold text-gray-900 mb-4">
           Create New Codelab
         </h1>
         <div className="space-y-4">
+          {/* TITLE */}
           <div>
             <label className="block text-sm font-medium text-gray-700 mb-1">
               Title
             </label>
-            <input
-              type="text"
-              name="title"
-              value={data.title}
-              onChange={handleMetadataChange}
-              className="w-full px-3 py-2 border rounded-md"
-            />
+            {isEditMode ? (
+              <input
+                type="text"
+                name="title"
+                value={data.title}
+                onChange={handleMetadataChange}
+                className="w-full px-3 py-2 border rounded-md"
+              />
+            ) : (
+              <h1 className="text-2xl font-bold">{data.title}</h1>
+            )}
           </div>
+          {/* AUTHORS */}
           <div>
             <label className="block text-sm font-medium text-gray-700 mb-1">
               Authors (comma-separated)
             </label>
-            <input
-              type="text"
-              name="authors"
-              value={data.authors.join(", ")}
-              onChange={handleMetadataChange}
-              className="w-full px-3 py-2 border rounded-md"
-            />
+            {isEditMode ? (
+              <input
+                type="text"
+                name="authors"
+                value={data.authors.join(", ")}
+                onChange={handleMetadataChange}
+                className="w-full px-3 py-2 border rounded-md"
+              />
+            ) : (
+              <p className="text-sm text-gray-600">{data.authors.join(", ")}</p>
+            )}
           </div>
-
+          {/* COVER IMAGE */}
           <div>
             <label className="block text-sm font-medium text-gray-700 mb-1">
               Cover Image
@@ -510,32 +515,47 @@ const CodeLabEditor: React.FC<CodeLabEditorProps> = ({
                   <AntDesign name="picture" size={24} color="#666" />
                 </div>
               )}
-
-              <button
-                type="button"
-                onClick={uploadImage}
-                disabled={uploading}
-                className="px-4 py-2 bg-indigo-600 text-white rounded-md hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 disabled:opacity-50"
-              >
-                {uploading ? "Uploading..." : "Upload Image"}
-              </button>
+              {isEditMode && (
+                <button
+                  type="button"
+                  onClick={uploadImage}
+                  disabled={uploading}
+                  className="px-4 py-2 bg-indigo-600 text-white rounded-md hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 disabled:opacity-50"
+                >
+                  {uploading ? "Uploading..." : "Upload Image"}
+                </button>
+              )}
             </div>
             <p className="mt-1 text-sm text-gray-500">
               Upload a cover image for your codelab (recommended 400x300 pixels)
             </p>
           </div>
+          {/* DATE */}
           <div>
             <label className="block text-sm font-medium text-gray-700 mb-1">
               Last Updated
             </label>
-            <input
-              type="date"
-              name="lastUpdated"
-              value={data.lastUpdated ? (data.lastUpdated.includes('T') ? data.lastUpdated.split('T')[0] : 
-                     data.lastUpdated.includes(' ') ? data.lastUpdated.split(' ')[0] : data.lastUpdated) : ''}
-              onChange={handleMetadataChange}
-              className="w-full px-3 py-2 border rounded-md"
-            />
+            {isEditMode ? (
+              <input
+                type="date"
+                name="lastUpdated"
+                value={
+                  data.lastUpdated
+                    ? data.lastUpdated.includes("T")
+                      ? data.lastUpdated.split("T")[0]
+                      : data.lastUpdated.includes(" ")
+                      ? data.lastUpdated.split(" ")[0]
+                      : data.lastUpdated
+                    : ""
+                }
+                onChange={handleMetadataChange}
+                className="w-full px-3 py-2 border rounded-md"
+              />
+            ) : (
+              <p className="text-xs text-gray-500">
+                Last updated {data.lastUpdated}
+              </p>
+            )}
             <p className="mt-1 text-xs text-gray-500">
               Format: yyyy-MM-dd (required by database)
             </p>
@@ -548,8 +568,8 @@ const CodeLabEditor: React.FC<CodeLabEditorProps> = ({
             onClick={() => setIsEditMode(!isEditMode)}
             className="flex items-center gap-2 px-4 py-2 bg-gray-100 text-gray-700 rounded-lg hover:bg-gray-200 transition-colors"
           >
-            <AntDesign name={isEditMode ? "edit" : "eye"} size={20} />
-            {isEditMode ? "Edit Mode" : "Preview Mode"}
+            <AntDesign name={isEditMode ? "eye" : "edit"} size={20} />
+            {isEditMode ? "Preview Mode" : "Edit Mode"}
           </button>
         </div>
       </div>
@@ -559,47 +579,62 @@ const CodeLabEditor: React.FC<CodeLabEditorProps> = ({
           <div key={section.id} className="bg-white rounded-lg shadow-md p-6">
             <div className="flex justify-between items-center mb-4">
               <h3 className="text-lg font-semibold">Section {section.order}</h3>
-              <button
-                onClick={() => removeSection(index)}
-                className="text-red-600 hover:text-red-800"
-              >
-                <AntDesign name="delete" size={20} />
-              </button>
+              {isEditMode && (
+                <button
+                  onClick={() => removeSection(index)}
+                  className="text-red-600 hover:text-red-800"
+                >
+                  <AntDesign name="delete" size={20} />
+                </button>
+              )}
             </div>
             <div className="space-y-4">
               <div>
                 <label className="block text-sm font-medium text-gray-700 mb-1">
                   Title
                 </label>
-                <input
-                  type="text"
-                  value={section.title}
-                  onChange={(e) =>
-                    handleSectionChange(index, "title", e.target.value)
-                  }
-                  className="w-full px-3 py-2 border rounded-md"
-                />
+                {isEditMode ? (
+                  <input
+                    type="text"
+                    value={section.title}
+                    onChange={(e) =>
+                      handleSectionChange(index, "title", e.target.value)
+                    }
+                    className="w-full px-3 py-2 border rounded-md"
+                  />
+                ) : (
+                  <h2 className="text-xl font-semibold mb-2">
+                    {section.title}
+                  </h2>
+                )}
               </div>
               <div>
                 <label className="block text-sm font-medium text-gray-700 mb-1">
                   Content
                 </label>
-                <ReactQuill
-                  theme="snow"
-                  value={section.content}
-                  onChange={(value) =>
-                    handleSectionChange(index, "content", value)
-                  }
-                  modules={modules}
-                  formats={formats}
-                  className="h-64 mb-4"
-                  ref={(el) => {
-                    // Store reference to quill editor globally for image handler
-                    if (el) {
-                      (window as any).quillRef = el;
+                {isEditMode ? (
+                  <ReactQuill
+                    theme="snow"
+                    value={section.content}
+                    onChange={(value) =>
+                      handleSectionChange(index, "content", value)
                     }
-                  }}
-                />
+                    modules={modules}
+                    formats={formats}
+                    className="mb-4"
+                    readOnly={false}
+                    ref={(el) => {
+                      if (el) {
+                        (window as any).quillRef = el;
+                      }
+                    }}
+                  />
+                ) : (
+                  <div
+                    className="prose max-w-none mb-4"
+                    dangerouslySetInnerHTML={{ __html: section.content }}
+                  />
+                )}
               </div>
             </div>
           </div>
@@ -614,22 +649,40 @@ const CodeLabEditor: React.FC<CodeLabEditorProps> = ({
           <AntDesign name="plus" size={20} />
           Add Section
         </button>
-        <button
-          onClick={handleSave}
-          disabled={isSaving}
-          className={`flex items-center gap-2 px-4 py-2 bg-blue-600 text-white rounded-lg transition-colors ${
-            isSaving ? "opacity-50 cursor-not-allowed" : "hover:bg-blue-700"
-          }`}
-        >
-          {isSaving ? (
-            <>
-              <AntDesign name="loading1" size={20} />
-              Saving...
-            </>
-          ) : (
-            <>{isEditMode ? 'Update' : 'Save'}</>
-          )}
-        </button>
+        <div className="flex gap-2">
+          <button
+            onClick={handleSave}
+            disabled={isSaving}
+            className={`flex items-center gap-2 px-4 py-2 bg-blue-600 text-white rounded-lg transition-colors ${
+              isSaving ? "opacity-50 cursor-not-allowed" : "hover:bg-blue-700"
+            }`}
+          >
+            {isSaving ? (
+              <>
+                <AntDesign name="loading1" size={20} />
+                Saving...
+              </>
+            ) : (
+              <>Save</>
+            )}
+          </button>
+          <button
+            onClick={handlePublish}
+            disabled={isSaving}
+            className={`flex items-center gap-2 px-4 py-2 bg-green-600 text-white rounded-lg transition-colors ${
+              isSaving ? "opacity-50 cursor-not-allowed" : "hover:bg-green-700"
+            }`}
+          >
+            {isSaving ? (
+              <>
+                <AntDesign name="loading1" size={20} />
+                Publishing...
+              </>
+            ) : (
+              <>Publish</>
+            )}
+          </button>
+        </div>
       </div>
     </div>
   );
