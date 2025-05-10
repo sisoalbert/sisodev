@@ -22,6 +22,7 @@ interface Codelab {
   authors: string[];
   // For UI display
   description?: string;
+  slug: string;
   image_url?: string;
 }
 
@@ -181,7 +182,6 @@ export default function CodelabsIndex() {
           : "w-1/4"
       }`}
       style={{ marginBottom: 16 }}
-      onPress={() => router.push(`/codelabs/${item.id}`)}
     >
       <LearningResourceCard
         title={item.title}
@@ -192,7 +192,7 @@ export default function CodelabsIndex() {
             : "https://images.pexels.com/photos/1181671/pexels-photo-1181671.jpeg"
         }
         imageAlt="Codelab Preview"
-        onPress={() => router.push(`/codelabs/${item.id}`)}
+        onPress={() => router.push(`/codelabs/${item.slug}`)}
       />
     </TouchableOpacity>
   );

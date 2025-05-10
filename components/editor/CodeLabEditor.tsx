@@ -647,9 +647,11 @@ const CodeLabEditor: React.FC<CodeLabEditorProps> = ({
           </div>
         ))}
       </div>
-      <div>
-        <p> Error: {saveError}</p>
-      </div>
+      {saveError && (
+        <div>
+          <p className="text-red-500"> Error: {saveError}</p>
+        </div>
+      )}
       <div className="flex justify-between mt-8">
         <button
           onClick={addSection}

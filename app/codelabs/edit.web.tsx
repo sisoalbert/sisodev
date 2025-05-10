@@ -8,7 +8,7 @@ import { useAuth } from "@/lib/auth-provider";
 
 const EditCodelab: React.FC = () => {
   const { session } = useAuth();
-  const { id } = useLocalSearchParams<{ id: string }>();
+  const { id: slug } = useLocalSearchParams<{ id: string }>();
 
   const [codelab, setCodelab] = useState<CodelabData | null>(null);
   const [loading, setLoading] = useState(true);
@@ -16,7 +16,7 @@ const EditCodelab: React.FC = () => {
 
   useEffect(() => {
     const fetchCodelab = async () => {
-      if (!id) {
+      if (!slug) {
         setError("No codelab ID provided");
         setLoading(false);
         return;
@@ -26,11 +26,11 @@ const EditCodelab: React.FC = () => {
         setLoading(true);
         setError(null);
 
-        // Fetch the codelab with the matching ID
+        // Fetch the codelab with the matching slug
         const { data, error: fetchError } = await supabase
           .from("codelabs")
           .select("*")
-          .eq("id", id)
+          .eq("slug", slug)
           .single();
 
         if (fetchError) {
@@ -92,19 +92,20 @@ const EditCodelab: React.FC = () => {
     };
 
     fetchCodelab();
-  }, [id, session]);
+  }, [slug, session]);
 
   const handleSave = async (updatedData: CodelabData) => {
     try {
-      if (!id) {
-        throw new Error("No codelab ID provided for update");
+      if (!slug || !codelab?.creator_id) {
+        throw new Error("No codelab slug or creator ID provided for update");
       }
 
-      // First verify the codelab exists with this ID
+      // First verify the codelab exists with this slug
       const { data: existingCodelab, error: checkError } = await supabase
         .from("codelabs")
-        .select("id")
-        .eq("id", id)
+        .select("slug")
+        .eq("slug", slug)
+        .eq("slug", slug)
         .single();
 
       if (checkError || !existingCodelab) {
@@ -128,20 +129,20 @@ const EditCodelab: React.FC = () => {
         content: JSON.stringify({
           sections: updatedData.sections,
         }),
-        last_updated: formattedDate, // Format date as yyyy-MM-dd
+        last_updated: formattedDate,
         authors: updatedData.authors,
         image_url: updatedData.imageUrl,
         status: updatedData.status || "draft",
         visibility: updatedData.visibility || "private",
       };
 
-      console.log("Updating codelab with ID:", id);
+      console.log("Updating codelab with ID:", slug);
 
       // Update the existing codelab
       const { error, count } = await supabase
         .from("codelabs")
         .update(dataToSave)
-        .eq("id", id)
+        .eq("slug", slug)
         .select();
 
       if (error) {
@@ -151,7 +152,7 @@ const EditCodelab: React.FC = () => {
       console.log("Update successful");
 
       // Navigate back to the codelab detail page
-      router.push(`/codelabs/${id}`);
+      router.push(`/codelabs/${slug}`);
     } catch (err) {
       console.error("Error updating codelab:", err);
       alert(err instanceof Error ? err.message : "Failed to update codelab");

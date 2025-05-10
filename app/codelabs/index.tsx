@@ -15,6 +15,7 @@ import { LearningResourceCardSkeleton } from "@/components/LearningResourceCardS
 
 interface Codelab {
   id: string;
+  slug: string;
   title: string;
   content: string;
   last_updated: string;
@@ -41,7 +42,8 @@ export default function CodelabsIndex() {
           .select("*")
           .eq("status", "published")
           .eq("visibility", "public")
-          .order("last_updated", { ascending: false });
+          .order("last_updated", { ascending: false })
+          .limit(10);
 
         if (error) {
           throw error;
@@ -75,7 +77,7 @@ export default function CodelabsIndex() {
                 }
               }
             } catch (e) {
-              console.error("Error parsing codelab content:", e);
+              console.log("Error parsing codelab content:", e);
             }
 
             return {
@@ -144,7 +146,6 @@ export default function CodelabsIndex() {
           : "w-1/4"
       }`}
       style={{ marginBottom: 16 }}
-      onPress={() => router.push(`/codelabs/${item.id}`)}
     >
       <LearningResourceCard
         title={item.title}
@@ -155,7 +156,7 @@ export default function CodelabsIndex() {
             : "https://images.pexels.com/photos/1181671/pexels-photo-1181671.jpeg"
         }
         imageAlt="Codelab Preview"
-        onPress={() => router.push(`/codelabs/${item.id}`)}
+        onPress={() => router.push(`/codelabs/${item.slug}`)}
       />
     </TouchableOpacity>
   );

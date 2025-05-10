@@ -41,7 +41,7 @@ export default function CodelabDetails() {
         const { data, error: fetchError } = await supabase
           .from("codelabs")
           .select("*")
-          .eq("id", id)
+          .eq("slug", id)
           .single();
 
         if (fetchError) {
@@ -68,7 +68,7 @@ export default function CodelabDetails() {
             formattedCodelab.sections = content.sections;
           }
         } catch (parseError) {
-          console.error("Error parsing codelab content:", parseError);
+          console.log("Error parsing codelab content:", parseError);
           // If we can't parse the JSON, create a generic section
           formattedCodelab.sections = [
             {
@@ -85,7 +85,7 @@ export default function CodelabDetails() {
 
         setCodelab(formattedCodelab);
       } catch (err) {
-        console.error("Error fetching codelab:", err);
+        console.log("Error fetching codelab:", err);
         setError(
           "Could not load the codelab. It may not exist or you may not have permission to view it."
         );

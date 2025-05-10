@@ -91,7 +91,7 @@ const CodelabContent: React.FC<CodelabContentProps> = ({
         const { error } = await supabase
           .from("codelabs")
           .delete()
-          .eq("id", codelabId);
+          .eq("slug", codelabId);
 
         if (error) {
           console.error("Delete failed:", error.message);
