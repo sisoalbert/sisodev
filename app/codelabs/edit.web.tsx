@@ -9,7 +9,7 @@ import { useAuth } from "@/lib/auth-provider";
 const EditCodelab: React.FC = () => {
   const { session } = useAuth();
   const { id } = useLocalSearchParams<{ id: string }>();
-  
+
   const [codelab, setCodelab] = useState<CodelabData | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
@@ -82,8 +82,8 @@ const EditCodelab: React.FC = () => {
       } catch (err) {
         console.error("Error fetching codelab:", err);
         setError(
-          err instanceof Error 
-            ? err.message 
+          err instanceof Error
+            ? err.message
             : "Could not load the codelab. It may not exist or you may not have permission to edit it."
         );
       } finally {
@@ -108,15 +108,20 @@ const EditCodelab: React.FC = () => {
         .single();
 
       if (checkError || !existingCodelab) {
-        throw new Error("Codelab not found or you don't have permission to update it");
+        throw new Error(
+          "Codelab not found or you don't have permission to update it"
+        );
       }
 
       // Format data to match the Supabase table schema
       // Format date to yyyy-MM-dd as required by the database
       const date = new Date();
-      const formattedDate = date.getFullYear() + '-' + 
-                          String(date.getMonth() + 1).padStart(2, '0') + '-' + 
-                          String(date.getDate()).padStart(2, '0');
+      const formattedDate =
+        date.getFullYear() +
+        "-" +
+        String(date.getMonth() + 1).padStart(2, "0") +
+        "-" +
+        String(date.getDate()).padStart(2, "0");
 
       const dataToSave = {
         title: updatedData.title,
@@ -126,8 +131,8 @@ const EditCodelab: React.FC = () => {
         last_updated: formattedDate, // Format date as yyyy-MM-dd
         authors: updatedData.authors,
         image_url: updatedData.imageUrl,
-        status: 'draft', // Required field - cannot be null
-        visibility: 'private', // Required field - cannot be null
+        status: updatedData.status || "draft",
+        visibility: updatedData.visibility || "private",
       };
 
       console.log("Updating codelab with ID:", id);
@@ -187,7 +192,11 @@ const EditCodelab: React.FC = () => {
     <div className="min-h-screen bg-gray-50 overflow-y-auto">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
         <h1 className="text-3xl font-bold text-gray-900 mb-6">Edit Codelab</h1>
-        <CodeLabEditor initialData={codelab} onSave={handleSave} isEditMode={true} />
+        <CodeLabEditor
+          initialData={codelab}
+          onSave={handleSave}
+          isEditMode={true}
+        />
       </div>
     </div>
   );

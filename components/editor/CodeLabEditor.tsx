@@ -343,6 +343,7 @@ const CodeLabEditor: React.FC<CodeLabEditorProps> = ({
 
   const validateForm = (): boolean => {
     if (!data.title.trim()) {
+      setSaveError("Title is required");
       console.error("Title is required");
       return false;
     }
@@ -373,6 +374,12 @@ const CodeLabEditor: React.FC<CodeLabEditorProps> = ({
 
     setIsSaving(true);
     setSaveError(null);
+
+    console.log("Saving codelab to Supabase with status:", targetStatus);
+    console.log(
+      "Saving codelab to Supabase with visibility:",
+      targetVisibility
+    );
 
     try {
       const date = new Date();
@@ -640,7 +647,9 @@ const CodeLabEditor: React.FC<CodeLabEditorProps> = ({
           </div>
         ))}
       </div>
-
+      <div>
+        <p> Error: {saveError}</p>
+      </div>
       <div className="flex justify-between mt-8">
         <button
           onClick={addSection}

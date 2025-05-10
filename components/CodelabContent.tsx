@@ -1,6 +1,7 @@
-import React, { useState } from "react";
+//components/CodelabContent.tsx
+import React, { useEffect, useState } from "react";
 import { CodelabData } from "../types";
-import { useRouter } from "expo-router";
+import { useLocalSearchParams, useRouter } from "expo-router";
 import { Alert } from "react-native";
 import SectionNavigation from "./SectionNavigation";
 import CodelabHeader from "./CodelabHeader";
@@ -21,11 +22,20 @@ const CodelabContent: React.FC<CodelabContentProps> = ({
   codelabId,
   sessionData,
 }) => {
+  const { s, "#": hash } = useLocalSearchParams<{ s?: string; "#"?: string }>();
   const router = useRouter();
 
   const [currentSectionId, setCurrentSectionId] = useState<string>(
-    data.sections[0]?.id || ""
+    s || hash || data.sections[0]?.id || ""
   );
+
+  useEffect(() => {
+    setCurrentSectionId(s || hash || data.sections[0]?.id || "");
+  }, [s, hash]);
+
+  console.log("section", s);
+  console.log("hash", hash);
+  console.log("currentSectionId", currentSectionId);
   // Get the current user session
   const userId = sessionData?.session?.user?.id;
 
@@ -46,7 +56,7 @@ const CodelabContent: React.FC<CodelabContentProps> = ({
     if (codelabId && userId === creator_id) {
       try {
         // Generate the folder name using the same logic as in the image upload function
-        const folderName = data.title 
+        const folderName = data.title
           ? data.title
               .toLowerCase()
               .replace(/[^a-z0-9]/g, "-")
@@ -64,7 +74,9 @@ const CodelabContent: React.FC<CodelabContentProps> = ({
           // Continue with deletion even if listing files fails
         } else if (storageFiles && storageFiles.length > 0) {
           // Create an array of file paths to delete
-          const filesToDelete = storageFiles.map(file => `${folderName}/${file.name}`);
+          const filesToDelete = storageFiles.map(
+            (file) => `${folderName}/${file.name}`
+          );
 
           // Delete all files in the folder
           const { error: deleteFilesError } = await supabase.storage
@@ -90,12 +102,18 @@ const CodelabContent: React.FC<CodelabContentProps> = ({
           Alert.alert("Delete Failed", error.message);
         } else {
           console.log("Codelab and associated files deleted successfully");
-          Alert.alert("Success", "Codelab and all associated files deleted successfully");
+          Alert.alert(
+            "Success",
+            "Codelab and all associated files deleted successfully"
+          );
           router.push("/codelabs");
         }
       } catch (error) {
         console.error("Delete operation error:", error);
-        Alert.alert("Error", "An unexpected error occurred while deleting the codelab");
+        Alert.alert(
+          "Error",
+          "An unexpected error occurred while deleting the codelab"
+        );
       }
     } else {
       console.warn("Unauthorized: You can only delete your own codelab.");
@@ -209,7 +227,12 @@ const CodelabContent: React.FC<CodelabContentProps> = ({
                   <div className="flex items-center space-x-3 ">
                     <div
                       className="bg-blue-50 hover:bg-blue-100 text-blue-600 px-3 py-1.5 rounded-md cursor-pointer transition-colors flex items-center"
-                      onClick={() => router.navigate({pathname: '/codelabs/edit', params: {id: codelabId}})}
+                      onClick={() =>
+                        router.navigate({
+                          pathname: "/codelabs/edit",
+                          params: { id: codelabId },
+                        })
+                      }
                     >
                       <svg
                         xmlns="http://www.w3.org/2000/svg"

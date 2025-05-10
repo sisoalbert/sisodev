@@ -34,6 +34,7 @@ firebase deploy --only storage
 - [ ] Add delete account and cascade delete codelabs,profile,picture
 - [ ] Posthog React Native
 - [ ] Add codelabs id slug (title)
+- [ ] Add press a section update url, and favicon section
 - [ ] Add playwright tests
 - [ ] Add paid codelabs and subscription - gumroad,
 - [x] Add private codelabs
