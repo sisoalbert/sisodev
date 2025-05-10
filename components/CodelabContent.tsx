@@ -32,10 +32,6 @@ const CodelabContent: React.FC<CodelabContentProps> = ({
   useEffect(() => {
     setCurrentSectionId(s || hash || data.sections[0]?.id || "");
   }, [s, hash]);
-
-  console.log("section", s);
-  console.log("hash", hash);
-  console.log("currentSectionId", currentSectionId);
   // Get the current user session
   const userId = sessionData?.session?.user?.id;
 
