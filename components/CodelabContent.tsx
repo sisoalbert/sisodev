@@ -22,12 +22,38 @@ const CodelabContent: React.FC<CodelabContentProps> = ({
   codelabId,
   sessionData,
 }) => {
-  const { s, "#": hash } = useLocalSearchParams<{ s?: string; "#"?: string }>();
+  const {
+    s,
+    "#": hash,
+    returnTo,
+  } = useLocalSearchParams<{ s?: string; "#"?: string; returnTo?: string }>();
   const router = useRouter();
 
   const [currentSectionId, setCurrentSectionId] = useState<string>(
     s || hash || data.sections[0]?.id || ""
   );
+
+  const handleBackToList = () => {
+    // 1️⃣ normalise to a single string
+    const raw = Array.isArray(returnTo) ? returnTo[0] : returnTo;
+    console.log("Raw returnTo:", raw);
+    // 2️⃣ decide where to go
+    const target = raw ? decodeURIComponent(raw) : "/codelabs";
+
+    console.log("Navigating to:", target);
+    // 3️⃣ navigate
+    if (target === "/codelabs") {
+      router.replace("/codelabs");
+    } else if (target === "/codelabs/mine") {
+      router.replace("/codelabs/mine");
+    } else if (target.startsWith("/codelabs/") && target !== "/codelabs") {
+      const pathId = target.split("/").pop() || "";
+      router.replace({ pathname: "/codelabs/[id]", params: { id: pathId } });
+    } else {
+      // Default fallback
+      router.replace("/");
+    }
+  };
 
   useEffect(() => {
     setCurrentSectionId(s || hash || data.sections[0]?.id || "");
@@ -200,7 +226,7 @@ const CodelabContent: React.FC<CodelabContentProps> = ({
                 <div className="mb-4">
                   <p
                     className="text-blue-600 hover:text-blue-800 font-medium flex items-center cursor-pointer transition-colors"
-                    onClick={() => router.push("/codelabs")}
+                    onClick={handleBackToList}
                   >
                     <svg
                       xmlns="http://www.w3.org/2000/svg"

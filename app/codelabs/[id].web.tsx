@@ -8,7 +8,11 @@ import { CodelabData } from "@/types";
 
 export default function CodelabDetails() {
   const router = useRouter();
-  const { id, ref } = useLocalSearchParams<{ id: string; ref?: string }>();
+  const { id, ref, returnTo } = useLocalSearchParams<{
+    id: string;
+    ref?: string;
+    returnTo?: string;
+  }>();
 
   const [codelab, setCodelab] = useState<CodelabData | null>(null);
   const [loading, setLoading] = useState(true);
@@ -98,7 +102,25 @@ export default function CodelabDetails() {
   }, [id]);
 
   const handleBackToList = () => {
-    router.push("/codelabs");
+    // 1️⃣ normalise to a single string
+    const raw = Array.isArray(returnTo) ? returnTo[0] : returnTo;
+    console.log("Raw returnTo:", raw);
+    // 2️⃣ decide where to go
+    const target = raw ? decodeURIComponent(raw) : "/codelabs";
+
+    console.log("Navigating to:", target);
+    // 3️⃣ navigate
+    if (target === "/codelabs") {
+      router.replace("/codelabs");
+    } else if (target === "/codelabs/mine") {
+      router.replace("/codelabs/mine");
+    } else if (target.startsWith("/codelabs/") && target !== "/codelabs") {
+      const pathId = target.split("/").pop() || "";
+      router.replace({ pathname: "/codelabs/[id]", params: { id: pathId } });
+    } else {
+      // Default fallback
+      router.replace("/");
+    }
   };
 
   if (loading) {

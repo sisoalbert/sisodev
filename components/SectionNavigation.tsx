@@ -1,4 +1,5 @@
 import React from "react";
+import { useRouter } from "expo-router";
 import { Section } from "../types";
 
 interface SectionNavigationProps {
@@ -12,6 +13,17 @@ const SectionNavigation: React.FC<SectionNavigationProps> = ({
   currentSectionId,
   onSelectSection,
 }) => {
+  const router = useRouter();
+
+  const handleSectionClick = (sectionId: string) => {
+    // Call the original onSelectSection callback
+    onSelectSection(sectionId);
+
+    // Update the URL with the section ID
+    // We use router.setParams to preserve other URL parameters
+    router.setParams({ s: sectionId });
+  };
+
   return (
     <nav className="w-full md:w-64 p-4 md:p-6  md:mr-8 mb-6 md:mb-0 flex-shrink-0">
       <ul className="space-y-1">
@@ -20,14 +32,14 @@ const SectionNavigation: React.FC<SectionNavigationProps> = ({
           .map((section) => (
             <li key={section.id}>
               <button
-                onClick={() => onSelectSection(section.id)}
+                onClick={() => handleSectionClick(section.id)}
                 className={`w-full text-left py-2 px-3 rounded-md transition-all duration-200 ${
                   currentSectionId === section.id
                     ? "bg-blue-100 text-blue-700 font-medium"
                     : "hover:bg-gray-100 text-gray-700 border border-gray-200"
                 }`}
               >
-                <span className="mr-2 font-medium">{section.order}.</span>
+                {/* <span className="mr-2 font-medium">{section.order}.</span> */}
                 {section.title}
               </button>
             </li>

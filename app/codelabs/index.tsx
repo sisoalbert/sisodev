@@ -156,7 +156,12 @@ export default function CodelabsIndex() {
             : "https://images.pexels.com/photos/1181671/pexels-photo-1181671.jpeg"
         }
         imageAlt="Codelab Preview"
-        onPress={() => router.push(`/codelabs/${item.slug}`)}
+        onPress={() =>
+          router.push({
+            pathname: "/codelabs/[id]",
+            params: { id: item.slug, returnTo: "/codelabs" },
+          })
+        }
       />
     </TouchableOpacity>
   );
