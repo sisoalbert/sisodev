@@ -5,10 +5,19 @@ import { CodelabData } from "@/types";
 import CodeLabEditor from "@/components/editor/CodeLabEditor";
 import { supabase } from "@/lib/supabase";
 import { useAuth } from "@/lib/auth-provider";
+import Head from "expo-router/head";
 
 const EditCodelab: React.FC = () => {
   const { session } = useAuth();
-  const { id: slug, returnTo, id_for_return } = useLocalSearchParams<{ id: string; returnTo?: string; id_for_return?: string }>();
+  const {
+    id: slug,
+    returnTo,
+    id_for_return,
+  } = useLocalSearchParams<{
+    id: string;
+    returnTo?: string;
+    id_for_return?: string;
+  }>();
 
   const [codelab, setCodelab] = useState<CodelabData | null>(null);
   const [loading, setLoading] = useState(true);
@@ -155,12 +164,12 @@ const EditCodelab: React.FC = () => {
       // Navigate back using the returnTo parameter if available
       if (returnTo && typeof returnTo === "string") {
         const decodedReturnTo = decodeURIComponent(returnTo);
-        
+
         // Handle different return paths
         if (decodedReturnTo === "/codelabs/[id]" && id_for_return) {
-          router.push({ 
-            pathname: "/codelabs/[id]", 
-            params: { id: id_for_return }
+          router.push({
+            pathname: "/codelabs/[id]",
+            params: { id: id_for_return },
           });
         } else if (decodedReturnTo === "/codelabs/mine") {
           router.push("/codelabs/mine");
@@ -203,12 +212,12 @@ const EditCodelab: React.FC = () => {
                 // Handle returning when canceling with returnTo parameter
                 if (returnTo && typeof returnTo === "string") {
                   const decodedReturnTo = decodeURIComponent(returnTo);
-                  
+
                   // Handle different return paths
                   if (decodedReturnTo === "/codelabs/[id]" && id_for_return) {
-                    router.push({ 
-                      pathname: "/codelabs/[id]", 
-                      params: { id: id_for_return }
+                    router.push({
+                      pathname: "/codelabs/[id]",
+                      params: { id: id_for_return },
                     });
                   } else if (decodedReturnTo === "/codelabs/mine") {
                     router.push("/codelabs/mine");
@@ -235,6 +244,10 @@ const EditCodelab: React.FC = () => {
 
   return (
     <div className="min-h-screen bg-gray-50 overflow-y-auto">
+      <Head>
+        <title>Edit Codelab</title>
+        <meta name="description" content="Edit Codelab" />
+      </Head>
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
         <h1 className="text-3xl font-bold text-gray-900 mb-6">Edit Codelab</h1>
         <CodeLabEditor

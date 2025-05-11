@@ -2,14 +2,12 @@ import React, { useState, useEffect } from "react";
 import {
   StyleSheet,
   View,
-  Alert,
   ScrollView,
   TouchableOpacity,
   Text,
   useWindowDimensions,
   ActivityIndicator,
   Pressable,
-  SafeAreaView,
   StatusBar,
 } from "react-native";
 import { Ionicons } from "@expo/vector-icons";
@@ -21,8 +19,9 @@ import {
   AvatarImage,
 } from "@/components/ui/avatar";
 import { router } from "expo-router";
-import { FontAwesome } from "@expo/vector-icons";
 import { storage } from "../../lib/storage";
+import NotSignedIn from "@/components/containers/NotSignedIn";
+import Head from "expo-router/head";
 
 function Account() {
   const { width } = useWindowDimensions();
@@ -140,43 +139,15 @@ function Account() {
   const containerWidth = getContainerWidth();
 
   if (!session?.user) {
-    return (
-      <SafeAreaView
-        style={[
-          styles.container,
-          { width: containerWidth, alignSelf: "center" },
-        ]}
-      >
-        <View style={styles.notSignedInContainer}>
-          <FontAwesome name="user-circle" size={80} color="#CCCCCC" />
-          <Text style={styles.notSignedInText}>You are not signed in</Text>
-
-          <View style={styles.formContainer}>
-            <TouchableOpacity
-              style={[styles.button]}
-              disabled={false}
-              onPress={() => router.push("/auth/login")}
-            >
-              <Text style={styles.buttonText}>Sign In</Text>
-            </TouchableOpacity>
-            <TouchableOpacity
-              style={[styles.buttonOutline]}
-              disabled={false}
-              onPress={() => router.push("/auth/signup")}
-            >
-              <Text style={styles.buttonOutlineText}>Create Account</Text>
-            </TouchableOpacity>
-          </View>
-          <View style={styles.versionContainer}>
-            <Text style={styles.versionText}>{}</Text>
-          </View>
-        </View>
-      </SafeAreaView>
-    );
+    return <NotSignedIn />;
   }
 
   return (
     <ScrollView>
+      <Head>
+        <title>Account</title>
+        <meta name="description" content="Account" />
+      </Head>
       <View
         style={[
           styles.container,
@@ -214,6 +185,13 @@ function Account() {
               </Pressable>
             </View>
 
+            <View style={styles.userInfo}>
+              <Text style={styles.username}>
+                {username || session?.user?.email?.split("@")[0]}
+              </Text>
+              <Text style={styles.email}>{session?.user?.email}</Text>
+            </View>
+
             <View style={styles.formContainer}>
               <View style={[styles.formGroup, styles.mt20]}>
                 <Text style={styles.label}>My Content</Text>
@@ -241,11 +219,27 @@ function Account() {
           </>
         )}
       </View>
+      <StatusBar />
     </ScrollView>
   );
 }
 
 const styles = StyleSheet.create({
+  userInfo: {
+    alignItems: "center",
+    marginTop: 20,
+    marginBottom: 40,
+  },
+  username: {
+    fontSize: 24,
+    fontWeight: "600",
+    marginBottom: 8,
+    color: "#111827",
+  },
+  email: {
+    fontSize: 16,
+    color: "#6B7280",
+  },
   link: {
     flexDirection: "row",
     alignItems: "center",
@@ -291,6 +285,7 @@ const styles = StyleSheet.create({
     fontWeight: "500",
   },
   versionText: {
+    paddingVertical: 16,
     fontSize: 12,
     color: "#999",
   },

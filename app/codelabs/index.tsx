@@ -12,6 +12,7 @@ import { useRouter } from "expo-router";
 import { supabase } from "@/lib/supabase";
 import { LearningResourceCard } from "@/components/LearningResourceCard";
 import { LearningResourceCardSkeleton } from "@/components/LearningResourceCardSkeleton";
+import Head from "expo-router/head";
 
 interface Codelab {
   id: string;
@@ -171,6 +172,10 @@ export default function CodelabsIndex() {
 
   return (
     <View className="flex-1 bg-gray-50">
+      <Head>
+        <title>SisoDev Codelabs</title>
+        <meta name="description" content="Codelabs" />
+      </Head>
       <View className="flex-1 mx-auto w-full max-w-screen-xl px-4 sm:px-6 md:px-8 lg:px-16">
         <FlatList
           key={`flatlist-${numColumns}-columns`}

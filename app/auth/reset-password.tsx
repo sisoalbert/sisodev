@@ -6,14 +6,17 @@ import {
   TouchableOpacity,
   StyleSheet,
   Alert,
+  StatusBar,
 } from "react-native";
 import { Link, useRouter } from "expo-router";
 import { supabase } from "../../lib/supabase";
+import Head from "expo-router/head";
 
 export default function ResetPassword() {
   const [email, setEmail] = useState("");
   const [isLoading, setIsLoading] = useState(false);
   const [isSent, setIsSent] = useState(false);
+  const [error, setError] = useState("");
   const router = useRouter();
 
   const isDisabled = !email || isLoading;
@@ -24,7 +27,7 @@ export default function ResetPassword() {
     setIsLoading(true);
     try {
       const { error } = await supabase.auth.resetPasswordForEmail(email, {
-        redirectTo: 'exp://localhost:19000/auth/update-password',
+        redirectTo: "exp://localhost:19000/auth/update-password",
       });
 
       if (error) throw error;
@@ -38,11 +41,11 @@ export default function ResetPassword() {
 
       if (error.message.includes("Invalid email")) {
         errorMessage = "Please enter a valid email address.";
+        setError(errorMessage);
       } else if (error.message.includes("User not found")) {
         errorMessage = "No account found with this email address.";
+        setError(errorMessage);
       }
-
-      Alert.alert("Error", errorMessage);
     } finally {
       setIsLoading(false);
     }
@@ -50,6 +53,10 @@ export default function ResetPassword() {
 
   return (
     <View style={styles.container}>
+      <Head>
+        <title>Reset Password</title>
+        <meta name="description" content="Reset Password" />
+      </Head>
       <Text style={styles.title}>Reset Password</Text>
 
       <View style={styles.formContainer}>
@@ -80,6 +87,7 @@ export default function ResetPassword() {
               autoCapitalize="none"
               keyboardType="email-address"
             />
+            {error && <Text style={styles.error}>{error}</Text>}
 
             <TouchableOpacity
               style={[styles.button, isDisabled && styles.disabledButton]}
@@ -107,6 +115,7 @@ export default function ResetPassword() {
           </TouchableOpacity>
         </Link>
       </View>
+      <StatusBar />
     </View>
   );
 }
@@ -135,6 +144,10 @@ const styles = StyleSheet.create({
     color: "#666",
     marginBottom: 30,
     textAlign: "center",
+  },
+  error: {
+    color: "#ff0000",
+    marginBottom: 16,
   },
   input: {
     borderWidth: 1,

@@ -7,12 +7,14 @@ import {
   StyleSheet,
   Alert,
   Pressable,
+  StatusBar,
 } from "react-native";
 import { Link, useRouter, useLocalSearchParams } from "expo-router";
 import { SafeAreaView } from "react-native-safe-area-context";
 import * as WebBrowser from "expo-web-browser";
 import { supabase } from "../../lib/supabase";
 import { Ionicons } from "@expo/vector-icons";
+import Head from "expo-router/head";
 
 export default function Login() {
   const [email, setEmail] = useState("");
@@ -70,6 +72,10 @@ export default function Login() {
 
   return (
     <SafeAreaView style={styles.container}>
+      <Head>
+        <title>Login</title>
+        <meta name="description" content="Login" />
+      </Head>
       <Text style={styles.title}>Sign In</Text>
 
       <View style={styles.formContainer}>
@@ -175,6 +181,7 @@ export default function Login() {
           <Text style={styles.buttonText}>Skip</Text>
         </TouchableOpacity>
       </View>
+      <StatusBar />
     </SafeAreaView>
   );
 }

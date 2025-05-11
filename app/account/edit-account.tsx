@@ -13,6 +13,7 @@ import {
 import { useAuth } from "../../lib/auth-provider";
 import { supabase } from "../../lib/supabase";
 import Avatar from "../../components/Avatar";
+import Head from "expo-router/head";
 
 function EditAccount() {
   const { width } = useWindowDimensions();
@@ -159,6 +160,10 @@ function EditAccount() {
 
   return (
     <ScrollView>
+      <Head>
+        <title>Edit Account</title>
+        <meta name="description" content="Edit Account" />
+      </Head>
       <View
         style={[
           styles.container,

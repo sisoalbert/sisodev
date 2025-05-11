@@ -5,6 +5,7 @@ import { useLocalSearchParams, useRouter } from "expo-router";
 import CodelabContent from "@/components/CodelabContent";
 import { supabase } from "@/lib/supabase";
 import { CodelabData } from "@/types";
+import Head from "expo-router/head";
 
 export default function CodelabDetails() {
   const router = useRouter();
@@ -153,6 +154,10 @@ export default function CodelabDetails() {
 
   return (
     <View className="flex-1 bg-white h-screen w-full">
+      <Head>
+        <title>{codelab.title}</title>
+        <meta name="description" content={codelab.title} />
+      </Head>
       <CodelabContent
         data={codelab}
         codelabId={id}

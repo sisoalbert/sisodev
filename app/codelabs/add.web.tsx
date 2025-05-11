@@ -2,6 +2,9 @@ import React, { useState } from "react";
 import { router } from "expo-router";
 import { CodelabData } from "@/types";
 import CodeLabEditor from "@/components/editor/CodeLabEditor";
+import Head from "expo-router/head";
+import NotSignedIn from "@/components/containers/NotSignedIn";
+import { useAuth } from "@/lib/auth-provider";
 
 const emptyCodelab: CodelabData = {
   title: "New Codelab",
@@ -18,6 +21,8 @@ const emptyCodelab: CodelabData = {
 };
 
 const CreateCodelab: React.FC = () => {
+  const { session } = useAuth();
+
   const [currentCodelab, setCurrentCodelab] =
     useState<CodelabData>(emptyCodelab);
 
@@ -34,13 +39,18 @@ const CreateCodelab: React.FC = () => {
     router.push("/codelabs");
   };
 
+  if (!session?.user) {
+    return <NotSignedIn />;
+  }
+
   return (
     <div className="min-h-screen bg-gray-50 overflow-y-auto">
+      <Head>
+        <title>Add Codelab</title>
+        <meta name="description" content="Add Codelab" />
+      </Head>
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
-        <CodeLabEditor
-          initialData={currentCodelab}
-          onSave={handleSave}
-        />
+        <CodeLabEditor initialData={currentCodelab} onSave={handleSave} />
       </div>
     </div>
   );

@@ -13,6 +13,7 @@ import { supabase } from "@/lib/supabase";
 import { LearningResourceCard } from "@/components/LearningResourceCard";
 import { LearningResourceCardSkeleton } from "@/components/LearningResourceCardSkeleton";
 import { Ionicons } from "@expo/vector-icons";
+import Head from "expo-router/head";
 
 interface Codelab {
   id: string;
@@ -192,7 +193,12 @@ export default function CodelabsIndex() {
             : "https://images.pexels.com/photos/1181671/pexels-photo-1181671.jpeg"
         }
         imageAlt="Codelab Preview"
-        onPress={() => router.push({ pathname: '/codelabs/[id]', params: { id: item.slug, returnTo: '/codelabs/mine' } })}
+        onPress={() =>
+          router.push({
+            pathname: "/codelabs/[id]",
+            params: { id: item.slug, returnTo: "/codelabs/mine" },
+          })
+        }
       />
     </TouchableOpacity>
   );
@@ -202,6 +208,10 @@ export default function CodelabsIndex() {
 
   return (
     <View className="flex-1 bg-gray-50">
+      <Head>
+        <title>SisoDev My Codelabs</title>
+        <meta name="description" content="My Codelabs" />
+      </Head>
       <View className="flex-1 mx-auto w-full max-w-screen-xl px-4 sm:px-6 md:px-8 lg:px-16">
         <View className="flex-row justify-between items-center py-4">
           <Text className="text-2xl font-bold text-gray-800">My Codelabs</Text>

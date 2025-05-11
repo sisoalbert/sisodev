@@ -9,6 +9,7 @@ import {
 } from "react-native";
 import { useRouter } from "expo-router";
 import { supabase } from "../../lib/supabase";
+import Head from "expo-router/head";
 
 export default function UpdatePassword() {
   const [password, setPassword] = useState("");
@@ -57,6 +58,10 @@ export default function UpdatePassword() {
 
   return (
     <View style={styles.container}>
+      <Head>
+        <title>Update Password</title>
+        <meta name="description" content="Update Password" />
+      </Head>
       <Text style={styles.title}>Update Password</Text>
 
       <View style={styles.formContainer}>

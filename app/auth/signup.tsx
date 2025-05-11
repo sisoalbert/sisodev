@@ -12,6 +12,7 @@ import { SafeAreaView } from "react-native-safe-area-context";
 import * as WebBrowser from "expo-web-browser";
 import { supabase } from "../../lib/supabase";
 import { Ionicons } from "@expo/vector-icons";
+import Head from "expo-router/head";
 
 export default function Signup() {
   const [email, setEmail] = useState("");
@@ -75,6 +76,10 @@ export default function Signup() {
   if (isSignupComplete) {
     return (
       <SafeAreaView style={styles.container}>
+        <Head>
+          <title>Check Your Email</title>
+          <meta name="description" content="Check Your Email" />
+        </Head>
         <View style={styles.formContainer}>
           <Text style={styles.title}>Check Your Email</Text>
           <Text style={styles.confirmationText}>
