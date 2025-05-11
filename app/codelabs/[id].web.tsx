@@ -115,6 +115,12 @@ export default function CodelabDetails() {
   
   // Function to update the view count for a codelab
   const updateViewCount = async (codelabId: string, slug: string) => {
+    // Skip counting views in development mode
+    if (__DEV__) {
+      console.log('Development mode: skipping view count update');
+      return;
+    }
+    
     try {
       // First check if a record exists for this codelab in the view_counts table
       const { data: existingCount, error: checkError } = await supabase
