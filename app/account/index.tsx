@@ -29,7 +29,7 @@ function Account() {
   const [loading, setLoading] = useState(true);
   const [username, setUsername] = useState("");
   const [avatarUrl, setAvatarUrl] = useState("");
-  const appVersion = "1.0.0 (6)";
+  const appVersion = "1.0.0 (10)";
   useEffect(() => {
     if (session?.user) {
       getProfile();

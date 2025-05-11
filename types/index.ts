@@ -19,4 +19,5 @@ export interface CodelabData {
   creator_id?: string;
   status?: 'draft' | 'published';
   visibility?: 'private' | 'public';
+  views?: number;
 }

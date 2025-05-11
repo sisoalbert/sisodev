@@ -33,10 +33,10 @@ firebase deploy --only storage
 - [x] Add confirm email copy and confirm email link
 - [ ] Add delete account and cascade delete codelabs,profile,picture
 - [ ] Posthog React Native
-- [ ] Add codelabs id slug (title)
-- [ ] Add press a section update url, and favicon section
+- [x] Add codelabs id slug (title)
+- [x] Add press a section update url, and favicon section
 - [ ] Add playwright tests
-- [ ] Add paid codelabs and subscription - gumroad,
+- [ ] Add paid codelabs and subscription - gumroad,polar
 - [x] Add private codelabs
 - [x] Add codelabs user
 - [x] Add codelabs image
@@ -49,31 +49,21 @@ firebase deploy --only storage
 - [] Add codelabs sorting
 - [] Add codelabs videos
 - [x] Add Profile picture upload (web and react native) - TEST ON REACT NATIVE and add image cropping
-- [ ] Add expo image placeholder
 - [x] show password
 - [ ] Google/Apple login
 - [ ] Recommended events sign_up, login, share
-- [ ] Add tabs https://www.reactnativepapertabs.com/
-- [ ] Add haptics
 - [ ] Add offline notification - NETINFO
 - [ ] Add flashlist https://github.com/Shopify/flash-list
-- [ ] Add Expo Image https://docs.expo.dev/versions/latest/sdk/image/
-- [ ] Delete firebase function (delete firebase config) (email: arthur@genkit.ai) and reason
+- [ ] Add Expo Image https://docs.expo.dev/versions/latest/sdk/image/,
 - [ ] Get device info on signup and login (if device exists skip)
 - [ ] Add rive https://github.com/rive-app/rive-react-native
 - [ ] Add empty states https://github.com/margelo/react-native-skottie
 - [ ] Add blur SKIA
-- [ ] Add analytics
 - [ ] Add xevo
-- [ ] Add crash reporting
-- [ ] Add sentry
-- [] Add firestore
-- [ ] Add Notifications (FCM - New episode, Download complete, Subscription)
-- [ ] Add Paddle payment
+- [ ] Add crash reporting, Add sentry
+- [ ] Add Notifications (FCM - New podcast)
 - [ ] Add google pay - (Revenue Cat)
 - [ ] Add apple pay - (Revenue Cat)
-- [ ] Add amazon pay
-- [ ] Add webview
 - [ ] Add terms of service
 - [ ] Add privacy policy
 - [ ] Add refund policy

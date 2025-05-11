@@ -41,6 +41,14 @@ const CodelabHeader: React.FC<CodelabHeaderProps> = ({ data }) => {
             />
             <span>By: {data.authors.join(", ")}</span>
           </div>
+          <div className="flex items-center gap-2">
+            <FontAwesome
+              name="eye"
+              size={18}
+              color="rgba(255, 255, 255, 0.8)"
+            />
+            <span>Views: {data.views}</span>
+          </div>
         </div>
       </div>
     </header>

@@ -56,6 +56,16 @@ export default function CodelabDetails() {
         if (!data) {
           throw new Error("Codelab not found");
         }
+        
+        // Update view count for this codelab
+        await updateViewCount(data.id, id);
+
+        // Fetch the view count for this codelab
+        const { data: viewData, error: viewError } = await supabase
+          .from('codelab_page_views')
+          .select('count')
+          .eq('codelab_id', data.id)
+          .single();
 
         // Format data to match the CodelabData type
         const formattedCodelab: CodelabData = {
@@ -64,6 +74,7 @@ export default function CodelabDetails() {
           authors: data.authors || [],
           sections: [],
           creator_id: data.creator_id, // Store the creator's ID
+          views: viewData?.count || 0, // Include view count
         };
 
         // Parse the content (which contains the sections)
@@ -101,6 +112,55 @@ export default function CodelabDetails() {
 
     fetchCodelab();
   }, [id]);
+  
+  // Function to update the view count for a codelab
+  const updateViewCount = async (codelabId: string, slug: string) => {
+    try {
+      // First check if a record exists for this codelab in the view_counts table
+      const { data: existingCount, error: checkError } = await supabase
+        .from('codelab_page_views')
+        .select('count')
+        .eq('codelab_id', codelabId)
+        .single();
+      
+      if (checkError && checkError.code !== 'PGRST116') { // PGRST116 is 'not found'
+        console.error('Error checking view count:', checkError);
+        return;
+      }
+      
+      if (existingCount) {
+        // Record exists, update the count
+        const { error: updateError } = await supabase
+          .from('codelab_page_views')
+          .update({ 
+            count: existingCount.count + 1,
+            last_viewed_at: new Date().toISOString(),
+            slug: slug
+          })
+          .eq('codelab_id', codelabId);
+          
+        if (updateError) {
+          console.error('Error updating view count:', updateError);
+        }
+      } else {
+        // Record doesn't exist, create a new one
+        const { error: insertError } = await supabase
+          .from('codelab_page_views')
+          .insert({
+            codelab_id: codelabId,
+            slug: slug,
+            count: 1,
+            last_viewed_at: new Date().toISOString()
+          });
+          
+        if (insertError) {
+          console.error('Error inserting view count:', insertError);
+        }
+      }
+    } catch (error) {
+      console.error('Error updating view count:', error);
+    }
+  };
 
   const handleBackToList = () => {
     // 1️⃣ normalise to a single string
