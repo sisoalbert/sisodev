@@ -1,34 +1,75 @@
 import { create } from "zustand";
-import { supabase } from "../lib/supabase";
-import type { User } from "@supabase/supabase-js";
+import { auth } from "../lib/firebase";
+import { 
+  signInWithEmailAndPassword, 
+  createUserWithEmailAndPassword, 
+  signOut as firebaseSignOut,
+  onAuthStateChanged,
+  type User
+} from "firebase/auth";
 
 interface AuthState {
   user: User | null;
   loading: boolean;
-  refreshSession: () => Promise<void>;
+  error: string | null;
+  signIn: (email: string, password: string) => Promise<void>;
+  signUp: (email: string, password: string) => Promise<void>;
   signOut: () => Promise<void>;
+  refreshSession: () => Promise<void>;
+  clearError: () => void;
 }
 
 export const useAuthStore = create<AuthState>((set) => ({
   user: null,
   loading: true,
+  error: null,
 
-  refreshSession: async () => {
+  signIn: async (email: string, password: string) => {
+    set({ loading: true, error: null });
     try {
-      const { data: { session } } = await supabase.auth.getSession();
-      set({ user: session?.user ?? null, loading: false });
+      await signInWithEmailAndPassword(auth, email, password);
     } catch (error) {
-      console.error("Error refreshing session:", error);
-      set({ user: null, loading: false });
+      set({ error: (error as Error).message });
+      console.error('Sign in error:', error);
+    } finally {
+      set({ loading: false });
+    }
+  },
+
+  signUp: async (email: string, password: string) => {
+    set({ loading: true, error: null });
+    try {
+      await createUserWithEmailAndPassword(auth, email, password);
+    } catch (error) {
+      set({ error: (error as Error).message });
+      console.error('Sign up error:', error);
+    } finally {
+      set({ loading: false });
     }
   },
 
   signOut: async () => {
+    set({ loading: true, error: null });
     try {
-      await supabase.auth.signOut();
+      await firebaseSignOut(auth);
       set({ user: null });
     } catch (error) {
-      console.error("Error signing out:", error);
+      set({ error: (error as Error).message });
+      console.error('Sign out error:', error);
+    } finally {
+      set({ loading: false });
     }
   },
+
+  refreshSession: async () => {
+    return new Promise<void>((resolve) => {
+      const unsubscribe = onAuthStateChanged(auth, (user) => {
+        set({ user, loading: false });
+        unsubscribe();
+        resolve();
+      });
+    });
+  },
+
+  clearError: () => set({ error: null }),
 }));
