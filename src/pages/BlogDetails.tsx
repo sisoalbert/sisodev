@@ -7,15 +7,28 @@ import type { Blog } from "../types";
 function BlogDetails() {
   const { slug } = useParams<{ slug: string }>();
   const navigate = useNavigate();
-  const { fetchBlogBySlug, loading, error } = useBlogStore();
+  const { fetchBlogBySlug, deleteBlog, loading, error } = useBlogStore();
   const { user } = useAuthStore();
   const [blog, setBlog] = useState<Blog | null>(null);
+  const [showDeleteConfirm, setShowDeleteConfirm] = useState(false);
 
   useEffect(() => {
     if (slug) {
       fetchBlogBySlug(slug).then(setBlog);
     }
   }, [slug, fetchBlogBySlug]);
+
+  const handleDeleteBlog = async () => {
+    if (!blog) return;
+    
+    try {
+      await deleteBlog(blog.id);
+      navigate('/');
+    } catch (error) {
+      console.error('Error deleting blog:', error);
+    }
+    setShowDeleteConfirm(false);
+  };
 
   if (loading) {
     return (
@@ -432,10 +445,106 @@ function BlogDetails() {
             </button>
 
             {user && user.uid === blog.userId && (
+              <>
+                <button
+                  onClick={() => navigate(`/edit-blog/${blog.id}`)}
+                  style={{
+                    backgroundColor: "#3b82f6",
+                    color: "white",
+                    padding: "10px 20px",
+                    borderRadius: "6px",
+                    border: "none",
+                    fontSize: "14px",
+                    fontWeight: "500",
+                    cursor: "pointer",
+                  }}
+                >
+                  Edit Blog
+                </button>
+                
+                <button
+                  onClick={() => setShowDeleteConfirm(true)}
+                  style={{
+                    backgroundColor: "#dc2626",
+                    color: "white",
+                    padding: "10px 20px",
+                    borderRadius: "6px",
+                    border: "none",
+                    fontSize: "14px",
+                    fontWeight: "500",
+                    cursor: "pointer",
+                  }}
+                >
+                  Delete Blog
+                </button>
+              </>
+            )}
+          </div>
+        </footer>
+      </article>
+
+      {/* Delete Confirmation Modal */}
+      {showDeleteConfirm && (
+        <div
+          style={{
+            position: "fixed",
+            top: "0",
+            left: "0",
+            right: "0",
+            bottom: "0",
+            backgroundColor: "rgba(0, 0, 0, 0.5)",
+            display: "flex",
+            alignItems: "center",
+            justifyContent: "center",
+            zIndex: "1000",
+          }}
+          onClick={() => setShowDeleteConfirm(false)}
+        >
+          <div
+            style={{
+              backgroundColor: "white",
+              padding: "32px",
+              borderRadius: "8px",
+              boxShadow: "0 20px 25px -5px rgba(0, 0, 0, 0.1)",
+              maxWidth: "400px",
+              width: "90%",
+              margin: "16px",
+            }}
+            onClick={(e) => e.stopPropagation()}
+          >
+            <h3
+              style={{
+                fontSize: "18px",
+                fontWeight: "600",
+                color: "#1f2937",
+                marginBottom: "16px",
+              }}
+            >
+              Delete Blog Post
+            </h3>
+            
+            <p
+              style={{
+                fontSize: "14px",
+                color: "#6b7280",
+                marginBottom: "24px",
+                lineHeight: "1.5",
+              }}
+            >
+              Are you sure you want to delete "{blog?.title}"? This action cannot be undone and the blog post will be permanently removed.
+            </p>
+            
+            <div
+              style={{
+                display: "flex",
+                gap: "12px",
+                justifyContent: "flex-end",
+              }}
+            >
               <button
-                onClick={() => navigate(`/edit-blog/${blog.id}`)}
+                onClick={() => setShowDeleteConfirm(false)}
                 style={{
-                  backgroundColor: "#3b82f6",
+                  backgroundColor: "#6b7280",
                   color: "white",
                   padding: "10px 20px",
                   borderRadius: "6px",
@@ -445,12 +554,29 @@ function BlogDetails() {
                   cursor: "pointer",
                 }}
               >
-                Edit Blog
+                Cancel
               </button>
-            )}
+              
+              <button
+                onClick={handleDeleteBlog}
+                disabled={loading}
+                style={{
+                  backgroundColor: loading ? "#9ca3af" : "#dc2626",
+                  color: "white",
+                  padding: "10px 20px",
+                  borderRadius: "6px",
+                  border: "none",
+                  fontSize: "14px",
+                  fontWeight: "500",
+                  cursor: loading ? "not-allowed" : "pointer",
+                }}
+              >
+                {loading ? "Deleting..." : "Delete"}
+              </button>
+            </div>
           </div>
-        </footer>
-      </article>
+        </div>
+      )}
     </div>
   );
 }

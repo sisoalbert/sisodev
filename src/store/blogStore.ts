@@ -9,7 +9,8 @@ import {
   orderBy,
   doc,
   getDoc,
-  updateDoc
+  updateDoc,
+  deleteDoc
 } from "firebase/firestore";
 import type { Blog } from "../types";
 
@@ -24,6 +25,7 @@ interface BlogState {
     blogId: string,
     blogData: Omit<Blog, "id" | "createdAt" | "updatedAt">
   ) => Promise<void>;
+  deleteBlog: (blogId: string) => Promise<void>;
   fetchBlogs: () => Promise<void>;
   fetchBlogById: (blogId: string) => Promise<Blog | null>;
   fetchBlogBySlug: (slug: string) => Promise<Blog | null>;
@@ -59,6 +61,18 @@ export const useBlogStore = create<BlogState>((set, get) => ({
         ...blogData,
         updatedAt: serverTimestamp(),
       });
+      set({ loading: false });
+    } catch (error) {
+      set({ error: (error as Error).message, loading: false });
+      throw error;
+    }
+  },
+
+  deleteBlog: async (blogId: string) => {
+    set({ loading: true, error: null });
+    try {
+      const blogRef = doc(db, "blogs", blogId);
+      await deleteDoc(blogRef);
       set({ loading: false });
     } catch (error) {
       set({ error: (error as Error).message, loading: false });
