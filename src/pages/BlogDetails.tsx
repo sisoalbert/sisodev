@@ -16,7 +16,7 @@ function BlogDetails() {
     if (slug) {
       fetchBlogBySlug(slug).then(setBlog);
     }
-  }, [slug, fetchBlogBySlug]);
+  }, [slug, fetchBlogBySlug, user]);
 
   const handleDeleteBlog = async () => {
     if (!blog) return;

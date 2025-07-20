@@ -236,6 +236,7 @@ export const useBlogStore = create<BlogState>((set) => ({
             blog.status === "published" && blog.visibility === "public";
           const isOwnedByUser = blog.userId === user.uid;
 
+          // Allow access if the blog is public and published OR if the user owns the blog (regardless of status/visibility)
           if (isPublishedAndPublic || isOwnedByUser) {
             foundBlog = blog;
           }
@@ -248,6 +249,7 @@ export const useBlogStore = create<BlogState>((set) => ({
       set({ loading: false });
       return foundBlog;
     } catch (error) {
+      console.log(error);
       set({ error: (error as Error).message, loading: false });
       return null;
     }
