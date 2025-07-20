@@ -20,8 +20,8 @@ function EditBlog() {
   const [sections, setSections] = useState<Section[]>([
     { id: "1", name: "Introduction", content: "" },
   ]);
-  const [status, setStatus] = useState<BlogStatus>("published");
-  const [visibility, setVisibility] = useState<Visibility>("public");
+  const [status] = useState<BlogStatus>("published");
+  const [visibility] = useState<Visibility>("public");
   const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {

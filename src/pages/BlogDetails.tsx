@@ -372,7 +372,7 @@ function BlogDetails() {
 
         {/* Blog Sections */}
         <div style={{ display: "flex", flexDirection: "column", gap: "24px" }}>
-          {blog.sections.map((section, index) => (
+          {blog.sections.map((section) => (
             <section
               key={section.id}
               style={{

@@ -22,6 +22,9 @@ if (
 }
 
 const app = initializeApp(firebaseConfig);
-const analytics = getAnalytics(app);
+// Initialize Analytics only in browser environment
+if (typeof window !== 'undefined') {
+  getAnalytics(app);
+}
 export const auth = getAuth(app);
 export const db = getFirestore(app);
