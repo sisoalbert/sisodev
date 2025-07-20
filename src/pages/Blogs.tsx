@@ -50,6 +50,16 @@ function Blogs() {
                 Create Blog
               </a>
               <a
+                href="/editor"
+                style={{
+                  marginRight: "16px",
+                  color: "white",
+                  textDecoration: "none",
+                }}
+              >
+                Editor
+              </a>
+              <a
                 href="/profile"
                 style={{
                   marginRight: "16px",
