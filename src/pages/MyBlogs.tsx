@@ -3,13 +3,13 @@ import { useBlogStore } from "../store/blogStore";
 import { useAuthStore } from "../store/authStore";
 import type { Blog } from "../types";
 
-function Blogs() {
-  const { blogs, loading, error, fetchPublicBlogs } = useBlogStore();
+function MyBlogs() {
+  const { blogs, loading, error, fetchMyBlogs, deleteBlog } = useBlogStore();
   const { user } = useAuthStore();
 
   useEffect(() => {
-    fetchPublicBlogs();
-  }, [fetchPublicBlogs]);
+    fetchMyBlogs();
+  }, [fetchMyBlogs]);
 
   const Navbar = () => {
     return (
@@ -40,6 +40,16 @@ function Blogs() {
           <div>
             <>
               <a
+                href="/blogs"
+                style={{
+                  marginRight: "16px",
+                  color: "white",
+                  textDecoration: "none",
+                }}
+              >
+                All Blogs
+              </a>
+              <a
                 href="/create-blog"
                 style={{
                   marginRight: "16px",
@@ -66,7 +76,33 @@ function Blogs() {
     );
   };
 
+  const handleDelete = async (blogId: string, blogTitle: string) => {
+    if (window.confirm(`Are you sure you want to delete "${blogTitle}"?`)) {
+      try {
+        await deleteBlog(blogId);
+        // Refresh the blogs list
+        fetchMyBlogs();
+      } catch (error) {
+        console.error("Error deleting blog:", error);
+      }
+    }
+  };
+
   const BlogCard = ({ blog }: { blog: Blog }) => {
+    const statusColor = {
+      draft: "#f59e0b",
+      published: "#10b981",
+      archived: "#6b7280",
+      deleted: "#ef4444",
+      "pending-review": "#3b82f6"
+    }[blog.status];
+
+    const visibilityIcon = {
+      public: "🌍",
+      private: "🔒",
+      unlisted: "👁️‍🗨️"
+    }[blog.visibility];
+
     return (
       <div
         style={{
@@ -75,18 +111,6 @@ function Blogs() {
           boxShadow: "0 4px 6px -1px rgba(0, 0, 0, 0.1)",
           overflow: "hidden",
           marginBottom: "24px",
-          cursor: "pointer",
-          transition: "transform 0.2s, box-shadow 0.2s",
-        }}
-        onClick={() => (window.location.href = `/blogs/${blog.slug}`)}
-        onMouseOver={(e) => {
-          e.currentTarget.style.transform = "translateY(-2px)";
-          e.currentTarget.style.boxShadow =
-            "0 8px 15px -3px rgba(0, 0, 0, 0.1)";
-        }}
-        onMouseOut={(e) => {
-          e.currentTarget.style.transform = "translateY(0)";
-          e.currentTarget.style.boxShadow = "0 4px 6px -1px rgba(0, 0, 0, 0.1)";
         }}
       >
         {blog.imageUrl && (
@@ -104,17 +128,45 @@ function Blogs() {
         )}
 
         <div style={{ padding: "20px" }}>
-          <h2
-            style={{
-              fontSize: "20px",
-              fontWeight: "600",
-              color: "#1f2937",
-              marginBottom: "8px",
-              lineHeight: "1.3",
-            }}
-          >
-            {blog.title}
-          </h2>
+          <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start", marginBottom: "12px" }}>
+            <h2
+              style={{
+                fontSize: "20px",
+                fontWeight: "600",
+                color: "#1f2937",
+                marginBottom: "8px",
+                lineHeight: "1.3",
+                flex: 1,
+                marginRight: "16px",
+              }}
+            >
+              {blog.title}
+            </h2>
+            <div style={{ display: "flex", gap: "8px", flexShrink: 0 }}>
+              <span
+                style={{
+                  backgroundColor: statusColor,
+                  color: "white",
+                  padding: "4px 8px",
+                  borderRadius: "4px",
+                  fontSize: "12px",
+                  fontWeight: "500",
+                  textTransform: "capitalize",
+                }}
+              >
+                {blog.status}
+              </span>
+              <span
+                style={{
+                  fontSize: "16px",
+                  padding: "2px",
+                }}
+                title={`Visibility: ${blog.visibility}`}
+              >
+                {visibilityIcon}
+              </span>
+            </div>
+          </div>
 
           {blog.subTitle && (
             <p
@@ -138,18 +190,6 @@ function Blogs() {
             }}
           >
             <div>
-              <span
-                style={{
-                  fontSize: "12px",
-                  color: "#6b7280",
-                  fontWeight: "500",
-                }}
-              >
-                By {blog.contributors || "Anonymous"}
-              </span>
-            </div>
-
-            <div style={{ display: "flex", alignItems: "center", gap: "8px" }}>
               {blog.category && (
                 <span
                   style={{
@@ -159,12 +199,12 @@ function Blogs() {
                     borderRadius: "4px",
                     fontSize: "12px",
                     fontWeight: "500",
+                    marginRight: "8px",
                   }}
                 >
                   {blog.category}
                 </span>
               )}
-
               <span
                 style={{
                   fontSize: "12px",
@@ -207,10 +247,89 @@ function Blogs() {
               </div>
             </div>
           )}
+
+          <div style={{ marginTop: "16px", display: "flex", gap: "8px", justifyContent: "flex-end" }}>
+            <a
+              href={`/blogs/${blog.slug}`}
+              style={{
+                backgroundColor: "#f3f4f6",
+                color: "#374151",
+                padding: "8px 16px",
+                borderRadius: "6px",
+                textDecoration: "none",
+                fontSize: "14px",
+                fontWeight: "500",
+                border: "1px solid #d1d5db",
+              }}
+            >
+              View
+            </a>
+            <a
+              href={`/edit-blog/${blog.id}`}
+              style={{
+                backgroundColor: "#3b82f6",
+                color: "white",
+                padding: "8px 16px",
+                borderRadius: "6px",
+                textDecoration: "none",
+                fontSize: "14px",
+                fontWeight: "500",
+              }}
+            >
+              Edit
+            </a>
+            <button
+              onClick={() => handleDelete(blog.id, blog.title)}
+              style={{
+                backgroundColor: "#ef4444",
+                color: "white",
+                padding: "8px 16px",
+                borderRadius: "6px",
+                border: "none",
+                fontSize: "14px",
+                fontWeight: "500",
+                cursor: "pointer",
+              }}
+            >
+              Delete
+            </button>
+          </div>
         </div>
       </div>
     );
   };
+
+  if (!user) {
+    return (
+      <div style={{ minHeight: "100vh", backgroundColor: "#f3f4f6" }}>
+        <Navbar />
+        <div
+          style={{
+            maxWidth: "1200px",
+            margin: "0 auto",
+            padding: "32px 16px",
+            textAlign: "center",
+          }}
+        >
+          <h1 style={{ fontSize: "24px", marginBottom: "16px" }}>Please log in to view your blogs</h1>
+          <a
+            href="/login"
+            style={{
+              backgroundColor: "#3b82f6",
+              color: "white",
+              padding: "12px 24px",
+              borderRadius: "6px",
+              textDecoration: "none",
+              fontSize: "16px",
+              fontWeight: "500",
+            }}
+          >
+            Login
+          </a>
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div style={{ minHeight: "100vh", backgroundColor: "#f3f4f6" }}>
@@ -223,16 +342,31 @@ function Blogs() {
           padding: "32px 16px",
         }}
       >
-        <h1
-          style={{
-            fontSize: "30px",
-            fontWeight: "bold",
-            marginBottom: "24px",
-            color: "#1f2937",
-          }}
-        >
-          Blog Posts
-        </h1>
+        <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "24px" }}>
+          <h1
+            style={{
+              fontSize: "30px",
+              fontWeight: "bold",
+              color: "#1f2937",
+            }}
+          >
+            My Blogs
+          </h1>
+          <a
+            href="/create-blog"
+            style={{
+              backgroundColor: "#3b82f6",
+              color: "white",
+              padding: "12px 24px",
+              borderRadius: "6px",
+              textDecoration: "none",
+              fontSize: "14px",
+              fontWeight: "500",
+            }}
+          >
+            Create New Blog
+          </a>
+        </div>
 
         {error && !error.includes("Missing or insufficient permissions") && (
           <div
@@ -264,7 +398,7 @@ function Blogs() {
                 color: "#6b7280",
               }}
             >
-              Loading blogs...
+              Loading your blogs...
             </div>
           </div>
         ) : blogs.length === 0 ? (
@@ -285,28 +419,26 @@ function Blogs() {
                 marginBottom: "8px",
               }}
             >
-              No blog posts yet
+              You haven't created any blogs yet
             </h2>
             <p style={{ color: "#6b7280", marginBottom: "16px" }}>
-              Be the first to create a blog post!
+              Start sharing your thoughts and ideas with the world!
             </p>
-            {user && (
-              <a
-                href="/create-blog"
-                style={{
-                  backgroundColor: "#3b82f6",
-                  color: "white",
-                  padding: "10px 20px",
-                  borderRadius: "6px",
-                  textDecoration: "none",
-                  fontSize: "14px",
-                  fontWeight: "500",
-                  display: "inline-block",
-                }}
-              >
-                Create Your First Blog
-              </a>
-            )}
+            <a
+              href="/create-blog"
+              style={{
+                backgroundColor: "#3b82f6",
+                color: "white",
+                padding: "12px 24px",
+                borderRadius: "6px",
+                textDecoration: "none",
+                fontSize: "14px",
+                fontWeight: "500",
+                display: "inline-block",
+              }}
+            >
+              Create Your First Blog
+            </a>
           </div>
         ) : (
           <div
@@ -326,4 +458,4 @@ function Blogs() {
   );
 }
 
-export default Blogs;
+export default MyBlogs;

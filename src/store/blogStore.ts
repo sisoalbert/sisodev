@@ -1,18 +1,20 @@
 import { create } from "zustand";
 import { db } from "../lib/firebase";
-import { 
-  collection, 
-  addDoc, 
-  serverTimestamp, 
-  getDocs, 
-  query, 
+import {
+  collection,
+  addDoc,
+  serverTimestamp,
+  getDocs,
+  query,
   orderBy,
+  where,
   doc,
   getDoc,
   updateDoc,
-  deleteDoc
+  deleteDoc,
 } from "firebase/firestore";
 import type { Blog } from "../types";
+import { useAuthStore } from "./authStore";
 
 interface BlogState {
   blogs: Blog[];
@@ -26,13 +28,14 @@ interface BlogState {
     blogData: Omit<Blog, "id" | "createdAt" | "updatedAt">
   ) => Promise<void>;
   deleteBlog: (blogId: string) => Promise<void>;
-  fetchBlogs: () => Promise<void>;
+  fetchPublicBlogs: () => Promise<void>;
+  fetchMyBlogs: () => Promise<void>;
   fetchBlogById: (blogId: string) => Promise<Blog | null>;
   fetchBlogBySlug: (slug: string) => Promise<Blog | null>;
   clearError: () => void;
 }
 
-export const useBlogStore = create<BlogState>((set, get) => ({
+export const useBlogStore = create<BlogState>((set) => ({
   blogs: [],
   loading: false,
   error: null,
@@ -85,7 +88,7 @@ export const useBlogStore = create<BlogState>((set, get) => ({
     try {
       const blogRef = doc(db, "blogs", blogId);
       const blogSnap = await getDoc(blogRef);
-      
+
       if (blogSnap.exists()) {
         const data = blogSnap.data();
         const blog: Blog = {
@@ -106,23 +109,89 @@ export const useBlogStore = create<BlogState>((set, get) => ({
     }
   },
 
-  fetchBlogs: async () => {
+  fetchPublicBlogs: async () => {
     set({ loading: true, error: null });
+
+    const { user } = useAuthStore.getState();
+
     try {
-      const q = query(collection(db, "blogs"), orderBy("createdAt", "desc"));
+      let q;
+      if (user) {
+        // Authenticated users can use orderBy and see all blogs
+        q = query(collection(db, "blogs"), orderBy("createdAt", "desc"));
+      } else {
+        // Unauthenticated users use specific query for published and public blogs
+        q = query(
+          collection(db, "blogs"),
+          where("status", "==", "published"),
+          where("visibility", "==", "public")
+        );
+      }
+
       const querySnapshot = await getDocs(q);
-      
+
       const blogs: Blog[] = [];
       querySnapshot.forEach((doc) => {
         const data = doc.data();
-        blogs.push({
+        const blog = {
           id: doc.id,
           ...data,
           createdAt: data.createdAt?.toDate() || new Date(),
           updatedAt: data.updatedAt?.toDate() || new Date(),
-        } as Blog);
+        } as Blog;
+
+        if (user) {
+          // For authenticated users, filter client-side to show only published and public
+          if (blog.status === "published" && blog.visibility === "public") {
+            blogs.push(blog);
+          }
+        } else {
+          // For unauthenticated users, all returned blogs should already match the criteria
+          blogs.push(blog);
+        }
       });
-      
+
+      // Sort client-side if we didn't use orderBy
+      if (!user) {
+        blogs.sort((a, b) => b.createdAt.getTime() - a.createdAt.getTime());
+      }
+
+      set({ blogs, loading: false });
+    } catch (error) {
+      set({ error: (error as Error).message, loading: false });
+    }
+  },
+
+  fetchMyBlogs: async () => {
+    set({ loading: true, error: null });
+    try {
+      // Get the current user from auth
+      const { user } = useAuthStore.getState();
+
+      if (!user) {
+        set({ blogs: [], loading: false });
+        return;
+      }
+
+      const q = query(collection(db, "blogs"), orderBy("createdAt", "desc"));
+      const querySnapshot = await getDocs(q);
+
+      const blogs: Blog[] = [];
+      querySnapshot.forEach((doc) => {
+        const data = doc.data();
+        const blog = {
+          id: doc.id,
+          ...data,
+          createdAt: data.createdAt?.toDate() || new Date(),
+          updatedAt: data.updatedAt?.toDate() || new Date(),
+        } as Blog;
+
+        // Only include blogs owned by the current user (all statuses and visibility)
+        if (blog.userId === user.uid) {
+          blogs.push(blog);
+        }
+      });
+
       set({ blogs, loading: false });
     } catch (error) {
       set({ error: (error as Error).message, loading: false });
@@ -132,22 +201,50 @@ export const useBlogStore = create<BlogState>((set, get) => ({
   fetchBlogBySlug: async (slug: string) => {
     set({ loading: true, error: null });
     try {
-      const q = query(collection(db, "blogs"));
+      // Get the current user from auth
+      const { user } = useAuthStore.getState();
+
+      let q;
+      if (user) {
+        // Authenticated users can query all blogs and filter by slug
+        q = query(collection(db, "blogs"), where("slug", "==", slug));
+      } else {
+        // Unauthenticated users can only access published and public blogs
+        q = query(
+          collection(db, "blogs"),
+          where("slug", "==", slug),
+          where("status", "==", "published"),
+          where("visibility", "==", "public")
+        );
+      }
+
       const querySnapshot = await getDocs(q);
-      
       let foundBlog: Blog | null = null;
+
       querySnapshot.forEach((doc) => {
         const data = doc.data();
-        if (data.slug === slug) {
-          foundBlog = {
-            id: doc.id,
-            ...data,
-            createdAt: data.createdAt?.toDate() || new Date(),
-            updatedAt: data.updatedAt?.toDate() || new Date(),
-          } as Blog;
+        const blog = {
+          id: doc.id,
+          ...data,
+          createdAt: data.createdAt?.toDate() || new Date(),
+          updatedAt: data.updatedAt?.toDate() || new Date(),
+        } as Blog;
+
+        if (user) {
+          // For authenticated users, check permissions
+          const isPublishedAndPublic =
+            blog.status === "published" && blog.visibility === "public";
+          const isOwnedByUser = blog.userId === user.uid;
+
+          if (isPublishedAndPublic || isOwnedByUser) {
+            foundBlog = blog;
+          }
+        } else {
+          // For unauthenticated users, the query already filtered for published and public
+          foundBlog = blog;
         }
       });
-      
+
       set({ loading: false });
       return foundBlog;
     } catch (error) {

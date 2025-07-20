@@ -20,12 +20,12 @@ function BlogDetails() {
 
   const handleDeleteBlog = async () => {
     if (!blog) return;
-    
+
     try {
       await deleteBlog(blog.id);
-      navigate('/');
+      navigate("/");
     } catch (error) {
-      console.error('Error deleting blog:', error);
+      console.error("Error deleting blog:", error);
     }
     setShowDeleteConfirm(false);
   };
@@ -461,7 +461,7 @@ function BlogDetails() {
                 >
                   Edit Blog
                 </button>
-                
+
                 <button
                   onClick={() => setShowDeleteConfirm(true)}
                   style={{
@@ -522,7 +522,7 @@ function BlogDetails() {
             >
               Delete Blog Post
             </h3>
-            
+
             <p
               style={{
                 fontSize: "14px",
@@ -531,9 +531,10 @@ function BlogDetails() {
                 lineHeight: "1.5",
               }}
             >
-              Are you sure you want to delete "{blog?.title}"? This action cannot be undone and the blog post will be permanently removed.
+              Are you sure you want to delete "{blog?.title}"? This action
+              cannot be undone and the blog post will be permanently removed.
             </p>
-            
+
             <div
               style={{
                 display: "flex",
@@ -556,7 +557,7 @@ function BlogDetails() {
               >
                 Cancel
               </button>
-              
+
               <button
                 onClick={handleDeleteBlog}
                 disabled={loading}

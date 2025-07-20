@@ -11,31 +11,52 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 ## Project Architecture
 
-This is a React + TypeScript + Vite application with the following key characteristics:
+This is a React + TypeScript + Vite blog application with Firebase backend integration. The app features user authentication, blog management with rich text editing, and role-based access control.
+
+### Technology Stack
 
 - **Frontend Framework**: React 18 with TypeScript
 - **Build Tool**: Vite with React plugin
 - **Styling**: Tailwind CSS (v4.1.10) with Vite plugin
-- **State Management**: Zustand for client state
-- **Routing**: React Router DOM v7
-- **Rich Text Editor**: BlockNote with Mantine integration
-- **Backend Integration**: Supabase for database and auth
+- **State Management**: Zustand for client state management
+- **Routing**: React Router DOM v7 with protected routes
+- **Rich Text Editor**: BlockNote with Mantine integration and code block support
+- **Backend**: Firebase (Authentication + Firestore) with Supabase client also configured
 - **Icons**: Lucide React and React Icons
 
-### Key Dependencies
+### Application Structure
 
-- **UI Components**: Custom components with Tailwind CSS
-- **Rich Text**: BlockNote editor with code block support
-- **Database**: Supabase client for backend operations
-- **State**: Zustand stores for application state
+The application follows a feature-based architecture:
 
-### Project Structure
+- **Authentication**: Firebase Auth with email/password, managed via `authStore.ts`
+- **Blog Management**: Full CRUD operations with rich text content, visibility controls, and user ownership
+- **State Management**: Zustand stores for auth (`authStore.ts`) and blog operations (`blogStore.ts`)
+- **Protected Routes**: Authentication-required pages wrapped with `ProtectedRoute` component
+- **Rich Content**: BlockNote editor for blog content with section-based organization
 
-- `src/App.tsx` - Main application component (currently minimal)
-- `src/main.tsx` - Application entry point
-- `src/index.css` - Global styles
-- TypeScript configuration split across multiple files (tsconfig.json, tsconfig.app.json, tsconfig.node.json)
-- ESLint configured with React-specific rules
+### Key Features
+
+- **User Authentication**: Sign up, sign in, sign out with Firebase Auth
+- **Blog CRUD**: Create, read, update, delete blogs with rich text editing
+- **Access Control**: Public/private/unlisted visibility settings with owner-based permissions
+- **Content Management**: Section-based blog structure with tags, categories, and metadata
+- **Real-time Data**: Firestore integration with security rules for data protection
+
+### Data Models
+
+Blogs have comprehensive metadata including:
+- Status: draft, published, archived, deleted, pending-review
+- Visibility: public, private, unlisted
+- User ownership and permissions
+- Rich content sections with BlockNote format
+- Timestamps and user attribution
+
+### Security
+
+- Firestore security rules enforce user-based access control
+- Environment variables for Firebase configuration
+- Protected routes prevent unauthorized access
+- Owner-based blog permissions
 
 ### Build Process
 

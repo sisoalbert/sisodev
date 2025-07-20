@@ -2,7 +2,7 @@ import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { useAuthStore } from "../store/authStore";
 import { useBlogStore } from "../store/blogStore";
-import type { Section } from "../types";
+import type { Section, BlogStatus, Visibility } from "../types";
 
 function CreateBlog() {
   const [title, setTitle] = useState("");
@@ -16,6 +16,8 @@ function CreateBlog() {
   const [sections, setSections] = useState<Section[]>([
     { id: "1", name: "Introduction", content: "" },
   ]);
+  const [status, setStatus] = useState<BlogStatus>("published");
+  const [visibility, setVisibility] = useState<Visibility>("public");
 
   const { user } = useAuthStore();
   const { createBlog, loading, error, clearError } = useBlogStore();
@@ -87,10 +89,11 @@ function CreateBlog() {
         category: category.trim() || undefined,
         contributors: contributors.trim() || undefined,
         sections,
-        published: true,
+        status,
+        visibility,
       };
 
-      const blogId = await createBlog(blogData);
+      await createBlog(blogData);
       navigate(`/blogs/${blogData.slug}`);
     } catch (error) {
       console.error("Error creating blog:", error);
@@ -221,6 +224,64 @@ function CreateBlog() {
                 />
               </div>
 
+              <div style={{ marginBottom: "16px" }}>
+                <label
+                  style={{
+                    display: "block",
+                    fontSize: "14px",
+                    fontWeight: "500",
+                    marginBottom: "8px",
+                    color: "#374151",
+                  }}
+                >
+                  Image URL
+                </label>
+                <input
+                  type="text"
+                  value={imageUrl}
+                  onChange={(e) => setImageUrl(e.target.value)}
+                  style={{
+                    width: "100%",
+                    padding: "12px",
+                    border: "1px solid #d1d5db",
+                    borderRadius: "4px",
+                    fontSize: "16px",
+                    outline: "none",
+                  }}
+                  onFocus={(e) => (e.target.style.borderColor = "#3b82f6")}
+                  onBlur={(e) => (e.target.style.borderColor = "#d1d5db")}
+                />
+              </div>
+
+              <div style={{ marginBottom: "16px" }}>
+                <label
+                  style={{
+                    display: "block",
+                    fontSize: "14px",
+                    fontWeight: "500",
+                    marginBottom: "8px",
+                    color: "#374151",
+                  }}
+                >
+                  Contributors
+                </label>
+                <input
+                  type="text"
+                  value={contributors}
+                  onChange={(e) => setContributors(e.target.value)}
+                  style={{
+                    width: "100%",
+                    padding: "12px",
+                    border: "1px solid #d1d5db",
+                    borderRadius: "4px",
+                    fontSize: "16px",
+                    outline: "none",
+                  }}
+                  onFocus={(e) => (e.target.style.borderColor = "#3b82f6")}
+                  onBlur={(e) => (e.target.style.borderColor = "#d1d5db")}
+                />
+              </div>
+
               <div
                 style={{
                   display: "grid",
@@ -285,6 +346,81 @@ function CreateBlog() {
                     onFocus={(e) => (e.target.style.borderColor = "#3b82f6")}
                     onBlur={(e) => (e.target.style.borderColor = "#d1d5db")}
                   />
+                </div>
+              </div>
+
+              <div
+                style={{
+                  display: "grid",
+                  gridTemplateColumns: "1fr 1fr",
+                  gap: "16px",
+                }}
+              >
+                <div>
+                  <label
+                    style={{
+                      display: "block",
+                      fontSize: "14px",
+                      fontWeight: "500",
+                      marginBottom: "8px",
+                      color: "#374151",
+                    }}
+                  >
+                    Status
+                  </label>
+                  <select
+                    value={status}
+                    onChange={(e) => setStatus(e.target.value as BlogStatus)}
+                    style={{
+                      width: "100%",
+                      padding: "12px",
+                      border: "1px solid #d1d5db",
+                      borderRadius: "4px",
+                      fontSize: "16px",
+                      outline: "none",
+                      backgroundColor: "white",
+                    }}
+                    onFocus={(e) => (e.target.style.borderColor = "#3b82f6")}
+                    onBlur={(e) => (e.target.style.borderColor = "#d1d5db")}
+                  >
+                    <option value="draft">Draft</option>
+                    <option value="published">Published</option>
+                    <option value="pending-review">Pending Review</option>
+                    <option value="archived">Archived</option>
+                  </select>
+                </div>
+
+                <div>
+                  <label
+                    style={{
+                      display: "block",
+                      fontSize: "14px",
+                      fontWeight: "500",
+                      marginBottom: "8px",
+                      color: "#374151",
+                    }}
+                  >
+                    Visibility
+                  </label>
+                  <select
+                    value={visibility}
+                    onChange={(e) => setVisibility(e.target.value as Visibility)}
+                    style={{
+                      width: "100%",
+                      padding: "12px",
+                      border: "1px solid #d1d5db",
+                      borderRadius: "4px",
+                      fontSize: "16px",
+                      outline: "none",
+                      backgroundColor: "white",
+                    }}
+                    onFocus={(e) => (e.target.style.borderColor = "#3b82f6")}
+                    onBlur={(e) => (e.target.style.borderColor = "#d1d5db")}
+                  >
+                    <option value="public">Public</option>
+                    <option value="private">Private</option>
+                    <option value="unlisted">Unlisted</option>
+                  </select>
                 </div>
               </div>
             </div>

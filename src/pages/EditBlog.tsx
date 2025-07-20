@@ -2,7 +2,7 @@ import React, { useState, useEffect } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import { useAuthStore } from "../store/authStore";
 import { useBlogStore } from "../store/blogStore";
-import type { Section, Blog } from "../types";
+import type { Section, Blog, BlogStatus, Visibility } from "../types";
 
 function EditBlog() {
   const { id } = useParams<{ id: string }>();
@@ -20,6 +20,8 @@ function EditBlog() {
   const [sections, setSections] = useState<Section[]>([
     { id: "1", name: "Introduction", content: "" },
   ]);
+  const [status, setStatus] = useState<BlogStatus>("published");
+  const [visibility, setVisibility] = useState<Visibility>("public");
   const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
@@ -113,7 +115,8 @@ function EditBlog() {
         category: category.trim() || undefined,
         contributors: contributors.trim() || undefined,
         sections,
-        published: true,
+        status,
+        visibility,
       };
 
       await updateBlog(blog.id, blogData);

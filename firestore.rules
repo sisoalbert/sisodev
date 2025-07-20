@@ -2,13 +2,23 @@ rules_version = '2';
 
 service cloud.firestore {
   match /databases/{database}/documents {
-    // Blogs collection
+    // Allow anyone to list the blogs collection
+    match /blogs {
+      allow list: if true;
+    }
+    
+    // Blogs collection - individual document rules
     match /blogs/{blogId} {
-      // Allow read for all users (authenticated and unauthenticated)
-      allow read: if true;
+      // Allow read for:
+      // 1. Anyone (including unauthenticated) for published and public blogs
+      // 2. Authenticated users for all blogs (client-side filtering will handle privacy)
+      allow read: if (resource.data.status == "published" && resource.data.visibility == "public") ||
+                     (request.auth != null);
+      
       // Allow create for authenticated users with their UID in the document
       allow create: if request.auth != null && 
         request.auth.uid == request.resource.data.userId;
+      
       // Allow update/delete only for authenticated users who own the blog
       allow update, delete: if request.auth != null && 
         request.auth.uid == resource.data.userId;

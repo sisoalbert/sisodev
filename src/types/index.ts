@@ -1,3 +1,7 @@
+export type BlogStatus = "draft" | "published" | "deleted" | "archived" | "pending-review";
+
+export type Visibility = "public" | "private" | "unlisted";
+
 export interface Section {
   id: string;
   name: string;
@@ -17,7 +21,8 @@ export interface Blog {
   category?: string;
   contributors?: string;
   sections: Section[];
-  published: boolean;
+  status: BlogStatus;         // Controls lifecycle (draft, published, etc.)
+  visibility: Visibility;     // Controls who can see it (access)
   createdAt: Date;
   updatedAt: Date;
 }
