@@ -19,12 +19,28 @@ function EditorPage() {
   };
 
   return (
-    <div>
-      <Editor
-        content={currentSection.content}
-        onContentChange={handleContentChange}
-        isReadOnly={mode === "preview"}
-      />
+    <div style={{
+      minHeight: '100vh',
+      backgroundColor: '#374151',
+      display: 'flex',
+      alignItems: 'center',
+      justifyContent: 'center',
+      padding: '2rem'
+    }}>
+      <div style={{
+        width: '8.5in',
+        height: '11in',
+        backgroundColor: 'white',
+        boxShadow: '0 10px 15px -3px rgba(0, 0, 0, 0.1)',
+        padding: '2rem',
+        color: 'black'
+      }}>
+        <Editor
+          content={currentSection.content}
+          onContentChange={handleContentChange}
+          isReadOnly={mode === "preview"}
+        />
+      </div>
     </div>
   );
 }
