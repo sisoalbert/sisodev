@@ -7,7 +7,9 @@ import { useBlogStore } from "../store/blogStore";
 import { useNavigate } from "react-router-dom";
 import type { Section, BlogStatus, Visibility } from "../types";
 function EditorPage() {
-  const [currentSectionId, setCurrentSectionId] = React.useState<string | null>(null);
+  const [currentSectionId, setCurrentSectionId] = React.useState<string | null>(
+    null
+  );
   const [mode, setMode] = React.useState("edit");
   const [isPublishModalOpen, setIsPublishModalOpen] = React.useState(false);
   const [sections, setSections] = React.useState<Section[]>([]);
@@ -91,7 +93,7 @@ function EditorPage() {
   };
 
   const getCurrentSection = () => {
-    return sections.find(section => section.id === currentSectionId);
+    return sections.find((section) => section.id === currentSectionId);
   };
 
   const handleModeChange = (mode: string) => {
@@ -142,6 +144,17 @@ function EditorPage() {
 
   const currentSection = getCurrentSection();
 
+  React.useEffect(() => {
+    if (error) {
+      alert(error);
+      clearError();
+    }
+  }, [error]);
+
+  if (loading) {
+    return <div>Loading...</div>;
+  }
+
   return (
     <div
       style={{
@@ -160,13 +173,15 @@ function EditorPage() {
         onRemoveSection={removeSection}
         onUpdateSectionName={handleUpdateSectionName}
       />
-      
-      <div style={{ 
-        flex: 1, 
-        display: "flex", 
-        alignItems: "center", 
-        justifyContent: "center" 
-      }}>
+
+      <div
+        style={{
+          flex: 1,
+          display: "flex",
+          alignItems: "center",
+          justifyContent: "center",
+        }}
+      >
         <div
           style={{
             width: "8.5in",
@@ -178,64 +193,64 @@ function EditorPage() {
             position: "relative",
           }}
         >
-        <div
-          style={{
-            position: "absolute",
-            top: "1rem",
-            right: "1rem",
-            display: "flex",
-            gap: "0.5rem",
-          }}
-        >
-          {mode === "edit" ? (
-            <button
-              onClick={() => handleModeChange("preview")}
-              style={{
-                padding: "0.5rem 1rem",
-                backgroundColor: "#3b82f6",
-                color: "white",
-                border: "none",
-                borderRadius: "0.375rem",
-                cursor: "pointer",
-                fontSize: "0.875rem",
-                fontWeight: "500",
-              }}
-            >
-              Preview
-            </button>
-          ) : (
-            <button
-              onClick={() => handleModeChange("edit")}
-              style={{
-                padding: "0.5rem 1rem",
-                backgroundColor: "#6b7280",
-                color: "white",
-                border: "none",
-                borderRadius: "0.375rem",
-                cursor: "pointer",
-                fontSize: "0.875rem",
-                fontWeight: "500",
-              }}
-            >
-              Edit
-            </button>
-          )}
-          <button
-            onClick={() => setIsPublishModalOpen(true)}
+          <div
             style={{
-              padding: "0.5rem 1rem",
-              backgroundColor: "#10b981",
-              color: "white",
-              border: "none",
-              borderRadius: "0.375rem",
-              cursor: "pointer",
-              fontSize: "0.875rem",
-              fontWeight: "500",
+              position: "absolute",
+              top: "1rem",
+              right: "1rem",
+              display: "flex",
+              gap: "0.5rem",
             }}
           >
-            Publish
-          </button>
-        </div>
+            {mode === "edit" ? (
+              <button
+                onClick={() => handleModeChange("preview")}
+                style={{
+                  padding: "0.5rem 1rem",
+                  backgroundColor: "#3b82f6",
+                  color: "white",
+                  border: "none",
+                  borderRadius: "0.375rem",
+                  cursor: "pointer",
+                  fontSize: "0.875rem",
+                  fontWeight: "500",
+                }}
+              >
+                Preview
+              </button>
+            ) : (
+              <button
+                onClick={() => handleModeChange("edit")}
+                style={{
+                  padding: "0.5rem 1rem",
+                  backgroundColor: "#6b7280",
+                  color: "white",
+                  border: "none",
+                  borderRadius: "0.375rem",
+                  cursor: "pointer",
+                  fontSize: "0.875rem",
+                  fontWeight: "500",
+                }}
+              >
+                Edit
+              </button>
+            )}
+            <button
+              onClick={() => setIsPublishModalOpen(true)}
+              style={{
+                padding: "0.5rem 1rem",
+                backgroundColor: "#10b981",
+                color: "white",
+                border: "none",
+                borderRadius: "0.375rem",
+                cursor: "pointer",
+                fontSize: "0.875rem",
+                fontWeight: "500",
+              }}
+            >
+              Publish
+            </button>
+          </div>
           <div style={{ marginTop: "3rem" }}>
             <Editor
               content={currentSection?.content || ""}
