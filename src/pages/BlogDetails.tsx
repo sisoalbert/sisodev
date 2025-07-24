@@ -2,7 +2,7 @@ import { useEffect, useState } from "react";
 import { useParams, useNavigate, useSearchParams } from "react-router-dom";
 import { useBlogStore } from "../store/blogStore";
 import { useAuthStore } from "../store/authStore";
-import { logBlogEvent } from "../lib/firebase";
+import { logBlogEvent, pageViewService } from "../lib/firebase";
 import ReadOnlySectionSidebar from "../components/ReadOnlySectionSidebar";
 import Editor from "../components/Editor";
 import { Calendar, User, Eye, Menu, X } from "lucide-react";
@@ -31,13 +31,15 @@ function BlogDetails() {
   const { slug } = useParams<{ slug: string }>();
   const navigate = useNavigate();
   const [searchParams, setSearchParams] = useSearchParams();
-  const { fetchBlogBySlug, deleteBlog, loading, error } = useBlogStore();
+  const { fetchBlogBySlug, deleteBlog, trackPageView, loading, error } = useBlogStore();
   const { user } = useAuthStore();
   const [blog, setBlog] = useState<Blog | null>(null);
   const [showDeleteConfirm, setShowDeleteConfirm] = useState(false);
   const [currentSectionId, setCurrentSectionId] = useState<string | null>(null);
   const [isInitialLoading, setIsInitialLoading] = useState(true);
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
+  const [pageViews, setPageViews] = useState<number>(0);
+  const [viewsLoading, setViewsLoading] = useState(true);
   const isMobile = useMediaQuery("(max-width: 768px)");
 
   useEffect(() => {
@@ -66,6 +68,26 @@ function BlogDetails() {
       });
     }
   }, [slug, fetchBlogBySlug, user]);
+
+  // Separate useEffect for page view tracking - only runs once when blog is loaded
+  useEffect(() => {
+    if (blog && blog.id) {
+      // Track page view in Firebase (only once per blog load)
+      trackPageView(blog.id);
+
+      // Fetch current page views (after a short delay to allow the increment to process)
+      setTimeout(async () => {
+        try {
+          const views = await pageViewService.getPageViews(blog.id);
+          setPageViews(views);
+        } catch (error) {
+          console.error('Error fetching page views:', error);
+        } finally {
+          setViewsLoading(false);
+        }
+      }, 1000);
+    }
+  }, [blog?.id]); // Only depend on blog.id, so it runs once per unique blog
 
   useEffect(() => {
     if (blog && blog.sections.length > 0) {
@@ -607,7 +629,7 @@ function BlogDetails() {
                     }}
                   >
                     <Eye size={16} />
-                    Views: 43
+                    Views: {viewsLoading ? "..." : pageViews.toLocaleString()}
                   </span>
                 </div>
               </div>

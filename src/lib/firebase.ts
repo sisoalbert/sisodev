@@ -1,7 +1,7 @@
 import { initializeApp } from "firebase/app";
 import { getAuth } from "firebase/auth";
 import { getAnalytics, logEvent, type Analytics } from "firebase/analytics";
-import { getFirestore } from "firebase/firestore";
+import { getFirestore, doc, setDoc, increment, serverTimestamp, getDoc } from "firebase/firestore";
 
 const firebaseConfig = {
   apiKey: import.meta.env.VITE_FIREBASE_API_KEY,
@@ -125,6 +125,83 @@ export const logBlogEvent = {
         context: context || 'unknown',
         timestamp: new Date().toISOString()
       });
+    }
+  }
+};
+
+// Page view tracking functions
+export const pageViewService = {
+  // Track a page view for a blog post
+  trackPageView: async (blogId: string): Promise<void> => {
+    try {
+      const pageViewRef = doc(db, 'pageViews', blogId);
+      
+      // Use setDoc with merge to increment views or create if doesn't exist
+      await setDoc(pageViewRef, {
+        views: increment(1),
+        lastUpdated: serverTimestamp()
+      }, { merge: true });
+      
+      // Also log to analytics
+      if (analytics) {
+        logEvent(analytics, 'page_view', {
+          content_type: 'blog_post',
+          content_id: blogId,
+          timestamp: new Date().toISOString()
+        });
+      }
+    } catch (error) {
+      console.error('Error tracking page view:', error);
+      // Log error to analytics
+      if (analytics) {
+        logEvent(analytics, 'page_view_error', {
+          error_message: (error as Error).message,
+          content_id: blogId,
+          timestamp: new Date().toISOString()
+        });
+      }
+    }
+  },
+
+  // Get page views for a blog post
+  getPageViews: async (blogId: string): Promise<number> => {
+    try {
+      const pageViewRef = doc(db, 'pageViews', blogId);
+      const pageViewSnap = await getDoc(pageViewRef);
+      
+      if (pageViewSnap.exists()) {
+        const data = pageViewSnap.data();
+        return data.views || 0;
+      }
+      return 0;
+    } catch (error) {
+      console.error('Error getting page views:', error);
+      return 0;
+    }
+  },
+
+  // Get page views for multiple blog posts
+  getBulkPageViews: async (blogIds: string[]): Promise<Record<string, number>> => {
+    const viewCounts: Record<string, number> = {};
+    
+    try {
+      // Get all page view documents in parallel
+      const promises = blogIds.map(async (blogId) => {
+        const views = await pageViewService.getPageViews(blogId);
+        return { blogId, views };
+      });
+      
+      const results = await Promise.all(promises);
+      
+      // Convert to object format
+      results.forEach(({ blogId, views }) => {
+        viewCounts[blogId] = views;
+      });
+      
+      return viewCounts;
+    } catch (error) {
+      console.error('Error getting bulk page views:', error);
+      return viewCounts;
     }
   }
 };

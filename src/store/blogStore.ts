@@ -1,5 +1,5 @@
 import { create } from "zustand";
-import { db, logBlogEvent } from "../lib/firebase";
+import { db, logBlogEvent, pageViewService } from "../lib/firebase";
 import {
   collection,
   addDoc,
@@ -32,6 +32,9 @@ interface BlogState {
   fetchMyBlogs: () => Promise<void>;
   fetchBlogById: (blogId: string) => Promise<Blog | null>;
   fetchBlogBySlug: (slug: string) => Promise<Blog | null>;
+  trackPageView: (blogId: string) => Promise<void>;
+  getPageViews: (blogId: string) => Promise<number>;
+  getBulkPageViews: (blogIds: string[]) => Promise<Record<string, number>>;
   clearError: () => void;
 }
 
@@ -317,6 +320,35 @@ export const useBlogStore = create<BlogState>((set) => ({
       );
       set({ error: (error as Error).message, loading: false });
       return null;
+    }
+  },
+
+  // Page view tracking functions
+  trackPageView: async (blogId: string) => {
+    try {
+      await pageViewService.trackPageView(blogId);
+    } catch (error) {
+      console.error('Error tracking page view in store:', error);
+      // Don't set error state for page view tracking failures
+      // as it's not critical to the user experience
+    }
+  },
+
+  getPageViews: async (blogId: string) => {
+    try {
+      return await pageViewService.getPageViews(blogId);
+    } catch (error) {
+      console.error('Error getting page views in store:', error);
+      return 0;
+    }
+  },
+
+  getBulkPageViews: async (blogIds: string[]) => {
+    try {
+      return await pageViewService.getBulkPageViews(blogIds);
+    } catch (error) {
+      console.error('Error getting bulk page views in store:', error);
+      return {};
     }
   },
 

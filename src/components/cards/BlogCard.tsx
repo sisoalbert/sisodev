@@ -1,7 +1,8 @@
-import React from "react";
+import React, { useState, useEffect } from "react";
 import { useNavigate, useLocation } from "react-router-dom";
 import dayjs from "dayjs";
-import { logBlogEvent } from "../../lib/firebase";
+import { Eye } from "lucide-react";
+import { logBlogEvent, pageViewService } from "../../lib/firebase";
 import type { Blog } from "../../types";
 
 interface BlogCardProps {
@@ -11,6 +12,24 @@ interface BlogCardProps {
 const BlogCard: React.FC<BlogCardProps> = ({ blog }) => {
   const navigate = useNavigate();
   const location = useLocation();
+  const [pageViews, setPageViews] = useState<number>(0);
+  const [viewsLoading, setViewsLoading] = useState(true);
+
+  // Fetch page views when component mounts
+  useEffect(() => {
+    const fetchPageViews = async () => {
+      try {
+        const views = await pageViewService.getPageViews(blog.id);
+        setPageViews(views);
+      } catch (error) {
+        console.error('Error fetching page views for blog:', blog.id, error);
+      } finally {
+        setViewsLoading(false);
+      }
+    };
+
+    fetchPageViews();
+  }, [blog.id]);
 
   return (
     <div
@@ -101,7 +120,18 @@ const BlogCard: React.FC<BlogCardProps> = ({ blog }) => {
             </span>
           </div>
 
-          <div style={{ display: "flex", alignItems: "center", gap: "8px" }}>
+          <div style={{ display: "flex", alignItems: "center", gap: "12px" }}>
+            <div style={{ display: "flex", alignItems: "center", gap: "4px" }}>
+              <Eye size={12} style={{ color: "#9ca3af" }} />
+              <span
+                style={{
+                  fontSize: "12px",
+                  color: "#9ca3af",
+                }}
+              >
+                {viewsLoading ? "..." : pageViews.toLocaleString()}
+              </span>
+            </div>
             <span
               style={{
                 fontSize: "12px",

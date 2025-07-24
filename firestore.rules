@@ -24,6 +24,21 @@ service cloud.firestore {
         request.auth.uid == resource.data.userId;
     }
     
+    // Page views collection
+    match /pageViews/{blogId} {
+      // Allow anyone to read page views
+      allow read: if true;
+      
+      // Allow anyone to create or update page views (for incrementing view counts)
+      // This enables anonymous users to increment page views
+      allow create, update: if true;
+      
+      // Only allow delete if the user is the owner of the blog
+      // We need to check the corresponding blog document to verify ownership
+      allow delete: if request.auth != null &&
+        request.auth.uid == get(/databases/$(database)/documents/blogs/$(blogId)).data.userId;
+    }
+    
     // Users collection (for future use)
     match /users/{userId} {
       allow read, write: if request.auth != null && request.auth.uid == userId;
