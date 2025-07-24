@@ -623,8 +623,8 @@ function BlogDetails() {
               {currentSection && (
                 <div
                   style={{
-                    marginLeft: "-2rem",
-                    marginRight: "-2rem",
+                    marginLeft: isMobile ? "-2rem" : "-1rem",
+                    marginRight: isMobile ? "-2rem" : "-1rem",
                   }}
                 >
                   <Editor

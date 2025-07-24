@@ -6,6 +6,25 @@ import SectionSidebar from "../components/SectionSidebar";
 import { useAuthStore } from "../store/authStore";
 import { useBlogStore } from "../store/blogStore";
 import type { Section, Blog, BlogStatus, Visibility } from "../types";
+import SEO from "../components/SEO";
+import { Menu, X } from "lucide-react";
+
+// Media query hook for responsive behavior
+function useMediaQuery(query: string) {
+  const [matches, setMatches] = useState(false);
+
+  useEffect(() => {
+    const media = window.matchMedia(query);
+    if (media.matches !== matches) {
+      setMatches(media.matches);
+    }
+    const listener = () => setMatches(media.matches);
+    media.addEventListener("change", listener);
+    return () => media.removeEventListener("change", listener);
+  }, [matches, query]);
+
+  return matches;
+}
 
 function EditBlog() {
   const { id } = useParams<{ id: string }>();
@@ -27,6 +46,8 @@ function EditBlog() {
   const [status, setStatus] = useState<BlogStatus>("published");
   const [visibility, setVisibility] = useState<Visibility>("public");
   const [isLoading, setIsLoading] = useState(true);
+  const [isSidebarOpen, setIsSidebarOpen] = useState(false);
+  const isMobile = useMediaQuery("(max-width: 768px)");
 
   useEffect(() => {
     if (id) {
@@ -245,49 +266,115 @@ function EditBlog() {
   }
 
   return (
-    <div
-      style={{
-        height: "100vh",
-        backgroundColor: "#F9FAFB",
-        display: "flex",
-        overflow: "hidden",
-      }}
-    >
-      <SectionSidebar
-        sections={sections}
-        currentSectionId={currentSectionId}
-        onSectionSelect={handleSectionSelect}
-        onAddSection={addSection}
-        onRemoveSection={removeSection}
-        onUpdateSectionName={handleUpdateSectionName}
+    <>
+      <SEO
+        title={`Edit ${blog.title}`}
+        description={`Edit your blog post: ${blog.title}. Make changes and update your content with our rich text editor.`}
+        keywords={['edit blog', 'update article', 'blog editor', 'content management']}
       />
-
       <div
         style={{
-          flex: 1,
-          display: "flex",
-          flexDirection: "column",
-          alignItems: "center",
           height: "100vh",
-          overflow: "auto",
-          padding: "2rem",
-          paddingTop: "5rem",
-          paddingBottom: "2rem",
-          gap: "1.5rem",
+          backgroundColor: "#F9FAFB",
+          display: "flex",
+          overflow: "hidden",
         }}
       >
+        {/* Desktop Sidebar - Hidden on mobile */}
+        {!isMobile && (
+          <SectionSidebar
+            sections={sections}
+            currentSectionId={currentSectionId}
+            onSectionSelect={handleSectionSelect}
+            onAddSection={addSection}
+            onRemoveSection={removeSection}
+            onUpdateSectionName={handleUpdateSectionName}
+          />
+        )}
+
         <div
           style={{
-            width: "8.5in",
-            backgroundColor: "white",
-            boxShadow: "0 10px 15px -3px rgba(0, 0, 0, 0.1)",
-            color: "black",
-            position: "relative",
+            flex: 1,
             display: "flex",
             flexDirection: "column",
-            marginBottom: "6rem",
+            alignItems: "center",
+            height: "100vh",
+            overflow: "auto",
+            padding: isMobile ? "1rem" : "2rem",
+            paddingTop: "5rem",
+            paddingBottom: "2rem",
+            gap: "1.5rem",
           }}
         >
+          {/* Control Buttons */}
+          <div
+            style={{
+              width: "100%",
+              maxWidth: "8.5in",
+              minWidth: "320px",
+              display: "flex",
+              justifyContent: "space-between",
+              alignItems: "center",
+              gap: "0.5rem",
+              zIndex: 10,
+            }}
+          >
+            <div style={{ display: "flex", gap: "0.5rem" }}>
+              <button
+                onClick={() => navigate(`/blogs/${blog.slug}`)}
+                style={{
+                  padding: "0.5rem 1rem",
+                  backgroundColor: "rgba(107, 114, 128, 0.8)",
+                  color: "white",
+                  border: "none",
+                  borderRadius: "0.375rem",
+                  cursor: "pointer",
+                  fontSize: "0.875rem",
+                  fontWeight: "500",
+                }}
+              >
+                ← Back to Blog
+              </button>
+            </div>
+
+            {/* Sections Menu Button - Only show on mobile */}
+            {isMobile && (
+              <button
+                onClick={() => setIsSidebarOpen(true)}
+                style={{
+                  display: "flex",
+                  alignItems: "center",
+                  gap: "0.5rem",
+                  padding: "0.5rem 1rem",
+                  backgroundColor: "rgba(59, 130, 246, 0.8)",
+                  color: "white",
+                  border: "none",
+                  borderRadius: "0.375rem",
+                  cursor: "pointer",
+                  fontSize: "0.875rem",
+                  fontWeight: "500",
+                }}
+              >
+                <Menu size={16} />
+                Sections
+              </button>
+            )}
+          </div>
+          <div
+            style={{
+              width: "100%",
+              maxWidth: "8.5in",
+              minWidth: "320px",
+              minHeight: "11in",
+              backgroundColor: "white",
+              boxShadow: "0 10px 15px -3px rgba(0, 0, 0, 0.1)",
+              color: "black",
+              position: "relative",
+              display: "flex",
+              flexDirection: "column",
+              marginBottom: "6rem",
+            }}
+          >
           <div
             style={{
               position: "absolute",
@@ -353,7 +440,13 @@ function EditBlog() {
               paddingTop: "1rem",
             }}
           >
-            <div style={{ marginTop: "3rem" }}>
+            <div 
+              style={{ 
+                marginTop: "3rem",
+                marginLeft: "-2rem",
+                marginRight: "-2rem",
+              }}
+            >
               <Editor
                 content={currentSection?.content || ""}
                 onContentChange={handleContentChange}
@@ -361,10 +454,10 @@ function EditBlog() {
               />
             </div>
           </div>
+          </div>
         </div>
-      </div>
 
-      <PublishModal
+        <PublishModal
         isOpen={isPublishModalOpen}
         onClose={() => setIsPublishModalOpen(false)}
         onPublish={handlePublish}
@@ -385,7 +478,166 @@ function EditBlog() {
         visibility={visibility}
         setVisibility={setVisibility}
       />
-    </div>
+
+      {/* Mobile Sections Drawer - Only show on mobile */}
+      {isMobile && isSidebarOpen && (
+        <div
+          style={{
+            position: "fixed",
+            top: "0",
+            left: "0",
+            right: "0",
+            bottom: "0",
+            backgroundColor: "rgba(0, 0, 0, 0.5)",
+            display: "flex",
+            alignItems: "flex-start",
+            justifyContent: "flex-start",
+            zIndex: "1000",
+          }}
+          onClick={() => setIsSidebarOpen(false)}
+        >
+          <div
+            style={{
+              width: "280px",
+              maxWidth: "80vw",
+              height: "100vh",
+              backgroundColor: "#f8fafc",
+              borderRight: "1px solid #e2e8f0",
+              display: "flex",
+              flexDirection: "column",
+              transform: isSidebarOpen
+                ? "translateX(0)"
+                : "translateX(-100%)",
+              transition: "transform 0.3s ease-in-out",
+            }}
+            onClick={(e) => e.stopPropagation()}
+          >
+            {/* Drawer Header */}
+            <div
+              style={{
+                padding: "1rem",
+                borderBottom: "1px solid #e2e8f0",
+                display: "flex",
+                justifyContent: "space-between",
+                alignItems: "center",
+                backgroundColor: "white",
+              }}
+            >
+              <h3
+                style={{
+                  fontSize: "1.125rem",
+                  fontWeight: "600",
+                  color: "#374151",
+                  margin: 0,
+                }}
+              >
+                Sections
+              </h3>
+              <button
+                onClick={() => setIsSidebarOpen(false)}
+                style={{
+                  padding: "0.5rem",
+                  backgroundColor: "transparent",
+                  border: "none",
+                  cursor: "pointer",
+                  borderRadius: "0.375rem",
+                  display: "flex",
+                  alignItems: "center",
+                  justifyContent: "center",
+                }}
+              >
+                <X size={20} color="#6b7280" />
+              </button>
+            </div>
+
+            {/* Sections List */}
+            <div
+              style={{
+                flex: 1,
+                padding: "1rem",
+                overflowY: "auto",
+                display: "flex",
+                flexDirection: "column",
+                gap: "0.5rem",
+              }}
+            >
+              {sections.length === 0 ? (
+                <div
+                  style={{
+                    padding: "1rem",
+                    textAlign: "center",
+                    color: "#6b7280",
+                    fontSize: "0.875rem",
+                  }}
+                >
+                  No sections available.
+                </div>
+              ) : (
+                sections.map((section, index) => (
+                  <div
+                    key={section.id}
+                    style={{
+                      border: "1px solid #e2e8f0",
+                      borderRadius: "0.375rem",
+                      backgroundColor:
+                        currentSectionId === section.id ? "#eff6ff" : "white",
+                      borderColor:
+                        currentSectionId === section.id
+                          ? "#3b82f6"
+                          : "#e2e8f0",
+                      cursor: "pointer",
+                    }}
+                    onClick={() => {
+                      handleSectionSelect(section);
+                      setIsSidebarOpen(false);
+                    }}
+                  >
+                    <div
+                      style={{
+                        padding: "0.75rem",
+                      }}
+                    >
+                      <div
+                        style={{
+                          fontSize: "0.875rem",
+                          fontWeight: "500",
+                          color: "#374151",
+                          marginBottom: "0.5rem",
+                        }}
+                      >
+                        {section.name || `Section ${index + 1}`}
+                      </div>
+                    </div>
+                  </div>
+                ))
+              )}
+              
+              {/* Add Section Button */}
+              <button
+                onClick={() => {
+                  addSection();
+                  setIsSidebarOpen(false);
+                }}
+                style={{
+                  padding: "0.75rem",
+                  backgroundColor: "#3b82f6",
+                  color: "white",
+                  border: "none",
+                  borderRadius: "0.375rem",
+                  cursor: "pointer",
+                  fontSize: "0.875rem",
+                  fontWeight: "500",
+                  marginTop: "0.5rem",
+                }}
+              >
+                + Add Section
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+      </div>
+    </>
   );
 }
 
