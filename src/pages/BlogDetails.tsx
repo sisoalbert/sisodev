@@ -4,8 +4,25 @@ import { useBlogStore } from "../store/blogStore";
 import { useAuthStore } from "../store/authStore";
 import ReadOnlySectionSidebar from "../components/ReadOnlySectionSidebar";
 import Editor from "../components/Editor";
-import { Calendar, User, Eye } from "lucide-react";
+import { Calendar, User, Eye, Menu, X } from "lucide-react";
 import type { Blog, Section } from "../types";
+
+// Media query hook for responsive behavior
+function useMediaQuery(query: string) {
+  const [matches, setMatches] = useState(false);
+
+  useEffect(() => {
+    const media = window.matchMedia(query);
+    if (media.matches !== matches) {
+      setMatches(media.matches);
+    }
+    const listener = () => setMatches(media.matches);
+    media.addEventListener('change', listener);
+    return () => media.removeEventListener('change', listener);
+  }, [matches, query]);
+
+  return matches;
+}
 
 function BlogDetails() {
   const { slug } = useParams<{ slug: string }>();
@@ -17,6 +34,8 @@ function BlogDetails() {
   const [showDeleteConfirm, setShowDeleteConfirm] = useState(false);
   const [currentSectionId, setCurrentSectionId] = useState<string | null>(null);
   const [isInitialLoading, setIsInitialLoading] = useState(true);
+  const [isSidebarOpen, setIsSidebarOpen] = useState(false);
+  const isMobile = useMediaQuery('(max-width: 768px)');
 
   useEffect(() => {
     if (slug) {
@@ -262,11 +281,14 @@ function BlogDetails() {
         overflow: "hidden", // Prevent body scrolling
       }}
     >
-      <ReadOnlySectionSidebar
-        sections={blog.sections}
-        currentSectionId={currentSectionId}
-        onSectionSelect={handleSectionSelect}
-      />
+      {/* Desktop Sidebar - Hidden on mobile */}
+      {!isMobile && (
+        <ReadOnlySectionSidebar
+          sections={blog.sections}
+          currentSectionId={currentSectionId}
+          onSectionSelect={handleSectionSelect}
+        />
+      )}
 
       <div
         style={{
@@ -276,7 +298,7 @@ function BlogDetails() {
           alignItems: "center",
           height: "100vh",
           overflow: "auto",
-          padding: "2rem",
+          padding: isMobile ? "1rem" : "2rem",
           paddingTop: "5rem", // Adjusted for navbar clearance
           paddingBottom: "2rem",
           gap: "1.5rem",
@@ -287,12 +309,15 @@ function BlogDetails() {
           style={{
             width: "100%",
             maxWidth: "8.5in",
+            minWidth: "320px",
             display: "flex",
-            justifyContent: "flex-start",
+            justifyContent: "space-between",
+            alignItems: "center",
             gap: "0.5rem",
             zIndex: 10,
           }}
         >
+          <div style={{ display: "flex", gap: "0.5rem" }}>
           <button
             onClick={() => {
               const returnTo = searchParams.get("returnTo");
@@ -347,10 +372,36 @@ function BlogDetails() {
               </button>
             </>
           )}
+          </div>
+          
+          {/* Sections Menu Button - Only show on mobile */}
+          {isMobile && (
+            <button
+              onClick={() => setIsSidebarOpen(true)}
+              style={{
+                display: "flex",
+                alignItems: "center",
+                gap: "0.5rem",
+                padding: "0.5rem 1rem",
+                backgroundColor: "rgba(59, 130, 246, 0.8)",
+                color: "white",
+                border: "none",
+                borderRadius: "0.375rem",
+                cursor: "pointer",
+                fontSize: "0.875rem",
+                fontWeight: "500",
+              }}
+            >
+              <Menu size={16} />
+              Sections
+            </button>
+          )}
         </div>
         <div
           style={{
-            width: "8.5in",
+            width: "100%",
+            maxWidth: "8.5in",
+            minWidth: "320px",
             // minHeight: "11in",
             backgroundColor: "white",
             boxShadow: "0 10px 15px -3px rgba(0, 0, 0, 0.1)",
@@ -521,6 +572,139 @@ function BlogDetails() {
           )}
         </div>
       </div>
+
+      {/* Mobile Sections Drawer - Only show on mobile */}
+      {isMobile && isSidebarOpen && (
+        <div
+          style={{
+            position: "fixed",
+            top: "0",
+            left: "0",
+            right: "0",
+            bottom: "0",
+            backgroundColor: "rgba(0, 0, 0, 0.5)",
+            display: "flex",
+            alignItems: "flex-start",
+            justifyContent: "flex-start",
+            zIndex: "1000",
+          }}
+          onClick={() => setIsSidebarOpen(false)}
+        >
+          <div
+            style={{
+              width: "280px",
+              maxWidth: "80vw",
+              height: "100vh",
+              backgroundColor: "#f8fafc",
+              borderRight: "1px solid #e2e8f0",
+              display: "flex",
+              flexDirection: "column",
+              transform: isSidebarOpen ? "translateX(0)" : "translateX(-100%)",
+              transition: "transform 0.3s ease-in-out",
+            }}
+            onClick={(e) => e.stopPropagation()}
+          >
+            {/* Drawer Header */}
+            <div
+              style={{
+                padding: "1rem",
+                borderBottom: "1px solid #e2e8f0",
+                display: "flex",
+                justifyContent: "space-between",
+                alignItems: "center",
+                backgroundColor: "white",
+              }}
+            >
+              <h3
+                style={{
+                  fontSize: "1.125rem",
+                  fontWeight: "600",
+                  color: "#374151",
+                  margin: 0,
+                }}
+              >
+                Sections
+              </h3>
+              <button
+                onClick={() => setIsSidebarOpen(false)}
+                style={{
+                  padding: "0.5rem",
+                  backgroundColor: "transparent",
+                  border: "none",
+                  cursor: "pointer",
+                  borderRadius: "0.375rem",
+                  display: "flex",
+                  alignItems: "center",
+                  justifyContent: "center",
+                }}
+              >
+                <X size={20} color="#6b7280" />
+              </button>
+            </div>
+
+            {/* Sections List */}
+            <div
+              style={{
+                flex: 1,
+                padding: "1rem",
+                overflowY: "auto",
+                display: "flex",
+                flexDirection: "column",
+                gap: "0.5rem",
+              }}
+            >
+              {blog.sections.length === 0 ? (
+                <div
+                  style={{
+                    padding: "1rem",
+                    textAlign: "center",
+                    color: "#6b7280",
+                    fontSize: "0.875rem",
+                  }}
+                >
+                  No sections available.
+                </div>
+              ) : (
+                blog.sections.map((section, index) => (
+                  <div
+                    key={section.id}
+                    style={{
+                      border: "1px solid #e2e8f0",
+                      borderRadius: "0.375rem",
+                      backgroundColor:
+                        currentSectionId === section.id ? "#eff6ff" : "white",
+                      borderColor:
+                        currentSectionId === section.id ? "#3b82f6" : "#e2e8f0",
+                      cursor: "pointer",
+                    }}
+                    onClick={() => {
+                      handleSectionSelect(section);
+                      setIsSidebarOpen(false);
+                    }}
+                  >
+                    <div
+                      style={{
+                        padding: "0.75rem",
+                      }}
+                    >
+                      <div
+                        style={{
+                          fontSize: "0.875rem",
+                          fontWeight: "500",
+                          color: "#374151",
+                          marginBottom: "0.5rem",
+                        }}
+                      >
+                        {section.name || `Section ${index + 1}`}
+                      </div>
+                    </div>
+                  </div>
+                ))
+              )}
+            </div>
+          </div>
+        </div>
+      )}
 
       {/* Delete Confirmation Modal */}
       {showDeleteConfirm && (
