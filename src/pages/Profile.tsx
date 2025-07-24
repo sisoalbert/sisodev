@@ -1,12 +1,22 @@
 import { useNavigate } from "react-router-dom";
+import { useEffect, useState } from "react";
 import { useAuthStore } from "../store/authStore";
+import { useBlogStore } from "../store/blogStore";
 import { User, Plus, Eye, UserPen, LogOut, Settings } from "lucide-react";
 import Footer from "../components/Footer";
 import SEO from "../components/SEO";
 
 function Profile() {
   const { user, signOut, loading } = useAuthStore();
+  const { fetchMyBlogs, getBulkPageViews } = useBlogStore();
   const navigate = useNavigate();
+  
+  // Blog stats state
+  const [blogStats, setBlogStats] = useState({
+    publishedCount: 0,
+    totalViews: 0,
+    loading: true
+  });
 
   const handleSignOut = async () => {
     try {
@@ -44,6 +54,48 @@ function Profile() {
     const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
     return diffDays;
   };
+
+  // Fetch user blog stats
+  useEffect(() => {
+    const fetchBlogStats = async () => {
+      if (!user) {
+        setBlogStats({ publishedCount: 0, totalViews: 0, loading: false });
+        return;
+      }
+
+      try {
+        setBlogStats(prev => ({ ...prev, loading: true }));
+        
+        // Fetch user's blogs to get blog IDs and count
+        await fetchMyBlogs();
+        
+        // Get blogs from store (we need to access the store state)
+        const blogStore = useBlogStore.getState();
+        const userBlogs = blogStore.blogs.filter(blog => blog.userId === user.uid);
+        
+        const publishedCount = userBlogs.length;
+        const blogIds = userBlogs.map(blog => blog.id);
+        
+        // Get bulk page views for all user's blogs
+        let totalViews = 0;
+        if (blogIds.length > 0) {
+          const viewsData = await getBulkPageViews(blogIds);
+          totalViews = Object.values(viewsData).reduce((sum, views) => sum + views, 0);
+        }
+        
+        setBlogStats({
+          publishedCount,
+          totalViews,
+          loading: false
+        });
+      } catch (error) {
+        console.error('Error fetching blog stats:', error);
+        setBlogStats({ publishedCount: 0, totalViews: 0, loading: false });
+      }
+    };
+
+    fetchBlogStats();
+  }, [user, fetchMyBlogs, getBulkPageViews]);
 
   return (
     <>
@@ -296,7 +348,7 @@ function Profile() {
                     display: "block",
                   }}
                 >
-                  0
+                  {blogStats.loading ? "..." : blogStats.publishedCount}
                 </span>
                 <span
                   style={{
@@ -326,7 +378,7 @@ function Profile() {
                     display: "block",
                   }}
                 >
-                  0
+                  {blogStats.loading ? "..." : blogStats.totalViews.toLocaleString()}
                 </span>
                 <span
                   style={{
