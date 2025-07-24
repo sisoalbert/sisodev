@@ -1,7 +1,8 @@
-import React from 'react';
-import { useNavigate, useLocation } from 'react-router-dom';
-import { logBlogEvent } from '../../lib/firebase';
-import type { Blog } from '../../types';
+import React from "react";
+import { useNavigate, useLocation } from "react-router-dom";
+import dayjs from "dayjs";
+import { logBlogEvent } from "../../lib/firebase";
+import type { Blog } from "../../types";
 
 interface BlogCardProps {
   blog: Blog;
@@ -24,13 +25,16 @@ const BlogCard: React.FC<BlogCardProps> = ({ blog }) => {
       }}
       onClick={() => {
         // Log analytics event for blog card click
-        logBlogEvent.navigateToBlogDetails(blog.id, blog.slug, 'blog_card');
-        navigate(`/blogs/${blog.slug}?returnTo=${encodeURIComponent(location.pathname)}`);
+        logBlogEvent.navigateToBlogDetails(blog.id, blog.slug, "blog_card");
+        navigate(
+          `/blogs/${blog.slug}?returnTo=${encodeURIComponent(
+            location.pathname
+          )}`
+        );
       }}
       onMouseOver={(e) => {
         e.currentTarget.style.transform = "translateY(-2px)";
-        e.currentTarget.style.boxShadow =
-          "0 8px 15px -3px rgba(0, 0, 0, 0.1)";
+        e.currentTarget.style.boxShadow = "0 8px 15px -3px rgba(0, 0, 0, 0.1)";
       }}
       onMouseOut={(e) => {
         e.currentTarget.style.transform = "translateY(0)";
@@ -98,28 +102,13 @@ const BlogCard: React.FC<BlogCardProps> = ({ blog }) => {
           </div>
 
           <div style={{ display: "flex", alignItems: "center", gap: "8px" }}>
-            {blog.category && (
-              <span
-                style={{
-                  backgroundColor: "#e5e7eb",
-                  color: "#374151",
-                  padding: "4px 8px",
-                  borderRadius: "4px",
-                  fontSize: "12px",
-                  fontWeight: "500",
-                }}
-              >
-                {blog.category}
-              </span>
-            )}
-
             <span
               style={{
                 fontSize: "12px",
                 color: "#9ca3af",
               }}
             >
-              {blog.createdAt.toLocaleDateString()}
+              {dayjs(blog.createdAt).format("DD MMM ")}
             </span>
           </div>
         </div>
