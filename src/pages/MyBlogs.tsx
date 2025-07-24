@@ -1,5 +1,5 @@
 import { useEffect } from "react";
-import { useNavigate, Link } from "react-router-dom";
+import { useNavigate, useLocation, Link } from "react-router-dom";
 import { useBlogStore } from "../store/blogStore";
 import { useAuthStore } from "../store/authStore";
 import type { Blog } from "../types";
@@ -8,6 +8,7 @@ function MyBlogs() {
   const { blogs, loading, error, fetchMyBlogs, deleteBlog } = useBlogStore();
   const { user } = useAuthStore();
   const navigate = useNavigate();
+  const location = useLocation();
 
   useEffect(() => {
     fetchMyBlogs();
@@ -202,7 +203,7 @@ function MyBlogs() {
           >
             <button
               onClick={() => navigate(`/blogs/${blog.slug}?returnTo=${encodeURIComponent(
-                window.location.pathname
+                location.pathname
               )}`)}
               style={{
                 backgroundColor: "#f3f4f6",

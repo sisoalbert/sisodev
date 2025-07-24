@@ -1,5 +1,5 @@
 import { useEffect } from "react";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useLocation } from "react-router-dom";
 import { useBlogStore } from "../store/blogStore";
 import { useAuthStore } from "../store/authStore";
 import type { Blog } from "../types";
@@ -8,6 +8,7 @@ function Blogs() {
   const { blogs, loading, error, fetchPublicBlogs } = useBlogStore();
   const { user } = useAuthStore();
   const navigate = useNavigate();
+  const location = useLocation();
 
   useEffect(() => {
     fetchPublicBlogs();
@@ -26,7 +27,7 @@ function Blogs() {
           transition: "transform 0.2s, box-shadow 0.2s",
         }}
         onClick={() =>
-          navigate(`/blogs/${blog.slug}?returnTo=${encodeURIComponent(window.location.pathname)}`)
+          navigate(`/blogs/${blog.slug}?returnTo=${encodeURIComponent(location.pathname)}`)
         }
         onMouseOver={(e) => {
           e.currentTarget.style.transform = "translateY(-2px)";
