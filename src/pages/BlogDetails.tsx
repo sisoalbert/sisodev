@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { useParams, useNavigate } from "react-router-dom";
+import { useParams, useNavigate, useSearchParams } from "react-router-dom";
 import { useBlogStore } from "../store/blogStore";
 import { useAuthStore } from "../store/authStore";
 import ReadOnlySectionSidebar from "../components/ReadOnlySectionSidebar";
@@ -9,6 +9,7 @@ import type { Blog, Section } from "../types";
 function BlogDetails() {
   const { slug } = useParams<{ slug: string }>();
   const navigate = useNavigate();
+  const [searchParams] = useSearchParams();
   const { fetchBlogBySlug, deleteBlog, loading, error } = useBlogStore();
   const { user } = useAuthStore();
   const [blog, setBlog] = useState<Blog | null>(null);
@@ -31,7 +32,8 @@ function BlogDetails() {
 
     try {
       await deleteBlog(blog.id);
-      navigate("/");
+      const returnTo = searchParams.get('returnTo');
+      navigate(returnTo || '/');
     } catch (error) {
       console.error("Error deleting blog:", error);
     }
@@ -101,7 +103,10 @@ function BlogDetails() {
           </h1>
           <p style={{ marginBottom: "1.5rem", color: "#6b7280" }}>{error}</p>
           <button
-            onClick={() => navigate("/")}
+            onClick={() => {
+              const returnTo = searchParams.get('returnTo');
+              navigate(returnTo || '/');
+            }}
             style={{
               backgroundColor: "#dc2626",
               color: "white",
@@ -157,7 +162,10 @@ function BlogDetails() {
             The blog post "{slug}" could not be found.
           </p>
           <button
-            onClick={() => navigate("/")}
+            onClick={() => {
+              const returnTo = searchParams.get('returnTo');
+              navigate(returnTo || '/');
+            }}
             style={{
               backgroundColor: "#3b82f6",
               color: "white",
@@ -264,7 +272,10 @@ function BlogDetails() {
             }}
           >
             <button
-              onClick={() => navigate("/")}
+              onClick={() => {
+                const returnTo = searchParams.get('returnTo');
+                navigate(returnTo || '/');
+              }}
               style={{
                 padding: "0.5rem 1rem",
                 backgroundColor: "rgba(107, 114, 128, 0.8)",

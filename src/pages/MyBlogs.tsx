@@ -250,7 +250,7 @@ function MyBlogs() {
 
           <div style={{ marginTop: "16px", display: "flex", gap: "8px", justifyContent: "flex-end" }}>
             <a
-              href={`/blogs/${blog.slug}`}
+              href={`/blogs/${blog.slug}?returnTo=${encodeURIComponent(window.location.pathname)}`}
               style={{
                 backgroundColor: "#f3f4f6",
                 color: "#374151",

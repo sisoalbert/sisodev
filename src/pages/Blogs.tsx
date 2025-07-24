@@ -78,7 +78,7 @@ function Blogs() {
           cursor: "pointer",
           transition: "transform 0.2s, box-shadow 0.2s",
         }}
-        onClick={() => (window.location.href = `/blogs/${blog.slug}`)}
+        onClick={() => (window.location.href = `/blogs/${blog.slug}?returnTo=${encodeURIComponent(window.location.pathname)}`)}
         onMouseOver={(e) => {
           e.currentTarget.style.transform = "translateY(-2px)";
           e.currentTarget.style.boxShadow =

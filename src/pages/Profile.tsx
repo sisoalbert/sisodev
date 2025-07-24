@@ -226,7 +226,7 @@ function Profile() {
             </a>
 
             <a
-              href="/"
+              href="/blogs"
               style={{
                 backgroundColor: "#6b7280",
                 color: "white",
