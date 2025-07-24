@@ -11,71 +11,6 @@ function MyBlogs() {
     fetchMyBlogs();
   }, [fetchMyBlogs]);
 
-  const Navbar = () => {
-    return (
-      <nav
-        style={{ backgroundColor: "#1f2937", color: "white", padding: "16px" }}
-      >
-        <div
-          style={{
-            maxWidth: "1200px",
-            margin: "0 auto",
-            display: "flex",
-            justifyContent: "space-between",
-            alignItems: "center",
-          }}
-        >
-          <div style={{ fontSize: "18px", fontWeight: "bold" }}>
-            <a
-              href="/"
-              style={{
-                marginRight: "16px",
-                color: "white",
-                textDecoration: "none",
-              }}
-            >
-              SisoDev
-            </a>
-          </div>
-          <div>
-            <>
-              <a
-                href="/blogs"
-                style={{
-                  marginRight: "16px",
-                  color: "white",
-                  textDecoration: "none",
-                }}
-              >
-                All Blogs
-              </a>
-              <a
-                href="/create-blog"
-                style={{
-                  marginRight: "16px",
-                  color: "white",
-                  textDecoration: "none",
-                }}
-              >
-                Create Blog
-              </a>
-              <a
-                href="/profile"
-                style={{
-                  marginRight: "16px",
-                  color: "white",
-                  textDecoration: "none",
-                }}
-              >
-                Profile
-              </a>
-            </>
-          </div>
-        </div>
-      </nav>
-    );
-  };
-
   const handleDelete = async (blogId: string, blogTitle: string) => {
     if (window.confirm(`Are you sure you want to delete "${blogTitle}"?`)) {
       try {
@@ -94,13 +29,13 @@ function MyBlogs() {
       published: "#10b981",
       archived: "#6b7280",
       deleted: "#ef4444",
-      "pending-review": "#3b82f6"
+      "pending-review": "#3b82f6",
     }[blog.status];
 
     const visibilityIcon = {
       public: "🌍",
       private: "🔒",
-      unlisted: "👁️‍🗨️"
+      unlisted: "👁️‍🗨️",
     }[blog.visibility];
 
     return (
@@ -128,7 +63,14 @@ function MyBlogs() {
         )}
 
         <div style={{ padding: "20px" }}>
-          <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start", marginBottom: "12px" }}>
+          <div
+            style={{
+              display: "flex",
+              justifyContent: "space-between",
+              alignItems: "flex-start",
+              marginBottom: "12px",
+            }}
+          >
             <h2
               style={{
                 fontSize: "20px",
@@ -248,9 +190,18 @@ function MyBlogs() {
             </div>
           )}
 
-          <div style={{ marginTop: "16px", display: "flex", gap: "8px", justifyContent: "flex-end" }}>
+          <div
+            style={{
+              marginTop: "16px",
+              display: "flex",
+              gap: "8px",
+              justifyContent: "flex-end",
+            }}
+          >
             <a
-              href={`/blogs/${blog.slug}?returnTo=${encodeURIComponent(window.location.pathname)}`}
+              href={`/blogs/${blog.slug}?returnTo=${encodeURIComponent(
+                window.location.pathname
+              )}`}
               style={{
                 backgroundColor: "#f3f4f6",
                 color: "#374151",
@@ -302,7 +253,6 @@ function MyBlogs() {
   if (!user) {
     return (
       <div style={{ minHeight: "100vh", backgroundColor: "#f3f4f6" }}>
-        <Navbar />
         <div
           style={{
             maxWidth: "1200px",
@@ -311,7 +261,9 @@ function MyBlogs() {
             textAlign: "center",
           }}
         >
-          <h1 style={{ fontSize: "24px", marginBottom: "16px" }}>Please log in to view your blogs</h1>
+          <h1 style={{ fontSize: "24px", marginBottom: "16px" }}>
+            Please log in to view your blogs
+          </h1>
           <a
             href="/login"
             style={{
@@ -333,8 +285,6 @@ function MyBlogs() {
 
   return (
     <div style={{ minHeight: "100vh", backgroundColor: "#f3f4f6" }}>
-      <Navbar />
-
       <div
         style={{
           maxWidth: "1200px",
@@ -342,7 +292,14 @@ function MyBlogs() {
           padding: "32px 16px",
         }}
       >
-        <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "24px" }}>
+        <div
+          style={{
+            display: "flex",
+            justifyContent: "space-between",
+            alignItems: "center",
+            marginBottom: "24px",
+          }}
+        >
           <h1
             style={{
               fontSize: "30px",

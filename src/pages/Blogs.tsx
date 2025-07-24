@@ -11,61 +11,6 @@ function Blogs() {
     fetchPublicBlogs();
   }, [fetchPublicBlogs]);
 
-  const Navbar = () => {
-    return (
-      <nav
-        style={{ backgroundColor: "#1f2937", color: "white", padding: "16px" }}
-      >
-        <div
-          style={{
-            maxWidth: "1200px",
-            margin: "0 auto",
-            display: "flex",
-            justifyContent: "space-between",
-            alignItems: "center",
-          }}
-        >
-          <div style={{ fontSize: "18px", fontWeight: "bold" }}>
-            <a
-              href="/"
-              style={{
-                marginRight: "16px",
-                color: "white",
-                textDecoration: "none",
-              }}
-            >
-              SisoDev
-            </a>
-          </div>
-          <div>
-            <>
-              <a
-                href="/create-blog"
-                style={{
-                  marginRight: "16px",
-                  color: "white",
-                  textDecoration: "none",
-                }}
-              >
-                Create Blog
-              </a>
-              <a
-                href="/profile"
-                style={{
-                  marginRight: "16px",
-                  color: "white",
-                  textDecoration: "none",
-                }}
-              >
-                Profile
-              </a>
-            </>
-          </div>
-        </div>
-      </nav>
-    );
-  };
-
   const BlogCard = ({ blog }: { blog: Blog }) => {
     return (
       <div
@@ -78,7 +23,11 @@ function Blogs() {
           cursor: "pointer",
           transition: "transform 0.2s, box-shadow 0.2s",
         }}
-        onClick={() => (window.location.href = `/blogs/${blog.slug}?returnTo=${encodeURIComponent(window.location.pathname)}`)}
+        onClick={() =>
+          (window.location.href = `/blogs/${
+            blog.slug
+          }?returnTo=${encodeURIComponent(window.location.pathname)}`)
+        }
         onMouseOver={(e) => {
           e.currentTarget.style.transform = "translateY(-2px)";
           e.currentTarget.style.boxShadow =
@@ -214,8 +163,6 @@ function Blogs() {
 
   return (
     <div style={{ minHeight: "100vh", backgroundColor: "#f3f4f6" }}>
-      <Navbar />
-
       <div
         style={{
           maxWidth: "1200px",

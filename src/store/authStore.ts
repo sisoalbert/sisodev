@@ -16,6 +16,7 @@ interface AuthState {
   signUp: (email: string, password: string) => Promise<void>;
   signOut: () => Promise<void>;
   refreshSession: () => Promise<void>;
+  initializeAuthListener: () => () => void;
   clearError: () => void;
 }
 
@@ -69,6 +70,13 @@ export const useAuthStore = create<AuthState>((set) => ({
         resolve();
       });
     });
+  },
+
+  initializeAuthListener: () => {
+    const unsubscribe = onAuthStateChanged(auth, (user) => {
+      set({ user, loading: false });
+    });
+    return unsubscribe;
   },
 
   clearError: () => set({ error: null }),

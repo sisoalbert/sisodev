@@ -10,15 +10,21 @@ import EditBlog from "./pages/EditBlog";
 import MyBlogs from "./pages/MyBlogs";
 import { ProtectedRoute } from "./components/ProtectedRoute";
 import Profile from "./pages/Profile";
+import MainNavBar from "./components/MainNavBar";
 
 // Auth initialization component
 function AuthInit() {
-  const { refreshSession } = useAuthStore();
+  const { initializeAuthListener } = useAuthStore();
 
   useEffect(() => {
-    // Initialize auth state from Supabase session
-    refreshSession();
-  }, [refreshSession]);
+    // Initialize persistent auth state listener
+    const unsubscribe = initializeAuthListener();
+    
+    // Cleanup listener on unmount
+    return () => {
+      unsubscribe();
+    };
+  }, [initializeAuthListener]);
 
   return null;
 }
@@ -27,6 +33,7 @@ function App() {
   return (
     <BrowserRouter>
       <div className="min-h-screen flex flex-col bg-gray-50">
+        <MainNavBar />
         <main className="flex-grow">
           <Routes>
             <Route path="/" element={<Blogs />} />
