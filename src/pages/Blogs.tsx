@@ -15,6 +15,141 @@ function Blogs() {
     fetchPublicBlogs();
   }, [fetchPublicBlogs]);
 
+  // Handle error state
+  if (error && !error.includes("Missing or insufficient permissions")) {
+    return (
+      <div
+        style={{
+          height: "100vh",
+          display: "flex",
+          flexDirection: "column",
+        }}
+      >
+        <div
+          style={{
+            maxWidth: "1200px",
+            margin: "0 auto",
+            flex: 1,
+            display: "flex",
+          }}
+        >
+          <div
+            style={{
+              textAlign: "center",
+              flex: 1,
+              display: "flex",
+              flexDirection: "column",
+              justifyContent: "center",
+            }}
+          >
+            <h2
+              style={{
+                fontSize: "18px",
+                fontWeight: "600",
+                color: "#dc2626",
+                marginBottom: "8px",
+              }}
+            >
+              Error loading blogs
+            </h2>
+            <p style={{ color: "#6b7280", marginBottom: "16px" }}>{error}</p>
+            <button
+              onClick={() => window.location.reload()}
+              style={{
+                backgroundColor: "#dc2626",
+                color: "white",
+                padding: "10px 20px",
+                borderRadius: "6px",
+                border: "none",
+                fontSize: "14px",
+                fontWeight: "500",
+                cursor: "pointer",
+                display: "inline-block",
+              }}
+            >
+              Try Again
+            </button>
+          </div>
+        </div>
+        <Footer />
+      </div>
+    );
+  }
+
+  // Handle empty state
+  if (!loading && blogs.length === 0) {
+    return (
+      <div
+        style={{
+          height: "100vh",
+          display: "flex",
+          flexDirection: "column",
+        }}
+      >
+        <div
+          style={{
+            maxWidth: "1200px",
+            margin: "0 auto",
+            flex: 1,
+            display: "flex",
+          }}
+        >
+          <div
+            style={{
+              textAlign: "center",
+              flex: 1,
+              display: "flex",
+              flexDirection: "column",
+              justifyContent: "center",
+            }}
+          >
+            <h2
+              style={{
+                fontSize: "18px",
+                fontWeight: "600",
+                color: "#374151",
+                marginBottom: "8px",
+              }}
+            >
+              No blog posts yet
+            </h2>
+            <p style={{ color: "#6b7280", marginBottom: "16px" }}>
+              Be the first to create a blog post!
+            </p>
+            {user && (
+              <button
+                onClick={() => {
+                  // Log analytics event for creating first blog
+                  logBlogEvent.navigateToBlogDetails(
+                    "",
+                    "create-first-blog",
+                    "empty_state_cta"
+                  );
+                  navigate("/create-blog");
+                }}
+                style={{
+                  backgroundColor: "#3b82f6",
+                  color: "white",
+                  padding: "10px 20px",
+                  borderRadius: "6px",
+                  border: "none",
+                  fontSize: "14px",
+                  fontWeight: "500",
+                  cursor: "pointer",
+                  display: "inline-block",
+                }}
+              >
+                Create Your First Blog
+              </button>
+            )}
+          </div>
+        </div>
+        <Footer />
+      </div>
+    );
+  }
+
+  // Normal state with blogs or loading
   return (
     <div
       style={{
@@ -41,21 +176,6 @@ function Blogs() {
           Blog Posts
         </h1>
 
-        {error && !error.includes("Missing or insufficient permissions") && (
-          <div
-            style={{
-              backgroundColor: "#fee2e2",
-              color: "#dc2626",
-              padding: "12px",
-              borderRadius: "4px",
-              marginBottom: "16px",
-              fontSize: "14px",
-            }}
-          >
-            Error loading blogs: {error}
-          </div>
-        )}
-
         {loading ? (
           <div
             style={{
@@ -73,52 +193,6 @@ function Blogs() {
             >
               Loading blogs...
             </div>
-          </div>
-        ) : blogs.length === 0 ? (
-          <div
-            style={{
-              textAlign: "center",
-              padding: "64px 16px",
-              backgroundColor: "white",
-              borderRadius: "8px",
-              boxShadow: "0 4px 6px -1px rgba(0, 0, 0, 0.1)",
-            }}
-          >
-            <h2
-              style={{
-                fontSize: "18px",
-                fontWeight: "600",
-                color: "#374151",
-                marginBottom: "8px",
-              }}
-            >
-              No blog posts yet
-            </h2>
-            <p style={{ color: "#6b7280", marginBottom: "16px" }}>
-              Be the first to create a blog post!
-            </p>
-            {user && (
-              <button
-                onClick={() => {
-                  // Log analytics event for creating first blog
-                  logBlogEvent.navigateToBlogDetails('', 'create-first-blog', 'empty_state_cta');
-                  navigate("/create-blog");
-                }}
-                style={{
-                  backgroundColor: "#3b82f6",
-                  color: "white",
-                  padding: "10px 20px",
-                  borderRadius: "6px",
-                  border: "none",
-                  fontSize: "14px",
-                  fontWeight: "500",
-                  cursor: "pointer",
-                  display: "inline-block",
-                }}
-              >
-                Create Your First Blog
-              </button>
-            )}
           </div>
         ) : (
           <div

@@ -25,39 +25,230 @@ function MyBlogs() {
     }
   };
 
-  if (!user) {
+  // Handle error state
+  if (error && !error.includes("Missing or insufficient permissions")) {
     return (
-      <div style={{ minHeight: "100vh", backgroundColor: "#f3f4f6" }}>
+      <div
+        style={{
+          height: "100vh",
+          backgroundColor: "#f3f4f6",
+          display: "flex",
+          flexDirection: "column",
+        }}
+      >
         <div
           style={{
             maxWidth: "1200px",
             margin: "0 auto",
             padding: "32px 16px",
-            textAlign: "center",
+            flex: 1,
+            display: "flex",
+            flexDirection: "column",
           }}
         >
-          <h1 style={{ fontSize: "24px", marginBottom: "16px" }}>
-            Please log in to view your blogs
-          </h1>
-          <Link
-            to="/login"
+          <h1
             style={{
-              backgroundColor: "#3b82f6",
-              color: "white",
-              padding: "12px 24px",
-              borderRadius: "6px",
-              textDecoration: "none",
-              fontSize: "16px",
-              fontWeight: "500",
+              fontSize: "30px",
+              fontWeight: "bold",
+              marginBottom: "24px",
+              color: "#1f2937",
             }}
           >
-            Login
-          </Link>
+            My Blogs
+          </h1>
+          <div
+            style={{
+              textAlign: "center",
+              flex: 1,
+              display: "flex",
+              flexDirection: "column",
+              justifyContent: "center",
+            }}
+          >
+            <h2
+              style={{
+                fontSize: "18px",
+                fontWeight: "600",
+                color: "#dc2626",
+                marginBottom: "8px",
+              }}
+            >
+              Error loading your blogs
+            </h2>
+            <p style={{ color: "#6b7280", marginBottom: "16px" }}>{error}</p>
+            <button
+              onClick={() => window.location.reload()}
+              style={{
+                backgroundColor: "#dc2626",
+                color: "white",
+                padding: "10px 20px",
+                borderRadius: "6px",
+                border: "none",
+                fontSize: "14px",
+                fontWeight: "500",
+                cursor: "pointer",
+                display: "inline-block",
+              }}
+            >
+              Try Again
+            </button>
+          </div>
         </div>
+        <Footer />
       </div>
     );
   }
 
+  if (!user) {
+    return (
+      <div
+        style={{
+          height: "100vh",
+          backgroundColor: "#f3f4f6",
+          display: "flex",
+          flexDirection: "column",
+        }}
+      >
+        <div
+          style={{
+            maxWidth: "1200px",
+            margin: "0 auto",
+            padding: "32px 16px",
+            flex: 1,
+            display: "flex",
+            flexDirection: "column",
+          }}
+        >
+          <h1
+            style={{
+              fontSize: "30px",
+              fontWeight: "bold",
+              marginBottom: "24px",
+              color: "#1f2937",
+            }}
+          >
+            My Blogs
+          </h1>
+          <div
+            style={{
+              textAlign: "center",
+              flex: 1,
+              display: "flex",
+              flexDirection: "column",
+              justifyContent: "center",
+            }}
+          >
+            <h2
+              style={{
+                fontSize: "18px",
+                fontWeight: "600",
+                color: "#374151",
+                marginBottom: "8px",
+              }}
+            >
+              Please log in to view your blogs
+            </h2>
+            <p style={{ color: "#6b7280", marginBottom: "16px" }}>
+              Access your personal blog collection
+            </p>
+            <Link
+              to="/login"
+              style={{
+                backgroundColor: "#3b82f6",
+                color: "white",
+                padding: "10px 20px",
+                borderRadius: "6px",
+                textDecoration: "none",
+                fontSize: "14px",
+                fontWeight: "500",
+                display: "inline-block",
+              }}
+            >
+              Login
+            </Link>
+          </div>
+        </div>
+        <Footer />
+      </div>
+    );
+  }
+
+  // Handle empty state
+  if (!loading && blogs.length === 0) {
+    return (
+      <div
+        style={{
+          height: "100vh",
+          backgroundColor: "#f3f4f6",
+          display: "flex",
+          flexDirection: "column",
+        }}
+      >
+        <div
+          style={{
+            maxWidth: "1200px",
+            margin: "0 auto",
+            padding: "32px 16px",
+            flex: 1,
+            display: "flex",
+            flexDirection: "column",
+          }}
+        >
+          <h1
+            style={{
+              fontSize: "30px",
+              fontWeight: "bold",
+              marginBottom: "24px",
+              color: "#1f2937",
+            }}
+          >
+            My Blogs
+          </h1>
+          <div
+            style={{
+              textAlign: "center",
+              flex: 1,
+              display: "flex",
+              flexDirection: "column",
+              justifyContent: "center",
+            }}
+          >
+            <h2
+              style={{
+                fontSize: "18px",
+                fontWeight: "600",
+                color: "#374151",
+                marginBottom: "8px",
+              }}
+            >
+              You haven't created any blogs yet
+            </h2>
+            <p style={{ color: "#6b7280", marginBottom: "16px" }}>
+              Start sharing your thoughts and ideas with the world!
+            </p>
+            <Link
+              to="/create-blog"
+              style={{
+                backgroundColor: "#3b82f6",
+                color: "white",
+                padding: "10px 20px",
+                borderRadius: "6px",
+                textDecoration: "none",
+                fontSize: "14px",
+                fontWeight: "500",
+                display: "inline-block",
+              }}
+            >
+              Create Your First Blog
+            </Link>
+          </div>
+        </div>
+        <Footer />
+      </div>
+    );
+  }
+
+  // Normal state with blogs or loading
   return (
     <div style={{ 
       height: "100vh", 
@@ -104,21 +295,6 @@ function MyBlogs() {
           </Link>
         </div>
 
-        {error && !error.includes("Missing or insufficient permissions") && (
-          <div
-            style={{
-              backgroundColor: "#fee2e2",
-              color: "#dc2626",
-              padding: "12px",
-              borderRadius: "4px",
-              marginBottom: "16px",
-              fontSize: "14px",
-            }}
-          >
-            Error loading blogs: {error}
-          </div>
-        )}
-
         {loading ? (
           <div
             style={{
@@ -136,45 +312,6 @@ function MyBlogs() {
             >
               Loading your blogs...
             </div>
-          </div>
-        ) : blogs.length === 0 ? (
-          <div
-            style={{
-              textAlign: "center",
-              padding: "64px 16px",
-              backgroundColor: "white",
-              borderRadius: "8px",
-              boxShadow: "0 4px 6px -1px rgba(0, 0, 0, 0.1)",
-            }}
-          >
-            <h2
-              style={{
-                fontSize: "18px",
-                fontWeight: "600",
-                color: "#374151",
-                marginBottom: "8px",
-              }}
-            >
-              You haven't created any blogs yet
-            </h2>
-            <p style={{ color: "#6b7280", marginBottom: "16px" }}>
-              Start sharing your thoughts and ideas with the world!
-            </p>
-            <Link
-              to="/create-blog"
-              style={{
-                backgroundColor: "#3b82f6",
-                color: "white",
-                padding: "12px 24px",
-                borderRadius: "6px",
-                textDecoration: "none",
-                fontSize: "14px",
-                fontWeight: "500",
-                display: "inline-block",
-              }}
-            >
-              Create Your First Blog
-            </Link>
           </div>
         ) : (
           <div

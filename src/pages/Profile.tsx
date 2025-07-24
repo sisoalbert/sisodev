@@ -1,13 +1,6 @@
 import { useNavigate } from "react-router-dom";
 import { useAuthStore } from "../store/authStore";
-import {
-  User,
-  Plus,
-  Eye,
-  UserPen,
-  LogOut,
-  Settings,
-} from "lucide-react";
+import { User, Plus, Eye, UserPen, LogOut, Settings } from "lucide-react";
 import Footer from "../components/Footer";
 
 function Profile() {
@@ -66,20 +59,20 @@ function Profile() {
           minHeight: "100vh",
         }}
       >
-      {/* Fixed Left Sidebar - Profile Card */}
-      <div
-        className="profile-sidebar"
-        style={{
-          width: "400px",
-          height: "100vh",
-          background: "white",
-          borderRight: "1px solid #E5E7EB",
-          overflow: "auto",
-          padding: "2rem",
-          paddingTop: "5rem", // Account for navbar
-          flexShrink: 0,
-        }}
-      >
+        {/* Fixed Left Sidebar - Profile Card */}
+        <div
+          className="profile-sidebar"
+          style={{
+            width: "400px",
+            height: "100vh",
+            background: "white",
+            borderRight: "1px solid #E5E7EB",
+            overflow: "auto",
+            padding: "2rem",
+            paddingTop: "5rem", // Account for navbar
+            flexShrink: 0,
+          }}
+        >
           {/* Profile Header */}
           <div style={{ textAlign: "center", marginBottom: "2rem" }}>
             <div
@@ -107,10 +100,10 @@ function Profile() {
                 marginBottom: "0.5rem",
               }}
             >
-              {user?.displayName || "Siso Developer"}
+              {user?.displayName || "SisoDev"}
             </h1>
             <p style={{ color: "#6B7280", fontSize: "1rem" }}>
-              Content Creator{" "}
+              {/* Content Creator{" "} */}
               <span
                 style={{
                   background: "#3b82f6",
@@ -243,302 +236,301 @@ function Profile() {
               </span>
             </div>
           </div>
-
         </div>
 
-      {/* Scrollable Right Content Area - Actions Card */}
-      <div
-        className="profile-content"
-        style={{
-          flex: 1,
-          height: "100vh",
-          overflow: "auto",
-          padding: "2rem",
-          paddingTop: "5rem", // Account for navbar
-          paddingBottom: "2rem",
-        }}
-      >
+        {/* Scrollable Right Content Area - Actions Card */}
         <div
+          className="profile-content"
           style={{
-            maxWidth: "800px",
-            margin: "0 auto",
-            background: "white",
-            borderRadius: "8px",
+            flex: 1,
+            height: "100vh",
+            overflow: "auto",
             padding: "2rem",
-            border: "1px solid #E5E7EB",
-            boxShadow: "0 4px 6px -1px rgba(0, 0, 0, 0.1)",
+            paddingTop: "5rem", // Account for navbar
+            paddingBottom: "2rem",
           }}
         >
-          {/* Stats Grid */}
           <div
-            className="stats-grid"
             style={{
-              display: "grid",
-              gridTemplateColumns: "repeat(3, 1fr)",
-              gap: "1rem",
-              marginBottom: "2rem",
+              maxWidth: "800px",
+              margin: "0 auto",
+              background: "white",
+              borderRadius: "8px",
+              padding: "2rem",
+              border: "1px solid #E5E7EB",
+              boxShadow: "0 4px 6px -1px rgba(0, 0, 0, 0.1)",
             }}
           >
+            {/* Stats Grid */}
             <div
-              style={{
-                background: "#F9FAFB",
-                borderRadius: "4px",
-                padding: "1.5rem",
-                textAlign: "center",
-                border: "1px solid #E5E7EB",
-              }}
-            >
-              <span
-                style={{
-                  fontSize: "2rem",
-                  fontWeight: "700",
-                  color: "#374151",
-                  display: "block",
-                }}
-              >
-                0
-              </span>
-              <span
-                style={{
-                  color: "#6B7280",
-                  fontSize: "0.9rem",
-                  marginTop: "0.5rem",
-                  display: "block",
-                }}
-              >
-                Blogs Published
-              </span>
-            </div>
-            <div
-              style={{
-                background: "#F9FAFB",
-                borderRadius: "4px",
-                padding: "1.5rem",
-                textAlign: "center",
-                border: "1px solid #E5E7EB",
-              }}
-            >
-              <span
-                style={{
-                  fontSize: "2rem",
-                  fontWeight: "700",
-                  color: "#374151",
-                  display: "block",
-                }}
-              >
-                0
-              </span>
-              <span
-                style={{
-                  color: "#6B7280",
-                  fontSize: "0.9rem",
-                  marginTop: "0.5rem",
-                  display: "block",
-                }}
-              >
-                Total Views
-              </span>
-            </div>
-            <div
-              style={{
-                background: "#F9FAFB",
-                borderRadius: "4px",
-                padding: "1.5rem",
-                textAlign: "center",
-                border: "1px solid #E5E7EB",
-              }}
-            >
-              <span
-                style={{
-                  fontSize: "2rem",
-                  fontWeight: "700",
-                  color: "#374151",
-                  display: "block",
-                }}
-              >
-                {getDaysActive()}
-              </span>
-              <span
-                style={{
-                  color: "#6B7280",
-                  fontSize: "0.9rem",
-                  marginTop: "0.5rem",
-                  display: "block",
-                }}
-              >
-                Days Active
-              </span>
-            </div>
-          </div>
-
-          {/* Quick Actions */}
-          <div style={{ marginBottom: "2rem" }}>
-            <h2
-              style={{
-                fontSize: "1.1rem",
-                fontWeight: "600",
-                color: "#374151",
-                marginBottom: "1rem",
-                display: "flex",
-                alignItems: "center",
-                gap: "0.5rem",
-              }}
-            >
-              <Settings size={20} color="#3b82f6" />
-              Quick Actions
-            </h2>
-            <div
-              className="quick-actions"
+              className="stats-grid"
               style={{
                 display: "grid",
-                gridTemplateColumns: "repeat(auto-fit, minmax(200px, 1fr))",
+                gridTemplateColumns: "repeat(3, 1fr)",
                 gap: "1rem",
+                marginBottom: "2rem",
               }}
             >
+              <div
+                style={{
+                  background: "#F9FAFB",
+                  borderRadius: "4px",
+                  padding: "1.5rem",
+                  textAlign: "center",
+                  border: "1px solid #E5E7EB",
+                }}
+              >
+                <span
+                  style={{
+                    fontSize: "2rem",
+                    fontWeight: "700",
+                    color: "#374151",
+                    display: "block",
+                  }}
+                >
+                  0
+                </span>
+                <span
+                  style={{
+                    color: "#6B7280",
+                    fontSize: "0.9rem",
+                    marginTop: "0.5rem",
+                    display: "block",
+                  }}
+                >
+                  Blogs Published
+                </span>
+              </div>
+              <div
+                style={{
+                  background: "#F9FAFB",
+                  borderRadius: "4px",
+                  padding: "1.5rem",
+                  textAlign: "center",
+                  border: "1px solid #E5E7EB",
+                }}
+              >
+                <span
+                  style={{
+                    fontSize: "2rem",
+                    fontWeight: "700",
+                    color: "#374151",
+                    display: "block",
+                  }}
+                >
+                  0
+                </span>
+                <span
+                  style={{
+                    color: "#6B7280",
+                    fontSize: "0.9rem",
+                    marginTop: "0.5rem",
+                    display: "block",
+                  }}
+                >
+                  Total Views
+                </span>
+              </div>
+              <div
+                style={{
+                  background: "#F9FAFB",
+                  borderRadius: "4px",
+                  padding: "1.5rem",
+                  textAlign: "center",
+                  border: "1px solid #E5E7EB",
+                }}
+              >
+                <span
+                  style={{
+                    fontSize: "2rem",
+                    fontWeight: "700",
+                    color: "#374151",
+                    display: "block",
+                  }}
+                >
+                  {getDaysActive()}
+                </span>
+                <span
+                  style={{
+                    color: "#6B7280",
+                    fontSize: "0.9rem",
+                    marginTop: "0.5rem",
+                    display: "block",
+                  }}
+                >
+                  Days Active
+                </span>
+              </div>
+            </div>
+
+            {/* Quick Actions */}
+            <div style={{ marginBottom: "2rem" }}>
+              <h2
+                style={{
+                  fontSize: "1.1rem",
+                  fontWeight: "600",
+                  color: "#374151",
+                  marginBottom: "1rem",
+                  display: "flex",
+                  alignItems: "center",
+                  gap: "0.5rem",
+                }}
+              >
+                <Settings size={20} color="#3b82f6" />
+                Quick Actions
+              </h2>
+              <div
+                className="quick-actions"
+                style={{
+                  display: "grid",
+                  gridTemplateColumns: "repeat(auto-fit, minmax(200px, 1fr))",
+                  gap: "1rem",
+                }}
+              >
+                <button
+                  onClick={() => navigate("/create-blog")}
+                  style={{
+                    background: "#3b82f6",
+                    color: "white",
+                    border: "none",
+                    padding: "1rem 1.5rem",
+                    borderRadius: "4px",
+                    fontWeight: "600",
+                    cursor: "pointer",
+                    transition: "all 0.2s ease",
+                    display: "flex",
+                    alignItems: "center",
+                    justifyContent: "center",
+                    gap: "0.5rem",
+                    textDecoration: "none",
+                    fontSize: "0.95rem",
+                  }}
+                  onMouseOver={(e) => {
+                    e.currentTarget.style.background = "#2563eb";
+                  }}
+                  onMouseOut={(e) => {
+                    e.currentTarget.style.background = "#3b82f6";
+                  }}
+                >
+                  <Plus size={16} />
+                  Create New Blog
+                </button>
+                <button
+                  onClick={() => navigate("/blogs")}
+                  style={{
+                    background: "#6B7280",
+                    color: "white",
+                    border: "none",
+                    padding: "1rem 1.5rem",
+                    borderRadius: "4px",
+                    fontWeight: "600",
+                    cursor: "pointer",
+                    transition: "all 0.2s ease",
+                    display: "flex",
+                    alignItems: "center",
+                    justifyContent: "center",
+                    gap: "0.5rem",
+                    textDecoration: "none",
+                    fontSize: "0.95rem",
+                  }}
+                  onMouseOver={(e) => {
+                    e.currentTarget.style.background = "#4B5563";
+                  }}
+                  onMouseOut={(e) => {
+                    e.currentTarget.style.background = "#6B7280";
+                  }}
+                >
+                  <Eye size={16} />
+                  View All Blogs
+                </button>
+                <button
+                  onClick={() => navigate("/blogs/mine")}
+                  style={{
+                    background: "#6B7280",
+                    color: "white",
+                    border: "none",
+                    padding: "1rem 1.5rem",
+                    borderRadius: "4px",
+                    fontWeight: "600",
+                    cursor: "pointer",
+                    transition: "all 0.2s ease",
+                    display: "flex",
+                    alignItems: "center",
+                    justifyContent: "center",
+                    gap: "0.5rem",
+                    textDecoration: "none",
+                    fontSize: "0.95rem",
+                  }}
+                  onMouseOver={(e) => {
+                    e.currentTarget.style.background = "#4B5563";
+                  }}
+                  onMouseOut={(e) => {
+                    e.currentTarget.style.background = "#6B7280";
+                  }}
+                >
+                  <UserPen size={16} />
+                  View My Blogs
+                </button>
+              </div>
+            </div>
+
+            {/* Account Management */}
+            <div>
+              <h2
+                style={{
+                  fontSize: "1.1rem",
+                  fontWeight: "600",
+                  color: "#374151",
+                  marginBottom: "1rem",
+                  display: "flex",
+                  alignItems: "center",
+                  gap: "0.5rem",
+                }}
+              >
+                <Settings size={20} color="#3b82f6" />
+                Account Management
+              </h2>
               <button
-                onClick={() => navigate("/create-blog")}
+                onClick={handleSignOut}
+                disabled={loading}
                 style={{
                   background: "#3b82f6",
                   color: "white",
                   border: "none",
-                  padding: "1rem 1.5rem",
+                  padding: "0.75rem 2rem",
                   borderRadius: "4px",
                   fontWeight: "600",
-                  cursor: "pointer",
+                  cursor: loading ? "not-allowed" : "pointer",
                   transition: "all 0.2s ease",
                   display: "flex",
                   alignItems: "center",
                   justifyContent: "center",
                   gap: "0.5rem",
-                  textDecoration: "none",
-                  fontSize: "0.95rem",
+                  width: "100%",
+                  opacity: loading ? 0.6 : 1,
                 }}
                 onMouseOver={(e) => {
-                  e.currentTarget.style.background = "#2563eb";
+                  if (!loading) {
+                    e.currentTarget.style.background = "#2563eb";
+                  }
                 }}
                 onMouseOut={(e) => {
-                  e.currentTarget.style.background = "#3b82f6";
+                  if (!loading) {
+                    e.currentTarget.style.background = "#3b82f6";
+                  }
                 }}
               >
-                <Plus size={16} />
-                Create New Blog
-              </button>
-              <button
-                onClick={() => navigate("/blogs")}
-                style={{
-                  background: "#6B7280",
-                  color: "white",
-                  border: "none",
-                  padding: "1rem 1.5rem",
-                  borderRadius: "4px",
-                  fontWeight: "600",
-                  cursor: "pointer",
-                  transition: "all 0.2s ease",
-                  display: "flex",
-                  alignItems: "center",
-                  justifyContent: "center",
-                  gap: "0.5rem",
-                  textDecoration: "none",
-                  fontSize: "0.95rem",
-                }}
-                onMouseOver={(e) => {
-                  e.currentTarget.style.background = "#4B5563";
-                }}
-                onMouseOut={(e) => {
-                  e.currentTarget.style.background = "#6B7280";
-                }}
-              >
-                <Eye size={16} />
-                View All Blogs
-              </button>
-              <button
-                onClick={() => navigate("/blogs/mine")}
-                style={{
-                  background: "#6B7280",
-                  color: "white",
-                  border: "none",
-                  padding: "1rem 1.5rem",
-                  borderRadius: "4px",
-                  fontWeight: "600",
-                  cursor: "pointer",
-                  transition: "all 0.2s ease",
-                  display: "flex",
-                  alignItems: "center",
-                  justifyContent: "center",
-                  gap: "0.5rem",
-                  textDecoration: "none",
-                  fontSize: "0.95rem",
-                }}
-                onMouseOver={(e) => {
-                  e.currentTarget.style.background = "#4B5563";
-                }}
-                onMouseOut={(e) => {
-                  e.currentTarget.style.background = "#6B7280";
-                }}
-              >
-                <UserPen size={16} />
-                View My Blogs
+                <LogOut size={16} />
+                {loading ? "Signing Out..." : "Sign Out"}
               </button>
             </div>
           </div>
-
-          {/* Account Management */}
-          <div>
-            <h2
-              style={{
-                fontSize: "1.1rem",
-                fontWeight: "600",
-                color: "#374151",
-                marginBottom: "1rem",
-                display: "flex",
-                alignItems: "center",
-                gap: "0.5rem",
-              }}
-            >
-              <Settings size={20} color="#3b82f6" />
-              Account Management
-            </h2>
-            <button
-              onClick={handleSignOut}
-              disabled={loading}
-              style={{
-                background: "#3b82f6",
-                color: "white",
-                border: "none",
-                padding: "0.75rem 2rem",
-                borderRadius: "4px",
-                fontWeight: "600",
-                cursor: loading ? "not-allowed" : "pointer",
-                transition: "all 0.2s ease",
-                display: "flex",
-                alignItems: "center",
-                justifyContent: "center",
-                gap: "0.5rem",
-                width: "100%",
-                opacity: loading ? 0.6 : 1,
-              }}
-              onMouseOver={(e) => {
-                if (!loading) {
-                  e.currentTarget.style.background = "#2563eb";
-                }
-              }}
-              onMouseOut={(e) => {
-                if (!loading) {
-                  e.currentTarget.style.background = "#3b82f6";
-                }
-              }}
-            >
-              <LogOut size={16} />
-              {loading ? "Signing Out..." : "Sign Out"}
-            </button>
-          </div>
         </div>
       </div>
-      </div>
-      
+
       {/* Add margin bottom before footer */}
       <div style={{ marginBottom: "32px" }} />
-      
+
       {/* Footer inside scroll */}
       <Footer />
 
