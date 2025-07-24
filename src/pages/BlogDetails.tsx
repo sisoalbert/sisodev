@@ -329,10 +329,10 @@ function BlogDetails() {
     '@context': 'https://schema.org',
     '@type': 'Article',
     headline: blog.title,
-    description: blog.description || `Read ${blog.title} on SisoDev - Expert insights on software engineering and web development.`,
+    description: blog.subTitle || `Read ${blog.title} on SisoDev - Expert insights on software engineering and web development.`,
     author: {
       '@type': 'Person',
-      name: blog.author || 'SisoDev Team',
+      name: blog.contributors || 'SisoDev Team',
       url: `https://sisodev.com/profile/${blog.userId}`
     },
     publisher: {
@@ -343,8 +343,8 @@ function BlogDetails() {
         url: 'https://sisodev.com/logo.svg'
       }
     },
-    datePublished: blog.createdAt,
-    dateModified: blog.updatedAt || blog.createdAt,
+    datePublished: blog.createdAt.toISOString(),
+    dateModified: blog.updatedAt.toISOString(),
     mainEntityOfPage: {
       '@type': 'WebPage',
       '@id': `https://sisodev.com/blogs/${blog.slug}`
@@ -364,11 +364,11 @@ function BlogDetails() {
     <>
       <SEO
         title={blog.title}
-        description={blog.description || `Read ${blog.title} - Expert insights on software engineering, web development, and modern programming techniques.`}
+        description={blog.subTitle || `Read ${blog.title} - Expert insights on software engineering, web development, and modern programming techniques.`}
         keywords={blog.tags || ['programming', 'software engineering', 'web development']}
-        author={blog.author}
-        publishedTime={blog.createdAt}
-        modifiedTime={blog.updatedAt || blog.createdAt}
+        author={blog.contributors}
+        publishedTime={blog.createdAt.toISOString()}
+        modifiedTime={blog.updatedAt.toISOString()}
         type="article"
         structuredData={structuredData}
         canonical={`https://sisodev.com/blogs/${blog.slug}`}

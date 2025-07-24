@@ -1,4 +1,5 @@
 import React from 'react';
+import packageJson from '../../package.json';
 
 const Footer: React.FC = () => {
   const currentYear = new Date().getFullYear();
@@ -189,15 +190,27 @@ const Footer: React.FC = () => {
             gap: '16px',
           }}
         >
-          <p
-            style={{
-              fontSize: '14px',
-              color: '#9ca3af',
-              margin: 0,
-            }}
-          >
-            © {currentYear} SisoDev. All rights reserved.
-          </p>
+          <div>
+            <p
+              style={{
+                fontSize: '14px',
+                color: '#9ca3af',
+                margin: 0,
+                marginBottom: '4px',
+              }}
+            >
+              © {currentYear} SisoDev. All rights reserved.
+            </p>
+            <p
+              style={{
+                fontSize: '12px',
+                color: '#6b7280',
+                margin: 0,
+              }}
+            >
+              Version {packageJson.version}
+            </p>
+          </div>
           <div style={{ display: 'flex', gap: '24px' }}>
             {['Privacy Policy', 'Terms of Service', 'Cookie Policy'].map((link) => (
               <a
