@@ -4,6 +4,7 @@ import { useBlogStore } from "../store/blogStore";
 import { useAuthStore } from "../store/authStore";
 import Footer from "../components/Footer";
 import MyBlogCard from "../components/cards/MyBlogCard";
+import SEO from "../components/SEO";
 
 function MyBlogs() {
   const { blogs, loading, error, fetchMyBlogs, deleteBlog } = useBlogStore();
@@ -28,14 +29,20 @@ function MyBlogs() {
   // Handle error state
   if (error && !error.includes("Missing or insufficient permissions")) {
     return (
-      <div
-        style={{
-          height: "100vh",
-          backgroundColor: "#f3f4f6",
-          display: "flex",
-          flexDirection: "column",
-        }}
-      >
+      <>
+        <SEO
+          title="My Blogs - Error"
+          description="Unable to load your blog posts. Please try again or contact support if the issue persists."
+          keywords={['my blogs', 'error', 'blog management', 'technical issues']}
+        />
+        <div
+          style={{
+            height: "100vh",
+            backgroundColor: "#f3f4f6",
+            display: "flex",
+            flexDirection: "column",
+          }}
+        >
         <div
           style={{
             maxWidth: "1200px",
@@ -96,19 +103,26 @@ function MyBlogs() {
         </div>
         <Footer />
       </div>
+      </>
     );
   }
 
   if (!user) {
     return (
-      <div
-        style={{
-          height: "100vh",
-          backgroundColor: "#f3f4f6",
-          display: "flex",
-          flexDirection: "column",
-        }}
-      >
+      <>
+        <SEO
+          title="My Blogs - Login Required"
+          description="Please log in to access your personal blog collection. Manage, edit, and publish your content."
+          keywords={['my blogs', 'login', 'blog management', 'user account']}
+        />
+        <div
+          style={{
+            height: "100vh",
+            backgroundColor: "#f3f4f6",
+            display: "flex",
+            flexDirection: "column",
+          }}
+        >
         <div
           style={{
             maxWidth: "1200px",
@@ -170,20 +184,27 @@ function MyBlogs() {
         </div>
         <Footer />
       </div>
+      </>
     );
   }
 
   // Handle empty state
   if (!loading && blogs.length === 0) {
     return (
-      <div
-        style={{
-          height: "100vh",
-          backgroundColor: "#f3f4f6",
-          display: "flex",
-          flexDirection: "column",
-        }}
-      >
+      <>
+        <SEO
+          title="My Blogs - Get Started"
+          description="You haven't created any blog posts yet. Start sharing your thoughts and ideas with the world. Create your first blog today."
+          keywords={['my blogs', 'create blog', 'get started', 'blog writing', 'content creation']}
+        />
+        <div
+          style={{
+            height: "100vh",
+            backgroundColor: "#f3f4f6",
+            display: "flex",
+            flexDirection: "column",
+          }}
+        >
         <div
           style={{
             maxWidth: "1200px",
@@ -245,16 +266,23 @@ function MyBlogs() {
         </div>
         <Footer />
       </div>
+      </>
     );
   }
 
   // Normal state with blogs or loading
   return (
-    <div style={{ 
-      height: "100vh", 
-      backgroundColor: "#f3f4f6",
-      overflowY: "auto"
-    }}>
+    <>
+      <SEO
+        title="My Blogs"
+        description={`Manage your ${blogs.length} blog posts. Edit, publish, and organize your content. Access your personal blog dashboard.`}
+        keywords={['my blogs', 'blog management', 'dashboard', 'edit blogs', 'content management']}
+      />
+      <div style={{ 
+        height: "100vh", 
+        backgroundColor: "#f3f4f6",
+        overflowY: "auto"
+      }}>
       <div
         style={{
           maxWidth: "1200px",
@@ -333,6 +361,7 @@ function MyBlogs() {
       
       <Footer />
     </div>
+    </>
   );
 }
 

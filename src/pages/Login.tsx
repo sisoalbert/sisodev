@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import { useNavigate, Link } from "react-router-dom";
 import { useAuthStore } from "../store/authStore";
+import SEO from "../components/SEO";
 
 function Login() {
   const [email, setEmail] = useState("");
@@ -19,7 +20,13 @@ function Login() {
   };
 
   return (
-    <div style={{ 
+    <>
+      <SEO
+        title="Login"
+        description="Sign in to your SisoDev account to access your blog dashboard, create content, and manage your posts."
+        keywords={['login', 'sign in', 'user authentication', 'account access']}
+      />
+      <div style={{ 
       minHeight: '100vh', 
       display: 'flex', 
       alignItems: 'center', 
@@ -158,6 +165,7 @@ function Login() {
         </p>
       </div>
     </div>
+    </>
   );
 }
 

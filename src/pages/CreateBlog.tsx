@@ -6,6 +6,7 @@ import SectionSidebar from "../components/SectionSidebar";
 import { useAuthStore } from "../store/authStore";
 import { useBlogStore } from "../store/blogStore";
 import type { Section, BlogStatus, Visibility } from "../types";
+import SEO from "../components/SEO";
 
 function CreateBlog() {
   const [currentSectionId, setCurrentSectionId] = useState<string | null>(null);
@@ -184,7 +185,13 @@ function CreateBlog() {
   }
 
   return (
-    <div
+    <>
+      <SEO
+        title="Create New Blog"
+        description="Write and publish your technical insights. Create engaging blog posts with our rich text editor and share your knowledge with the developer community."
+        keywords={['create blog', 'write article', 'publish content', 'blog editor', 'content creation']}
+      />
+      <div
       style={{
         height: "100vh",
         backgroundColor: "#F9FAFB",
@@ -326,6 +333,7 @@ function CreateBlog() {
         setVisibility={setVisibility}
       />
     </div>
+    </>
   );
 }
 

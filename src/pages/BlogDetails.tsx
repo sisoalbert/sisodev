@@ -8,6 +8,7 @@ import Editor from "../components/Editor";
 import { Calendar, User, Eye, Menu, X } from "lucide-react";
 import { LetterShimmer } from "../components/shimmers";
 import type { Blog, Section } from "../types";
+import SEO from "../components/SEO";
 
 // Media query hook for responsive behavior
 function useMediaQuery(query: string) {
@@ -323,15 +324,63 @@ function BlogDetails() {
     );
   }
 
+  // Create structured data for blog article
+  const structuredData = {
+    '@context': 'https://schema.org',
+    '@type': 'Article',
+    headline: blog.title,
+    description: blog.description || `Read ${blog.title} on SisoDev - Expert insights on software engineering and web development.`,
+    author: {
+      '@type': 'Person',
+      name: blog.author || 'SisoDev Team',
+      url: `https://sisodev.com/profile/${blog.userId}`
+    },
+    publisher: {
+      '@type': 'Organization',
+      name: 'SisoDev',
+      logo: {
+        '@type': 'ImageObject',
+        url: 'https://sisodev.com/logo.svg'
+      }
+    },
+    datePublished: blog.createdAt,
+    dateModified: blog.updatedAt || blog.createdAt,
+    mainEntityOfPage: {
+      '@type': 'WebPage',
+      '@id': `https://sisodev.com/blogs/${blog.slug}`
+    },
+    wordCount: blog.sections?.reduce((count, section) => count + (section.content?.length || 0), 0) || 0,
+    keywords: blog.tags?.join(', ') || 'software engineering, programming, web development',
+    about: {
+      '@type': 'Thing',
+      name: blog.category || 'Software Engineering'
+    },
+    articleSection: blog.category || 'Technology',
+    inLanguage: 'en-US',
+    url: `https://sisodev.com/blogs/${blog.slug}`
+  };
+
   return (
-    <div
-      style={{
-        height: "100vh",
-        backgroundColor: "#F9FAFB",
-        display: "flex",
-        overflow: "hidden", // Prevent body scrolling
-      }}
-    >
+    <>
+      <SEO
+        title={blog.title}
+        description={blog.description || `Read ${blog.title} - Expert insights on software engineering, web development, and modern programming techniques.`}
+        keywords={blog.tags || ['programming', 'software engineering', 'web development']}
+        author={blog.author}
+        publishedTime={blog.createdAt}
+        modifiedTime={blog.updatedAt || blog.createdAt}
+        type="article"
+        structuredData={structuredData}
+        canonical={`https://sisodev.com/blogs/${blog.slug}`}
+      />
+      <div
+        style={{
+          height: "100vh",
+          backgroundColor: "#F9FAFB",
+          display: "flex",
+          overflow: "hidden", // Prevent body scrolling
+        }}
+      >
       {/* Desktop Sidebar - Hidden on mobile */}
       {!isMobile && (
         <ReadOnlySectionSidebar
@@ -853,6 +902,7 @@ function BlogDetails() {
         </div>
       )}
     </div>
+    </>
   );
 }
 

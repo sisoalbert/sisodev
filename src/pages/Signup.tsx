@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import { useNavigate, Link } from "react-router-dom";
 import { useAuthStore } from "../store/authStore";
+import SEO from "../components/SEO";
 
 function Signup() {
   const [email, setEmail] = useState("");
@@ -34,7 +35,13 @@ function Signup() {
   };
 
   return (
-    <div style={{ 
+    <>
+      <SEO
+        title="Sign Up"
+        description="Create your SisoDev account to start writing and sharing your technical insights. Join our community of developers and tech professionals."
+        keywords={['sign up', 'register', 'create account', 'join community', 'developer registration']}
+      />
+      <div style={{ 
       minHeight: '100vh', 
       display: 'flex', 
       alignItems: 'center', 
@@ -207,6 +214,7 @@ function Signup() {
         </p>
       </div>
     </div>
+    </>
   );
 }
 

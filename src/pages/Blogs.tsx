@@ -6,6 +6,7 @@ import { logBlogEvent } from "../lib/firebase";
 import Footer from "../components/Footer";
 import BlogCard from "../components/cards/BlogCard";
 import { BlogCardShimmer } from "../components/shimmers";
+import SEO from "../components/SEO";
 
 function Blogs() {
   const { blogs, loading, error, fetchPublicBlogs } = useBlogStore();
@@ -19,74 +20,87 @@ function Blogs() {
   // Handle error state
   if (error && !error.includes("Missing or insufficient permissions")) {
     return (
-      <div
-        style={{
-          height: "100vh",
-          display: "flex",
-          flexDirection: "column",
-        }}
-      >
+      <>
+        <SEO
+          title="Error Loading Blogs"
+          description="Unable to load blog posts. Please try again or contact support if the issue persists."
+          keywords={['error', 'blog loading', 'technical issues']}
+        />
         <div
           style={{
-            maxWidth: "1200px",
-            margin: "0 auto",
-            flex: 1,
+            height: "100vh",
             display: "flex",
+            flexDirection: "column",
           }}
         >
           <div
             style={{
-              textAlign: "center",
+              maxWidth: "1200px",
+              margin: "0 auto",
               flex: 1,
               display: "flex",
-              flexDirection: "column",
-              justifyContent: "center",
             }}
           >
-            <h2
+            <div
               style={{
-                fontSize: "18px",
-                fontWeight: "600",
-                color: "#dc2626",
-                marginBottom: "8px",
+                textAlign: "center",
+                flex: 1,
+                display: "flex",
+                flexDirection: "column",
+                justifyContent: "center",
               }}
             >
-              Error loading blogs
-            </h2>
-            <p style={{ color: "#6b7280", marginBottom: "16px" }}>{error}</p>
-            <button
-              onClick={() => window.location.reload()}
-              style={{
-                backgroundColor: "#dc2626",
-                color: "white",
-                padding: "10px 20px",
-                borderRadius: "6px",
-                border: "none",
-                fontSize: "14px",
-                fontWeight: "500",
-                cursor: "pointer",
-                display: "inline-block",
-              }}
-            >
-              Try Again
-            </button>
+              <h2
+                style={{
+                  fontSize: "18px",
+                  fontWeight: "600",
+                  color: "#dc2626",
+                  marginBottom: "8px",
+                }}
+              >
+                Error loading blogs
+              </h2>
+              <p style={{ color: "#6b7280", marginBottom: "16px" }}>{error}</p>
+              <button
+                onClick={() => window.location.reload()}
+                style={{
+                  backgroundColor: "#dc2626",
+                  color: "white",
+                  padding: "10px 20px",
+                  borderRadius: "6px",
+                  border: "none",
+                  fontSize: "14px",
+                  fontWeight: "500",
+                  cursor: "pointer",
+                  display: "inline-block",
+                }}
+              >
+                Try Again
+              </button>
+            </div>
           </div>
+          <Footer />
         </div>
-        <Footer />
-      </div>
+      </>
     );
   }
 
   // Handle empty state
   if (!loading && blogs.length === 0) {
     return (
-      <div
-        style={{
-          height: "100vh",
-          display: "flex",
-          flexDirection: "column",
-        }}
-      >
+      <>
+        <SEO
+          title="Blog Posts - Get Started"
+          description="No blog posts available yet. Be the first to create and share your thoughts with the SisoDev community."
+          keywords={['blog posts', 'create blog', 'get started', 'community']}
+        />
+        <div
+          style={{
+            height: "100vh",
+            display: "flex",
+            flexDirection: "column",
+          }}
+        >
         <div
           style={{
             maxWidth: "1200px",
@@ -147,18 +161,25 @@ function Blogs() {
         </div>
         <Footer />
       </div>
+      </>
     );
   }
 
   // Normal state with blogs or loading
   return (
-    <div
-      style={{
-        height: "100vh",
-        backgroundColor: "#f3f4f6",
-        overflowY: "auto",
-      }}
-    >
+    <>
+      <SEO
+        title="Blog Posts"
+        description={`Explore ${blogs.length} expert articles on software engineering, web development, React, TypeScript, and modern programming techniques. Stay updated with the latest tech insights.`}
+        keywords={['blog posts', 'software engineering', 'web development', 'React', 'TypeScript', 'programming tutorials', 'tech articles']}
+      />
+      <div
+        style={{
+          height: "100vh",
+          backgroundColor: "#f3f4f6",
+          overflowY: "auto",
+        }}
+      >
       <div
         style={{
           maxWidth: "1200px",
@@ -208,6 +229,7 @@ function Blogs() {
 
       <Footer />
     </div>
+    </>
   );
 }
 

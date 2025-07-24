@@ -2,6 +2,7 @@ import { useNavigate } from "react-router-dom";
 import { useAuthStore } from "../store/authStore";
 import { User, Plus, Eye, UserPen, LogOut, Settings } from "lucide-react";
 import Footer from "../components/Footer";
+import SEO from "../components/SEO";
 
 function Profile() {
   const { user, signOut, loading } = useAuthStore();
@@ -45,14 +46,21 @@ function Profile() {
   };
 
   return (
-    <div
-      className="profile-container"
-      style={{
-        height: "100vh",
-        backgroundColor: "#F9FAFB",
-        overflowY: "auto",
-      }}
-    >
+    <>
+      <SEO
+        title={`Profile - ${user?.email || 'User'}`}
+        description="Manage your SisoDev profile, view account statistics, and access your blog management dashboard."
+        keywords={['profile', 'user account', 'dashboard', 'account settings', 'user stats']}
+        type="profile"
+      />
+      <div
+        className="profile-container"
+        style={{
+          height: "100vh",
+          backgroundColor: "#F9FAFB",
+          overflowY: "auto",
+        }}
+      >
       <div
         style={{
           display: "flex",
@@ -569,6 +577,7 @@ function Profile() {
         `}
       </style>
     </div>
+    </>
   );
 }
 
