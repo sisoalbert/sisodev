@@ -4,6 +4,7 @@ import { useBlogStore } from "../store/blogStore";
 import { useAuthStore } from "../store/authStore";
 import ReadOnlySectionSidebar from "../components/ReadOnlySectionSidebar";
 import Editor from "../components/Editor";
+import { Calendar, User, Eye } from "lucide-react";
 import type { Blog, Section } from "../types";
 
 function BlogDetails() {
@@ -395,16 +396,23 @@ function BlogDetails() {
                   flexWrap: "wrap",
                 }}
               >
-                <span>
-                  📅 Last updated:{" "}
+                <span style={{ display: "flex", alignItems: "center", gap: "0.5rem" }}>
+                  <Calendar size={16} />
+                  Last updated:{" "}
                   {blog.createdAt.toLocaleDateString("en-US", {
                     year: "numeric",
                     month: "long",
                     day: "numeric",
                   })}
                 </span>
-                <span>👤 By: {blog.contributors || "Anonymous"}</span>
-                <span>👁 Views: 43</span>
+                <span style={{ display: "flex", alignItems: "center", gap: "0.5rem" }}>
+                  <User size={16} />
+                  By: {blog.contributors || "Anonymous"}
+                </span>
+                <span style={{ display: "flex", alignItems: "center", gap: "0.5rem" }}>
+                  <Eye size={16} />
+                  Views: 43
+                </span>
               </div>
             </div>
           )}
