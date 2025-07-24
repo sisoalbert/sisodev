@@ -9,7 +9,7 @@ const Footer: React.FC = () => {
       style={{
         backgroundColor: '#1f2937',
         color: '#f9fafb',
-        padding: '48px 16px 32px',
+        padding: '48px 16px 148px',
         marginTop: '64px',
       }}
     >

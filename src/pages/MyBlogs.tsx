@@ -4,6 +4,7 @@ import { useBlogStore } from "../store/blogStore";
 import { useAuthStore } from "../store/authStore";
 import Footer from "../components/Footer";
 import MyBlogCard from "../components/cards/MyBlogCard";
+import { BlogCardShimmer } from "../components/shimmers";
 import SEO from "../components/SEO";
 
 function MyBlogs() {
@@ -326,20 +327,14 @@ function MyBlogs() {
         {loading ? (
           <div
             style={{
-              display: "flex",
-              justifyContent: "center",
-              alignItems: "center",
-              height: "200px",
+              display: "grid",
+              gridTemplateColumns: "repeat(auto-fill, minmax(350px, 1fr))",
+              gap: "24px",
             }}
           >
-            <div
-              style={{
-                fontSize: "16px",
-                color: "#6b7280",
-              }}
-            >
-              Loading your blogs...
-            </div>
+            {Array.from({ length: 6 }).map((_, index) => (
+              <BlogCardShimmer key={`shimmer-${index}`} />
+            ))}
           </div>
         ) : (
           <div
