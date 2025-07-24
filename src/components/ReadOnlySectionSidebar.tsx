@@ -15,7 +15,7 @@ const ReadOnlySectionSidebar: React.FC<ReadOnlySectionSidebarProps> = ({
   return (
     <div style={{
       width: '250px',
-      height: '100vh',
+      height: 'calc(100vh - 64px)',
       backgroundColor: '#f8fafc',
       borderRight: '1px solid #e2e8f0',
       display: 'flex',
@@ -38,7 +38,7 @@ const ReadOnlySectionSidebar: React.FC<ReadOnlySectionSidebarProps> = ({
 
       <div style={{
         flex: 1,
-        padding: '0 1rem 1rem 1rem',
+        padding: '0 1rem 4rem 1rem',
         overflowY: 'auto',
         display: 'flex',
         flexDirection: 'column',
