@@ -20,6 +20,10 @@
       "dest": "/assets/$1"
     },
     {
+      "src": "/(favicon\\.ico|apple-touch-icon\\.png|favicon-.*\\.png|logo\\.svg|site\\.webmanifest)",
+      "dest": "/$1"
+    },
+    {
       "src": "/(.*)",
       "dest": "/index.html"
     }
