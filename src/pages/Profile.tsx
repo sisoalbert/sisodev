@@ -8,6 +8,7 @@ import {
   LogOut,
   Settings,
 } from "lucide-react";
+import Footer from "../components/Footer";
 
 function Profile() {
   const { user, signOut, loading } = useAuthStore();
@@ -56,10 +57,15 @@ function Profile() {
       style={{
         height: "100vh",
         backgroundColor: "#F9FAFB",
-        display: "flex",
-        overflow: "hidden", // Prevent body scrolling
+        overflowY: "auto",
       }}
     >
+      <div
+        style={{
+          display: "flex",
+          minHeight: "100vh",
+        }}
+      >
       {/* Fixed Left Sidebar - Profile Card */}
       <div
         className="profile-sidebar"
@@ -528,6 +534,13 @@ function Profile() {
           </div>
         </div>
       </div>
+      </div>
+      
+      {/* Add margin bottom before footer */}
+      <div style={{ marginBottom: "32px" }} />
+      
+      {/* Footer inside scroll */}
+      <Footer />
 
       {/* Mobile Responsive Styles */}
       <style>
