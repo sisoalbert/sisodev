@@ -1,5 +1,7 @@
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 import { useEffect } from "react";
+import { Analytics } from '@vercel/analytics/react';
+import { SpeedInsights } from '@vercel/speed-insights/react';
 import { useAuthStore } from "./store/authStore";
 import Login from "./pages/Login";
 import Signup from "./pages/Signup";
@@ -52,6 +54,8 @@ function App() {
         </main>
       </div>
       <AuthInit />
+      <Analytics />
+      <SpeedInsights />
     </BrowserRouter>
   );
 }

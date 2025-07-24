@@ -1,5 +1,5 @@
 import { create } from "zustand";
-import { db } from "../lib/firebase";
+import { db, logBlogEvent } from "../lib/firebase";
 import {
   collection,
   addDoc,
@@ -48,9 +48,19 @@ export const useBlogStore = create<BlogState>((set) => ({
         createdAt: serverTimestamp(),
         updatedAt: serverTimestamp(),
       });
+
+      // Log analytics event
+      logBlogEvent.createBlog(docRef.id, blogData.title, blogData.category);
+
       set({ loading: false });
       return docRef.id;
     } catch (error) {
+      // Log error event
+      logBlogEvent.blogError(
+        "create_blog_failed",
+        (error as Error).message,
+        "blog_store"
+      );
       set({ error: (error as Error).message, loading: false });
       throw error;
     }
@@ -64,8 +74,18 @@ export const useBlogStore = create<BlogState>((set) => ({
         ...blogData,
         updatedAt: serverTimestamp(),
       });
+
+      // Log analytics event
+      logBlogEvent.updateBlog(blogId, blogData.title);
+
       set({ loading: false });
     } catch (error) {
+      // Log error event
+      logBlogEvent.blogError(
+        "update_blog_failed",
+        (error as Error).message,
+        "blog_store"
+      );
       set({ error: (error as Error).message, loading: false });
       throw error;
     }
@@ -74,10 +94,24 @@ export const useBlogStore = create<BlogState>((set) => ({
   deleteBlog: async (blogId: string) => {
     set({ loading: true, error: null });
     try {
+      // Get blog data before deletion for analytics
       const blogRef = doc(db, "blogs", blogId);
+      const blogSnap = await getDoc(blogRef);
+      const blogTitle = blogSnap.exists() ? blogSnap.data().title : "Unknown";
+
       await deleteDoc(blogRef);
+
+      // Log analytics event
+      logBlogEvent.deleteBlog(blogId, blogTitle);
+
       set({ loading: false });
     } catch (error) {
+      // Log error event
+      logBlogEvent.blogError(
+        "delete_blog_failed",
+        (error as Error).message,
+        "blog_store"
+      );
       set({ error: (error as Error).message, loading: false });
       throw error;
     }
@@ -158,8 +192,17 @@ export const useBlogStore = create<BlogState>((set) => ({
         blogs.sort((a, b) => b.createdAt.getTime() - a.createdAt.getTime());
       }
 
+      // Log analytics event for viewing blog list
+      logBlogEvent.viewBlogList();
+
       set({ blogs, loading: false });
     } catch (error) {
+      // Log error event
+      logBlogEvent.blogError(
+        "fetch_public_blogs_failed",
+        (error as Error).message,
+        "blog_store"
+      );
       set({ error: (error as Error).message, loading: false });
     }
   },
@@ -197,6 +240,12 @@ export const useBlogStore = create<BlogState>((set) => ({
 
       set({ blogs, loading: false });
     } catch (error) {
+      // Log error event
+      logBlogEvent.blogError(
+        "fetch_my_blogs_failed",
+        (error as Error).message,
+        "blog_store"
+      );
       set({ error: (error as Error).message, loading: false });
     }
   },
@@ -250,10 +299,22 @@ export const useBlogStore = create<BlogState>((set) => ({
         }
       });
 
+      // Log analytics event if blog was found
+      if (foundBlog) {
+        const blog = foundBlog as Blog;
+        logBlogEvent.viewBlogPost(blog.id, blog.title, blog.userId);
+      }
+
       set({ loading: false });
       return foundBlog;
     } catch (error) {
       console.log(error);
+      // Log error event
+      logBlogEvent.blogError(
+        "fetch_blog_by_slug_failed",
+        (error as Error).message,
+        "blog_store"
+      );
       set({ error: (error as Error).message, loading: false });
       return null;
     }

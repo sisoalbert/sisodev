@@ -2,6 +2,7 @@ import { useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { useBlogStore } from "../store/blogStore";
 import { useAuthStore } from "../store/authStore";
+import { logBlogEvent } from "../lib/firebase";
 import Footer from "../components/Footer";
 import BlogCard from "../components/cards/BlogCard";
 
@@ -98,7 +99,11 @@ function Blogs() {
             </p>
             {user && (
               <button
-                onClick={() => navigate("/create-blog")}
+                onClick={() => {
+                  // Log analytics event for creating first blog
+                  logBlogEvent.navigateToBlogDetails('', 'create-first-blog', 'empty_state_cta');
+                  navigate("/create-blog");
+                }}
                 style={{
                   backgroundColor: "#3b82f6",
                   color: "white",

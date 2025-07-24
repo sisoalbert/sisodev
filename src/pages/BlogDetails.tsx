@@ -2,6 +2,7 @@ import { useEffect, useState } from "react";
 import { useParams, useNavigate, useSearchParams } from "react-router-dom";
 import { useBlogStore } from "../store/blogStore";
 import { useAuthStore } from "../store/authStore";
+import { logBlogEvent } from "../lib/firebase";
 import ReadOnlySectionSidebar from "../components/ReadOnlySectionSidebar";
 import Editor from "../components/Editor";
 import { Calendar, User, Eye, Menu, X } from "lucide-react";
@@ -47,6 +48,9 @@ function BlogDetails() {
             fetchedBlog.sections.find(section => section.id === sectionParam) :
             null;
           setCurrentSectionId(targetSection ? targetSection.id : fetchedBlog.sections[0].id);
+          
+          // Log analytics event for blog view
+          logBlogEvent.viewBlogPost(fetchedBlog.id, fetchedBlog.title, fetchedBlog.userId);
         }
         setIsInitialLoading(false);
       });

@@ -1,5 +1,6 @@
 import React from 'react';
 import { useNavigate, useLocation } from 'react-router-dom';
+import { logBlogEvent } from '../../lib/firebase';
 import type { Blog } from '../../types';
 
 interface BlogCardProps {
@@ -21,9 +22,11 @@ const BlogCard: React.FC<BlogCardProps> = ({ blog }) => {
         cursor: "pointer",
         transition: "transform 0.2s, box-shadow 0.2s",
       }}
-      onClick={() =>
-        navigate(`/blogs/${blog.slug}?returnTo=${encodeURIComponent(location.pathname)}`)
-      }
+      onClick={() => {
+        // Log analytics event for blog card click
+        logBlogEvent.navigateToBlogDetails(blog.id, blog.slug, 'blog_card');
+        navigate(`/blogs/${blog.slug}?returnTo=${encodeURIComponent(location.pathname)}`);
+      }}
       onMouseOver={(e) => {
         e.currentTarget.style.transform = "translateY(-2px)";
         e.currentTarget.style.boxShadow =
