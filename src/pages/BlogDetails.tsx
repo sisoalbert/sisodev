@@ -20,8 +20,8 @@ function useMediaQuery(query: string) {
       setMatches(media.matches);
     }
     const listener = () => setMatches(media.matches);
-    media.addEventListener('change', listener);
-    return () => media.removeEventListener('change', listener);
+    media.addEventListener("change", listener);
+    return () => media.removeEventListener("change", listener);
   }, [matches, query]);
 
   return matches;
@@ -38,21 +38,29 @@ function BlogDetails() {
   const [currentSectionId, setCurrentSectionId] = useState<string | null>(null);
   const [isInitialLoading, setIsInitialLoading] = useState(true);
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
-  const isMobile = useMediaQuery('(max-width: 768px)');
+  const isMobile = useMediaQuery("(max-width: 768px)");
 
   useEffect(() => {
     if (slug) {
       fetchBlogBySlug(slug).then((fetchedBlog) => {
         setBlog(fetchedBlog);
         if (fetchedBlog && fetchedBlog.sections.length > 0) {
-          const sectionParam = searchParams.get('s');
-          const targetSection = sectionParam ? 
-            fetchedBlog.sections.find(section => section.id === sectionParam) :
-            null;
-          setCurrentSectionId(targetSection ? targetSection.id : fetchedBlog.sections[0].id);
-          
+          const sectionParam = searchParams.get("s");
+          const targetSection = sectionParam
+            ? fetchedBlog.sections.find(
+                (section) => section.id === sectionParam
+              )
+            : null;
+          setCurrentSectionId(
+            targetSection ? targetSection.id : fetchedBlog.sections[0].id
+          );
+
           // Log analytics event for blog view
-          logBlogEvent.viewBlogPost(fetchedBlog.id, fetchedBlog.title, fetchedBlog.userId);
+          logBlogEvent.viewBlogPost(
+            fetchedBlog.id,
+            fetchedBlog.title,
+            fetchedBlog.userId
+          );
         }
         setIsInitialLoading(false);
       });
@@ -61,9 +69,11 @@ function BlogDetails() {
 
   useEffect(() => {
     if (blog && blog.sections.length > 0) {
-      const sectionParam = searchParams.get('s');
+      const sectionParam = searchParams.get("s");
       if (sectionParam) {
-        const targetSection = blog.sections.find(section => section.id === sectionParam);
+        const targetSection = blog.sections.find(
+          (section) => section.id === sectionParam
+        );
         if (targetSection && targetSection.id !== currentSectionId) {
           setCurrentSectionId(targetSection.id);
         }
@@ -87,7 +97,7 @@ function BlogDetails() {
   const handleSectionSelect = (section: Section) => {
     setCurrentSectionId(section.id);
     const newSearchParams = new URLSearchParams(searchParams);
-    newSearchParams.set('s', section.id);
+    newSearchParams.set("s", section.id);
     setSearchParams(newSearchParams);
   };
 
@@ -108,7 +118,7 @@ function BlogDetails() {
       const prevSection = blog.sections[currentIndex - 1];
       setCurrentSectionId(prevSection.id);
       const newSearchParams = new URLSearchParams(searchParams);
-      newSearchParams.set('s', prevSection.id);
+      newSearchParams.set("s", prevSection.id);
       setSearchParams(newSearchParams);
     }
   };
@@ -119,7 +129,7 @@ function BlogDetails() {
       const nextSection = blog.sections[currentIndex + 1];
       setCurrentSectionId(nextSection.id);
       const newSearchParams = new URLSearchParams(searchParams);
-      newSearchParams.set('s', nextSection.id);
+      newSearchParams.set("s", nextSection.id);
       setSearchParams(newSearchParams);
     }
   };
@@ -154,52 +164,52 @@ function BlogDetails() {
           }}
         >
           {/* Blog title shimmer */}
-          <LetterShimmer 
-            lines={2} 
-            wordsPerLine={[6, 8]} 
-            showAvatar={false} 
+          <LetterShimmer
+            lines={2}
+            wordsPerLine={[6, 8]}
+            showAvatar={false}
             showTimestamp={false}
             style={{ marginBottom: "24px", border: "none", padding: "0" }}
           />
-          
+
           {/* Blog metadata shimmer */}
-          <LetterShimmer 
-            lines={1} 
-            wordsPerLine={[12]} 
-            showAvatar={true} 
+          <LetterShimmer
+            lines={1}
+            wordsPerLine={[12]}
+            showAvatar={true}
             showTimestamp={true}
             style={{ marginBottom: "32px", border: "none", padding: "0" }}
           />
-          
+
           {/* Blog content paragraphs */}
-          <LetterShimmer 
-            lines={4} 
-            wordsPerLine={[15, 18, 12, 16]} 
-            showAvatar={false} 
+          <LetterShimmer
+            lines={4}
+            wordsPerLine={[15, 18, 12, 16]}
+            showAvatar={false}
             showTimestamp={false}
             style={{ marginBottom: "24px", border: "none", padding: "0" }}
           />
-          
-          <LetterShimmer 
-            lines={3} 
-            wordsPerLine={[14, 20, 8]} 
-            showAvatar={false} 
+
+          <LetterShimmer
+            lines={3}
+            wordsPerLine={[14, 20, 8]}
+            showAvatar={false}
             showTimestamp={false}
             style={{ marginBottom: "24px", border: "none", padding: "0" }}
           />
-          
-          <LetterShimmer 
-            lines={5} 
-            wordsPerLine={[12, 16, 18, 10, 14]} 
-            showAvatar={false} 
+
+          <LetterShimmer
+            lines={5}
+            wordsPerLine={[12, 16, 18, 10, 14]}
+            showAvatar={false}
             showTimestamp={false}
             style={{ marginBottom: "24px", border: "none", padding: "0" }}
           />
-          
-          <LetterShimmer 
-            lines={2} 
-            wordsPerLine={[16, 11]} 
-            showAvatar={false} 
+
+          <LetterShimmer
+            lines={2}
+            wordsPerLine={[16, 11]}
+            showAvatar={false}
             showTimestamp={false}
             style={{ border: "none", padding: "0" }}
           />
@@ -326,46 +336,63 @@ function BlogDetails() {
 
   // Create structured data for blog article
   const structuredData = {
-    '@context': 'https://schema.org',
-    '@type': 'Article',
+    "@context": "https://schema.org",
+    "@type": "Article",
     headline: blog.title,
-    description: blog.subTitle || `Read ${blog.title} on SisoDev - Expert insights on software engineering and web development.`,
+    description:
+      blog.subTitle ||
+      `Read ${blog.title} on SisoDev - Expert insights on software engineering and web development.`,
     author: {
-      '@type': 'Person',
-      name: blog.contributors || 'SisoDev Team',
-      url: `https://sisodev.com/profile/${blog.userId}`
+      "@type": "Person",
+      name: blog.contributors || "SisoDev Team",
+      url: `https://sisodev.com/profile/${blog.userId}`,
     },
     publisher: {
-      '@type': 'Organization',
-      name: 'SisoDev',
+      "@type": "Organization",
+      name: "SisoDev",
       logo: {
-        '@type': 'ImageObject',
-        url: 'https://sisodev.com/logo.svg'
-      }
+        "@type": "ImageObject",
+        url: "https://sisodev.com/logo.svg",
+      },
     },
     datePublished: blog.createdAt.toISOString(),
     dateModified: blog.updatedAt.toISOString(),
     mainEntityOfPage: {
-      '@type': 'WebPage',
-      '@id': `https://sisodev.com/blogs/${blog.slug}`
+      "@type": "WebPage",
+      "@id": `https://sisodev.com/blogs/${blog.slug}`,
     },
-    wordCount: blog.sections?.reduce((count, section) => count + (section.content?.length || 0), 0) || 0,
-    keywords: blog.tags?.join(', ') || 'software engineering, programming, web development',
+    wordCount:
+      blog.sections?.reduce(
+        (count, section) => count + (section.content?.length || 0),
+        0
+      ) || 0,
+    keywords:
+      blog.tags?.join(", ") ||
+      "software engineering, programming, web development",
     about: {
-      '@type': 'Thing',
-      name: blog.category || 'Software Engineering'
+      "@type": "Thing",
+      name: blog.category || "Software Engineering",
     },
-    articleSection: blog.category || 'Technology',
-    inLanguage: 'en-US',
-    url: `https://sisodev.com/blogs/${blog.slug}`
+    articleSection: blog.category || "Technology",
+    inLanguage: "en-US",
+    url: `https://sisodev.com/blogs/${blog.slug}`,
   };
 
   return (
     <>
       <SEO
         title={blog.title}
-        description={blog.subTitle || `Read ${blog.title} - Expert insights on software engineering, web development, and modern programming techniques.`}
-        keywords={blog.tags || ['programming', 'software engineering', 'web development']}
+        description={
+          blog.subTitle ||
+          `Read ${blog.title} - Expert insights on software engineering, web development, and modern programming techniques.`
+        }
+        keywords={
+          blog.tags || [
+            "programming",
+            "software engineering",
+            "web development",
+          ]
+        }
         author={blog.contributors}
         publishedTime={blog.createdAt.toISOString()}
         modifiedTime={blog.updatedAt.toISOString()}
@@ -381,67 +408,107 @@ function BlogDetails() {
           overflow: "hidden", // Prevent body scrolling
         }}
       >
-      {/* Desktop Sidebar - Hidden on mobile */}
-      {!isMobile && (
-        <ReadOnlySectionSidebar
-          sections={blog.sections}
-          currentSectionId={currentSectionId}
-          onSectionSelect={handleSectionSelect}
-        />
-      )}
+        {/* Desktop Sidebar - Hidden on mobile */}
+        {!isMobile && (
+          <ReadOnlySectionSidebar
+            sections={blog.sections}
+            currentSectionId={currentSectionId}
+            onSectionSelect={handleSectionSelect}
+          />
+        )}
 
-      <div
-        style={{
-          flex: 1,
-          display: "flex",
-          flexDirection: "column",
-          alignItems: "center",
-          height: "100vh",
-          overflow: "auto",
-          padding: isMobile ? "1rem" : "2rem",
-          paddingTop: "5rem", // Adjusted for navbar clearance
-          paddingBottom: "2rem",
-          gap: "1.5rem",
-        }}
-      >
-        {/* Control Buttons */}
         <div
           style={{
-            width: "100%",
-            maxWidth: "8.5in",
-            minWidth: "320px",
+            flex: 1,
             display: "flex",
-            justifyContent: "space-between",
+            flexDirection: "column",
             alignItems: "center",
-            gap: "0.5rem",
-            zIndex: 10,
+            height: "100vh",
+            overflow: "auto",
+            padding: isMobile ? "1rem" : "2rem",
+            paddingTop: "5rem", // Adjusted for navbar clearance
+            paddingBottom: "2rem",
+            gap: "1.5rem",
           }}
         >
-          <div style={{ display: "flex", gap: "0.5rem" }}>
-          <button
-            onClick={() => {
-              const returnTo = searchParams.get("returnTo");
-              navigate(returnTo || "/");
-            }}
+          {/* Control Buttons */}
+          <div
             style={{
-              padding: "0.5rem 1rem",
-              backgroundColor: "rgba(107, 114, 128, 0.8)",
-              color: "white",
-              border: "none",
-              borderRadius: "0.375rem",
-              cursor: "pointer",
-              fontSize: "0.875rem",
-              fontWeight: "500",
+              width: "100%",
+              maxWidth: "8.5in",
+              minWidth: "320px",
+              display: "flex",
+              justifyContent: "space-between",
+              alignItems: "center",
+              gap: "0.5rem",
+              zIndex: 10,
             }}
           >
-            ← Back
-          </button>
-
-          {user && user.uid === blog.userId && (
-            <>
+            <div style={{ display: "flex", gap: "0.5rem" }}>
               <button
-                onClick={() => navigate(`/edit-blog/${blog.id}`)}
+                onClick={() => {
+                  const returnTo = searchParams.get("returnTo");
+                  navigate(returnTo || "/");
+                }}
                 style={{
+                  padding: "0.5rem 1rem",
+                  backgroundColor: "rgba(107, 114, 128, 0.8)",
+                  color: "white",
+                  border: "none",
+                  borderRadius: "0.375rem",
+                  cursor: "pointer",
+                  fontSize: "0.875rem",
+                  fontWeight: "500",
+                }}
+              >
+                ← Back
+              </button>
+
+              {user && user.uid === blog.userId && (
+                <>
+                  <button
+                    onClick={() => navigate(`/edit-blog/${blog.id}`)}
+                    style={{
+                      padding: "0.5rem 1rem",
+                      backgroundColor: "rgba(59, 130, 246, 0.8)",
+                      color: "white",
+                      border: "none",
+                      borderRadius: "0.375rem",
+                      cursor: "pointer",
+                      fontSize: "0.875rem",
+                      fontWeight: "500",
+                    }}
+                  >
+                    Edit
+                  </button>
+
+                  <button
+                    onClick={() => setShowDeleteConfirm(true)}
+                    style={{
+                      padding: "0.5rem 1rem",
+                      backgroundColor: "rgba(220, 38, 38, 0.8)",
+                      color: "white",
+                      border: "none",
+                      borderRadius: "0.375rem",
+                      cursor: "pointer",
+                      fontSize: "0.875rem",
+                      fontWeight: "500",
+                    }}
+                  >
+                    Delete
+                  </button>
+                </>
+              )}
+            </div>
+
+            {/* Sections Menu Button - Only show on mobile */}
+            {isMobile && (
+              <button
+                onClick={() => setIsSidebarOpen(true)}
+                style={{
+                  display: "flex",
+                  alignItems: "center",
+                  gap: "0.5rem",
                   padding: "0.5rem 1rem",
                   backgroundColor: "rgba(59, 130, 246, 0.8)",
                   color: "white",
@@ -452,456 +519,441 @@ function BlogDetails() {
                   fontWeight: "500",
                 }}
               >
-                Edit
+                <Menu size={16} />
+                Sections
               </button>
-
-              <button
-                onClick={() => setShowDeleteConfirm(true)}
-                style={{
-                  padding: "0.5rem 1rem",
-                  backgroundColor: "rgba(220, 38, 38, 0.8)",
-                  color: "white",
-                  border: "none",
-                  borderRadius: "0.375rem",
-                  cursor: "pointer",
-                  fontSize: "0.875rem",
-                  fontWeight: "500",
-                }}
-              >
-                Delete
-              </button>
-            </>
-          )}
+            )}
           </div>
-          
-          {/* Sections Menu Button - Only show on mobile */}
-          {isMobile && (
-            <button
-              onClick={() => setIsSidebarOpen(true)}
-              style={{
-                display: "flex",
-                alignItems: "center",
-                gap: "0.5rem",
-                padding: "0.5rem 1rem",
-                backgroundColor: "rgba(59, 130, 246, 0.8)",
-                color: "white",
-                border: "none",
-                borderRadius: "0.375rem",
-                cursor: "pointer",
-                fontSize: "0.875rem",
-                fontWeight: "500",
-              }}
-            >
-              <Menu size={16} />
-              Sections
-            </button>
-          )}
-        </div>
-        <div
-          style={{
-            width: "100%",
-            maxWidth: "8.5in",
-            minWidth: "320px",
-            // minHeight: "11in",
-            backgroundColor: "white",
-            boxShadow: "0 10px 15px -3px rgba(0, 0, 0, 0.1)",
-            color: "black",
-            position: "relative",
-            display: "flex",
-            flexDirection: "column",
-            marginBottom: "6rem",
-          }}
-        >
-          {/* Blue Header Section - Only show for first section */}
-          {currentIndex === 0 && (
-            <div
-              style={{
-                backgroundColor: "#3b82f6",
-                color: "white",
-                padding: "2rem",
-                minHeight: "200px",
-                display: "flex",
-                flexDirection: "column",
-                justifyContent: "center",
-                flexShrink: 0, // Prevent header from shrinking
-              }}
-            >
-              <h1
-                style={{
-                  fontSize: "2.25rem",
-                  fontWeight: "bold",
-                  marginBottom: "0.5rem",
-                  lineHeight: "1.2",
-                }}
-              >
-                {blog.title}
-              </h1>
-
-              <div
-                style={{
-                  display: "flex",
-                  alignItems: "center",
-                  gap: "1rem",
-                  fontSize: "0.875rem",
-                  opacity: 0.9,
-                  flexWrap: "wrap",
-                }}
-              >
-                <span style={{ display: "flex", alignItems: "center", gap: "0.5rem" }}>
-                  <Calendar size={16} />
-                  Last updated:{" "}
-                  {blog.createdAt.toLocaleDateString("en-US", {
-                    year: "numeric",
-                    month: "long",
-                    day: "numeric",
-                  })}
-                </span>
-                <span style={{ display: "flex", alignItems: "center", gap: "0.5rem" }}>
-                  <User size={16} />
-                  By: {blog.contributors || "Anonymous"}
-                </span>
-                <span style={{ display: "flex", alignItems: "center", gap: "0.5rem" }}>
-                  <Eye size={16} />
-                  Views: 43
-                </span>
-              </div>
-            </div>
-          )}
-
-          {/* Content Area */}
           <div
             style={{
-              padding: "2rem",
-              paddingTop: "1rem",
+              width: "100%",
+              maxWidth: "8.5in",
+              minWidth: "320px",
+              // minHeight: "11in",
+              backgroundColor: "white",
+              boxShadow: "0 10px 15px -3px rgba(0, 0, 0, 0.1)",
+              color: "black",
+              position: "relative",
+              display: "flex",
+              flexDirection: "column",
+              marginBottom: "6rem",
             }}
           >
-            {currentSection && (
-              <div>
-                <div>
+            {/* Blue Header Section - Only show for first section */}
+            {currentIndex === 0 && (
+              <div
+                style={{
+                  backgroundColor: "#3b82f6",
+                  color: "white",
+                  padding: "2rem",
+                  minHeight: "200px",
+                  display: "flex",
+                  flexDirection: "column",
+                  justifyContent: "center",
+                  flexShrink: 0, // Prevent header from shrinking
+                }}
+              >
+                <h1
+                  style={{
+                    fontSize: "2.25rem",
+                    fontWeight: "bold",
+                    marginBottom: "0.5rem",
+                    lineHeight: "1.2",
+                  }}
+                >
+                  {blog.title}
+                </h1>
+
+                <div
+                  style={{
+                    display: "flex",
+                    alignItems: "center",
+                    gap: "1rem",
+                    fontSize: "0.875rem",
+                    opacity: 0.9,
+                    flexWrap: "wrap",
+                  }}
+                >
+                  <span
+                    style={{
+                      display: "flex",
+                      alignItems: "center",
+                      gap: "0.5rem",
+                    }}
+                  >
+                    <Calendar size={16} />
+                    Last updated:{" "}
+                    {blog.createdAt.toLocaleDateString("en-US", {
+                      year: "numeric",
+                      month: "long",
+                      day: "numeric",
+                    })}
+                  </span>
+                  <span
+                    style={{
+                      display: "flex",
+                      alignItems: "center",
+                      gap: "0.5rem",
+                    }}
+                  >
+                    <User size={16} />
+                    By: {blog.contributors || "Anonymous"}
+                  </span>
+                  <span
+                    style={{
+                      display: "flex",
+                      alignItems: "center",
+                      gap: "0.5rem",
+                    }}
+                  >
+                    <Eye size={16} />
+                    Views: 43
+                  </span>
+                </div>
+              </div>
+            )}
+
+            {/* Content Area */}
+            <div
+              style={{
+                paddingTop: "1rem",
+                overflow: "hidden",
+              }}
+            >
+              {currentSection && (
+                <div
+                  style={{
+                    marginLeft: "-2rem",
+                    marginRight: "-2rem",
+                  }}
+                >
                   <Editor
                     content={currentSection.content}
                     onContentChange={() => {}}
                     isReadOnly={true}
                   />
                 </div>
+              )}
+            </div>
+
+            {/* Section Navigation */}
+            {blog && blog.sections.length > 1 && (
+              <div
+                style={{
+                  padding: "2rem 2rem 3rem 2rem",
+                  borderTop: "1px solid #e5e7eb",
+                  display: "flex",
+                  justifyContent: "space-between",
+                  alignItems: "center",
+                }}
+              >
+                {hasPrevious ? (
+                  <button
+                    onClick={handlePreviousSection}
+                    style={{
+                      display: "flex",
+                      alignItems: "center",
+                      gap: "0.5rem",
+                      padding: "0.75rem 1.5rem",
+                      backgroundColor: "#f3f4f6",
+                      color: "#374151",
+                      border: "1px solid #d1d5db",
+                      borderRadius: "0.375rem",
+                      cursor: "pointer",
+                      fontSize: "0.875rem",
+                      fontWeight: "500",
+                      transition: "all 0.2s ease",
+                    }}
+                    onMouseEnter={(e) => {
+                      e.currentTarget.style.backgroundColor = "#e5e7eb";
+                    }}
+                    onMouseLeave={(e) => {
+                      e.currentTarget.style.backgroundColor = "#f3f4f6";
+                    }}
+                  >
+                    <span>←</span>
+                    <span>
+                      Previous:{" "}
+                      {blog.sections[currentIndex - 1]?.name ||
+                        `Section ${currentIndex}`}
+                    </span>
+                  </button>
+                ) : (
+                  <div></div>
+                )}
+
+                {hasNext ? (
+                  <button
+                    onClick={handleNextSection}
+                    style={{
+                      display: "flex",
+                      alignItems: "center",
+                      gap: "0.5rem",
+                      padding: "0.75rem 1.5rem",
+                      backgroundColor: "#3b82f6",
+                      color: "white",
+                      border: "none",
+                      borderRadius: "0.375rem",
+                      cursor: "pointer",
+                      fontSize: "0.875rem",
+                      fontWeight: "500",
+                      transition: "all 0.2s ease",
+                    }}
+                    onMouseEnter={(e) => {
+                      e.currentTarget.style.backgroundColor = "#2563eb";
+                    }}
+                    onMouseLeave={(e) => {
+                      e.currentTarget.style.backgroundColor = "#3b82f6";
+                    }}
+                  >
+                    <span>
+                      Next:{" "}
+                      {blog.sections[currentIndex + 1]?.name ||
+                        `Section ${currentIndex + 2}`}
+                    </span>
+                    <span>→</span>
+                  </button>
+                ) : (
+                  <div></div>
+                )}
               </div>
             )}
           </div>
-
-          {/* Section Navigation */}
-          {blog && blog.sections.length > 1 && (
-            <div
-              style={{
-                padding: "2rem 2rem 3rem 2rem",
-                borderTop: "1px solid #e5e7eb",
-                display: "flex",
-                justifyContent: "space-between",
-                alignItems: "center",
-              }}
-            >
-              {hasPrevious ? (
-                <button
-                  onClick={handlePreviousSection}
-                  style={{
-                    display: "flex",
-                    alignItems: "center",
-                    gap: "0.5rem",
-                    padding: "0.75rem 1.5rem",
-                    backgroundColor: "#f3f4f6",
-                    color: "#374151",
-                    border: "1px solid #d1d5db",
-                    borderRadius: "0.375rem",
-                    cursor: "pointer",
-                    fontSize: "0.875rem",
-                    fontWeight: "500",
-                    transition: "all 0.2s ease",
-                  }}
-                  onMouseEnter={(e) => {
-                    e.currentTarget.style.backgroundColor = "#e5e7eb";
-                  }}
-                  onMouseLeave={(e) => {
-                    e.currentTarget.style.backgroundColor = "#f3f4f6";
-                  }}
-                >
-                  <span>←</span>
-                  <span>
-                    Previous:{" "}
-                    {blog.sections[currentIndex - 1]?.name ||
-                      `Section ${currentIndex}`}
-                  </span>
-                </button>
-              ) : (
-                <div></div>
-              )}
-
-              {hasNext ? (
-                <button
-                  onClick={handleNextSection}
-                  style={{
-                    display: "flex",
-                    alignItems: "center",
-                    gap: "0.5rem",
-                    padding: "0.75rem 1.5rem",
-                    backgroundColor: "#3b82f6",
-                    color: "white",
-                    border: "none",
-                    borderRadius: "0.375rem",
-                    cursor: "pointer",
-                    fontSize: "0.875rem",
-                    fontWeight: "500",
-                    transition: "all 0.2s ease",
-                  }}
-                  onMouseEnter={(e) => {
-                    e.currentTarget.style.backgroundColor = "#2563eb";
-                  }}
-                  onMouseLeave={(e) => {
-                    e.currentTarget.style.backgroundColor = "#3b82f6";
-                  }}
-                >
-                  <span>
-                    Next:{" "}
-                    {blog.sections[currentIndex + 1]?.name ||
-                      `Section ${currentIndex + 2}`}
-                  </span>
-                  <span>→</span>
-                </button>
-              ) : (
-                <div></div>
-              )}
-            </div>
-          )}
         </div>
-      </div>
 
-      {/* Mobile Sections Drawer - Only show on mobile */}
-      {isMobile && isSidebarOpen && (
-        <div
-          style={{
-            position: "fixed",
-            top: "0",
-            left: "0",
-            right: "0",
-            bottom: "0",
-            backgroundColor: "rgba(0, 0, 0, 0.5)",
-            display: "flex",
-            alignItems: "flex-start",
-            justifyContent: "flex-start",
-            zIndex: "1000",
-          }}
-          onClick={() => setIsSidebarOpen(false)}
-        >
+        {/* Mobile Sections Drawer - Only show on mobile */}
+        {isMobile && isSidebarOpen && (
           <div
             style={{
-              width: "280px",
-              maxWidth: "80vw",
-              height: "100vh",
-              backgroundColor: "#f8fafc",
-              borderRight: "1px solid #e2e8f0",
+              position: "fixed",
+              top: "0",
+              left: "0",
+              right: "0",
+              bottom: "0",
+              backgroundColor: "rgba(0, 0, 0, 0.5)",
               display: "flex",
-              flexDirection: "column",
-              transform: isSidebarOpen ? "translateX(0)" : "translateX(-100%)",
-              transition: "transform 0.3s ease-in-out",
+              alignItems: "flex-start",
+              justifyContent: "flex-start",
+              zIndex: "1000",
             }}
-            onClick={(e) => e.stopPropagation()}
+            onClick={() => setIsSidebarOpen(false)}
           >
-            {/* Drawer Header */}
             <div
               style={{
-                padding: "1rem",
-                borderBottom: "1px solid #e2e8f0",
-                display: "flex",
-                justifyContent: "space-between",
-                alignItems: "center",
-                backgroundColor: "white",
-              }}
-            >
-              <h3
-                style={{
-                  fontSize: "1.125rem",
-                  fontWeight: "600",
-                  color: "#374151",
-                  margin: 0,
-                }}
-              >
-                Sections
-              </h3>
-              <button
-                onClick={() => setIsSidebarOpen(false)}
-                style={{
-                  padding: "0.5rem",
-                  backgroundColor: "transparent",
-                  border: "none",
-                  cursor: "pointer",
-                  borderRadius: "0.375rem",
-                  display: "flex",
-                  alignItems: "center",
-                  justifyContent: "center",
-                }}
-              >
-                <X size={20} color="#6b7280" />
-              </button>
-            </div>
-
-            {/* Sections List */}
-            <div
-              style={{
-                flex: 1,
-                padding: "1rem",
-                overflowY: "auto",
+                width: "280px",
+                maxWidth: "80vw",
+                height: "100vh",
+                backgroundColor: "#f8fafc",
+                borderRight: "1px solid #e2e8f0",
                 display: "flex",
                 flexDirection: "column",
-                gap: "0.5rem",
+                transform: isSidebarOpen
+                  ? "translateX(0)"
+                  : "translateX(-100%)",
+                transition: "transform 0.3s ease-in-out",
               }}
+              onClick={(e) => e.stopPropagation()}
             >
-              {blog.sections.length === 0 ? (
-                <div
+              {/* Drawer Header */}
+              <div
+                style={{
+                  padding: "1rem",
+                  borderBottom: "1px solid #e2e8f0",
+                  display: "flex",
+                  justifyContent: "space-between",
+                  alignItems: "center",
+                  backgroundColor: "white",
+                }}
+              >
+                <h3
                   style={{
-                    padding: "1rem",
-                    textAlign: "center",
-                    color: "#6b7280",
-                    fontSize: "0.875rem",
+                    fontSize: "1.125rem",
+                    fontWeight: "600",
+                    color: "#374151",
+                    margin: 0,
                   }}
                 >
-                  No sections available.
-                </div>
-              ) : (
-                blog.sections.map((section, index) => (
+                  Sections
+                </h3>
+                <button
+                  onClick={() => setIsSidebarOpen(false)}
+                  style={{
+                    padding: "0.5rem",
+                    backgroundColor: "transparent",
+                    border: "none",
+                    cursor: "pointer",
+                    borderRadius: "0.375rem",
+                    display: "flex",
+                    alignItems: "center",
+                    justifyContent: "center",
+                  }}
+                >
+                  <X size={20} color="#6b7280" />
+                </button>
+              </div>
+
+              {/* Sections List */}
+              <div
+                style={{
+                  flex: 1,
+                  padding: "1rem",
+                  overflowY: "auto",
+                  display: "flex",
+                  flexDirection: "column",
+                  gap: "0.5rem",
+                }}
+              >
+                {blog.sections.length === 0 ? (
                   <div
-                    key={section.id}
                     style={{
-                      border: "1px solid #e2e8f0",
-                      borderRadius: "0.375rem",
-                      backgroundColor:
-                        currentSectionId === section.id ? "#eff6ff" : "white",
-                      borderColor:
-                        currentSectionId === section.id ? "#3b82f6" : "#e2e8f0",
-                      cursor: "pointer",
-                    }}
-                    onClick={() => {
-                      handleSectionSelect(section);
-                      setIsSidebarOpen(false);
+                      padding: "1rem",
+                      textAlign: "center",
+                      color: "#6b7280",
+                      fontSize: "0.875rem",
                     }}
                   >
+                    No sections available.
+                  </div>
+                ) : (
+                  blog.sections.map((section, index) => (
                     <div
+                      key={section.id}
                       style={{
-                        padding: "0.75rem",
+                        border: "1px solid #e2e8f0",
+                        borderRadius: "0.375rem",
+                        backgroundColor:
+                          currentSectionId === section.id ? "#eff6ff" : "white",
+                        borderColor:
+                          currentSectionId === section.id
+                            ? "#3b82f6"
+                            : "#e2e8f0",
+                        cursor: "pointer",
+                      }}
+                      onClick={() => {
+                        handleSectionSelect(section);
+                        setIsSidebarOpen(false);
                       }}
                     >
                       <div
                         style={{
-                          fontSize: "0.875rem",
-                          fontWeight: "500",
-                          color: "#374151",
-                          marginBottom: "0.5rem",
+                          padding: "0.75rem",
                         }}
                       >
-                        {section.name || `Section ${index + 1}`}
+                        <div
+                          style={{
+                            fontSize: "0.875rem",
+                            fontWeight: "500",
+                            color: "#374151",
+                            marginBottom: "0.5rem",
+                          }}
+                        >
+                          {section.name || `Section ${index + 1}`}
+                        </div>
                       </div>
                     </div>
-                  </div>
-                ))
-              )}
+                  ))
+                )}
+              </div>
             </div>
           </div>
-        </div>
-      )}
+        )}
 
-      {/* Delete Confirmation Modal */}
-      {showDeleteConfirm && (
-        <div
-          style={{
-            position: "fixed",
-            top: "0",
-            left: "0",
-            right: "0",
-            bottom: "0",
-            backgroundColor: "rgba(0, 0, 0, 0.5)",
-            display: "flex",
-            alignItems: "center",
-            justifyContent: "center",
-            zIndex: "1000",
-          }}
-          onClick={() => setShowDeleteConfirm(false)}
-        >
+        {/* Delete Confirmation Modal */}
+        {showDeleteConfirm && (
           <div
             style={{
-              backgroundColor: "white",
-              padding: "32px",
-              borderRadius: "8px",
-              boxShadow: "0 20px 25px -5px rgba(0, 0, 0, 0.1)",
-              maxWidth: "400px",
-              width: "90%",
-              margin: "16px",
+              position: "fixed",
+              top: "0",
+              left: "0",
+              right: "0",
+              bottom: "0",
+              backgroundColor: "rgba(0, 0, 0, 0.5)",
+              display: "flex",
+              alignItems: "center",
+              justifyContent: "center",
+              zIndex: "1000",
             }}
-            onClick={(e) => e.stopPropagation()}
+            onClick={() => setShowDeleteConfirm(false)}
           >
-            <h3
-              style={{
-                fontSize: "18px",
-                fontWeight: "600",
-                color: "#1f2937",
-                marginBottom: "16px",
-              }}
-            >
-              Delete Blog Post
-            </h3>
-
-            <p
-              style={{
-                fontSize: "14px",
-                color: "#6b7280",
-                marginBottom: "24px",
-                lineHeight: "1.5",
-              }}
-            >
-              Are you sure you want to delete "{blog?.title}"? This action
-              cannot be undone and the blog post will be permanently removed.
-            </p>
-
             <div
               style={{
-                display: "flex",
-                gap: "12px",
-                justifyContent: "flex-end",
+                backgroundColor: "white",
+                padding: "32px",
+                borderRadius: "8px",
+                boxShadow: "0 20px 25px -5px rgba(0, 0, 0, 0.1)",
+                maxWidth: "400px",
+                width: "90%",
+                margin: "16px",
               }}
+              onClick={(e) => e.stopPropagation()}
             >
-              <button
-                onClick={() => setShowDeleteConfirm(false)}
+              <h3
                 style={{
-                  backgroundColor: "#6b7280",
-                  color: "white",
-                  padding: "10px 20px",
-                  borderRadius: "6px",
-                  border: "none",
-                  fontSize: "14px",
-                  fontWeight: "500",
-                  cursor: "pointer",
+                  fontSize: "18px",
+                  fontWeight: "600",
+                  color: "#1f2937",
+                  marginBottom: "16px",
                 }}
               >
-                Cancel
-              </button>
+                Delete Blog Post
+              </h3>
 
-              <button
-                onClick={handleDeleteBlog}
-                disabled={loading}
+              <p
                 style={{
-                  backgroundColor: loading ? "#9ca3af" : "#dc2626",
-                  color: "white",
-                  padding: "10px 20px",
-                  borderRadius: "6px",
-                  border: "none",
                   fontSize: "14px",
-                  fontWeight: "500",
-                  cursor: loading ? "not-allowed" : "pointer",
+                  color: "#6b7280",
+                  marginBottom: "24px",
+                  lineHeight: "1.5",
                 }}
               >
-                {loading ? "Deleting..." : "Delete"}
-              </button>
+                Are you sure you want to delete "{blog?.title}"? This action
+                cannot be undone and the blog post will be permanently removed.
+              </p>
+
+              <div
+                style={{
+                  display: "flex",
+                  gap: "12px",
+                  justifyContent: "flex-end",
+                }}
+              >
+                <button
+                  onClick={() => setShowDeleteConfirm(false)}
+                  style={{
+                    backgroundColor: "#6b7280",
+                    color: "white",
+                    padding: "10px 20px",
+                    borderRadius: "6px",
+                    border: "none",
+                    fontSize: "14px",
+                    fontWeight: "500",
+                    cursor: "pointer",
+                  }}
+                >
+                  Cancel
+                </button>
+
+                <button
+                  onClick={handleDeleteBlog}
+                  disabled={loading}
+                  style={{
+                    backgroundColor: loading ? "#9ca3af" : "#dc2626",
+                    color: "white",
+                    padding: "10px 20px",
+                    borderRadius: "6px",
+                    border: "none",
+                    fontSize: "14px",
+                    fontWeight: "500",
+                    cursor: loading ? "not-allowed" : "pointer",
+                  }}
+                >
+                  {loading ? "Deleting..." : "Delete"}
+                </button>
+              </div>
             </div>
           </div>
-        </div>
-      )}
-    </div>
+        )}
+      </div>
     </>
   );
 }
