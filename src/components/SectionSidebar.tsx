@@ -21,44 +21,53 @@ const SectionSidebar: React.FC<SectionSidebarProps> = ({
   return (
     <div style={{
       width: '250px',
-      height: '100%',
+      height: 'calc(100vh - 64px)',
       backgroundColor: '#f8fafc',
       borderRight: '1px solid #e2e8f0',
-      padding: '1rem',
-      overflowY: 'auto'
+      display: 'flex',
+      flexDirection: 'column'
     }}>
       <div style={{
-        display: 'flex',
-        justifyContent: 'space-between',
-        alignItems: 'center',
-        marginBottom: '1rem'
+        padding: '1rem',
+        paddingBottom: '0.5rem',
+        flexShrink: 0
       }}>
-        <h3 style={{
-          fontSize: '1rem',
-          fontWeight: 'bold',
-          color: '#374151',
-          margin: 0
+        <div style={{
+          display: 'flex',
+          justifyContent: 'space-between',
+          alignItems: 'center',
+          marginBottom: '1rem'
         }}>
-          Sections
-        </h3>
-        <button
-          onClick={onAddSection}
-          style={{
-            padding: '0.375rem 0.75rem',
-            backgroundColor: '#3b82f6',
-            color: 'white',
-            border: 'none',
-            borderRadius: '0.375rem',
-            cursor: 'pointer',
-            fontSize: '0.75rem',
-            fontWeight: '500'
-          }}
-        >
-          + Add
-        </button>
+          <h3 style={{
+            fontSize: '1rem',
+            fontWeight: 'bold',
+            color: '#374151',
+            margin: 0
+          }}>
+            Sections
+          </h3>
+          <button
+            onClick={onAddSection}
+            style={{
+              padding: '0.375rem 0.75rem',
+              backgroundColor: '#3b82f6',
+              color: 'white',
+              border: 'none',
+              borderRadius: '0.375rem',
+              cursor: 'pointer',
+              fontSize: '0.75rem',
+              fontWeight: '500'
+            }}
+          >
+            + Add
+          </button>
+        </div>
       </div>
 
       <div style={{
+        flex: 1,
+        padding: '0 1rem 4rem 1rem',
+        overflowY: 'auto',
         display: 'flex',
         flexDirection: 'column',
         gap: '0.5rem'

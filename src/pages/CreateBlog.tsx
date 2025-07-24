@@ -151,17 +151,45 @@ function CreateBlog() {
   }, [error, clearError]);
 
   if (loading) {
-    return <div>Loading...</div>;
+    return (
+      <div
+        style={{
+          minHeight: "100vh",
+          backgroundColor: "#F9FAFB",
+          display: "flex",
+          alignItems: "center",
+          justifyContent: "center",
+          padding: "2rem",
+        }}
+      >
+        <div
+          style={{
+            fontSize: "1.125rem",
+            color: "#4B5563",
+            backgroundColor: "white",
+            padding: "2rem",
+            borderRadius: "0.5rem",
+            boxShadow:
+              "0 1px 3px 0 rgba(0, 0, 0, 0.1), 0 1px 2px 0 rgba(0, 0, 0, 0.06)",
+            width: "100%",
+            maxWidth: "8.5in",
+            minHeight: "11in",
+            textAlign: "center",
+          }}
+        >
+          Creating blog post...
+        </div>
+      </div>
+    );
   }
 
   return (
     <div
       style={{
-        minHeight: "100vh",
-        backgroundColor: "#374151",
+        height: "100vh",
+        backgroundColor: "#F9FAFB",
         display: "flex",
-        padding: "2rem",
-        gap: "2rem",
+        overflow: "hidden",
       }}
     >
       <SectionSidebar
@@ -177,19 +205,27 @@ function CreateBlog() {
         style={{
           flex: 1,
           display: "flex",
+          flexDirection: "column",
           alignItems: "center",
-          justifyContent: "center",
+          height: "100vh",
+          overflow: "auto",
+          padding: "2rem",
+          paddingTop: "5rem",
+          paddingBottom: "2rem",
+          gap: "1.5rem",
         }}
       >
         <div
           style={{
             width: "8.5in",
-            height: "11in",
+            minHeight: "11in",
             backgroundColor: "white",
             boxShadow: "0 10px 15px -3px rgba(0, 0, 0, 0.1)",
-            padding: "2rem",
             color: "black",
             position: "relative",
+            display: "flex",
+            flexDirection: "column",
+            marginBottom: "6rem",
           }}
         >
           <div
@@ -199,6 +235,7 @@ function CreateBlog() {
               right: "1rem",
               display: "flex",
               gap: "0.5rem",
+              zIndex: 10,
             }}
           >
             {mode === "edit" ? (
@@ -250,12 +287,19 @@ function CreateBlog() {
               Publish
             </button>
           </div>
-          <div style={{ marginTop: "3rem" }}>
-            <Editor
-              content={currentSection?.content || ""}
-              onContentChange={handleContentChange}
-              isReadOnly={mode === "preview"}
-            />
+          <div
+            style={{
+              padding: "2rem",
+              paddingTop: "1rem",
+            }}
+          >
+            <div style={{ marginTop: "3rem" }}>
+              <Editor
+                content={currentSection?.content || ""}
+                onContentChange={handleContentChange}
+                isReadOnly={mode === "preview"}
+              />
+            </div>
           </div>
         </div>
       </div>
