@@ -10,7 +10,6 @@ import EditBlog from "./pages/EditBlog";
 import MyBlogs from "./pages/MyBlogs";
 import { ProtectedRoute } from "./components/ProtectedRoute";
 import Profile from "./pages/Profile";
-import Editor from "./pages/Editor";
 
 // Auth initialization component
 function AuthInit() {
@@ -37,7 +36,6 @@ function App() {
             <Route path="/signup" element={<Signup />} />
             {/* Protected routes - require authentication */}
             <Route element={<ProtectedRoute />}>
-              <Route path="/editor" element={<Editor />} />
               <Route path="/blogs/mine" element={<MyBlogs />} />
               <Route path="/create-blog" element={<CreateBlog />} />
               <Route path="/edit-blog/:id" element={<EditBlog />} />
