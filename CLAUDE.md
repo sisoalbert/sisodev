@@ -33,6 +33,11 @@ The application follows a feature-based architecture:
 - **State Management**: Zustand stores for auth (`authStore.ts`) and blog operations (`blogStore.ts`)
 - **Protected Routes**: Authentication-required pages wrapped with `ProtectedRoute` component
 - **Rich Content**: BlockNote editor for blog content with section-based organization
+- **UI Components**:
+  - `SectionSidebar`: Editable sidebar for managing blog sections during editing
+  - `ReadOnlySectionSidebar`: Navigation sidebar for reading blogs with section jumping
+  - `PublishModal`: Comprehensive metadata editing modal for publishing/updating blogs
+  - `Editor`: BlockNote-based rich text editor with read-only and edit modes
 
 ### Key Features
 
@@ -41,6 +46,13 @@ The application follows a feature-based architecture:
 - **Access Control**: Public/private/unlisted visibility settings with owner-based permissions
 - **Content Management**: Section-based blog structure with tags, categories, and metadata
 - **Real-time Data**: Firestore integration with security rules for data protection
+- **Enhanced UI/UX**: 
+  - Fixed sidebar with section navigation for both editing and reading modes
+  - Paper-like document layout (8.5" width) with proper spacing and shadows
+  - URL-based section navigation with deep linking support
+  - Edit/Preview mode switching in the editor
+  - Responsive layout with proper scrolling behavior
+  - Modal-based publishing workflow with comprehensive metadata editing
 
 ### Data Models
 
@@ -56,8 +68,16 @@ Blogs have comprehensive metadata including:
 - Firestore security rules enforce user-based access control
 - Environment variables for Firebase configuration
 - Protected routes prevent unauthorized access
-- Owner-based blog permissions
+- Owner-based blog permissions with ownership verification in EditBlog component
 
 ### Build Process
 
 The build process uses TypeScript compilation (`tsc -b`) followed by Vite bundling. All builds should be linted before deployment.
+
+### Recent UI/UX Improvements
+
+- **Enhanced Blog Editor Layout**: Fixed sidebar layout with proper scrolling, paper-like document appearance, and edit/preview mode toggle
+- **Section Navigation**: URL-based deep linking for blog sections with `?s=sectionId` parameter support
+- **Responsive Design**: Improved mobile and desktop layouts with proper overflow handling
+- **Publishing Workflow**: Modal-based metadata editing with comprehensive form fields for blog publishing and updates
+- **Visual Polish**: Added shadows, proper spacing, and professional document styling matching print media standards

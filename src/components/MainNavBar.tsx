@@ -1,13 +1,21 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useMemo, useCallback } from "react";
 import { Link, useLocation } from "react-router-dom";
 import { useAuthStore } from "../store/authStore";
 import logo from "../assets/logo.svg";
 
-const MainNavBar: React.FC = () => {
+const MainNavBar: React.FC = React.memo(() => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [isMobile, setIsMobile] = useState(window.innerWidth <= 768);
-  const { user } = useAuthStore();
+  const [hasInitiallyLoaded, setHasInitiallyLoaded] = useState(false);
+  const { user, loading: authLoading } = useAuthStore();
   const location = useLocation();
+
+  // Track initial auth loading completion
+  useEffect(() => {
+    if (!authLoading && !hasInitiallyLoaded) {
+      setHasInitiallyLoaded(true);
+    }
+  }, [authLoading, hasInitiallyLoaded]);
 
   // Listen for authentication state changes
   useEffect(() => {
@@ -41,24 +49,24 @@ const MainNavBar: React.FC = () => {
   }, [isMenuOpen]);
 
 
-  const toggleMenu = () => {
+  const toggleMenu = useCallback(() => {
     setIsMenuOpen(!isMenuOpen);
-  };
+  }, [isMenuOpen]);
 
-  const closeMenu = () => {
+  const closeMenu = useCallback(() => {
     setIsMenuOpen(false);
-  };
+  }, []);
 
   // Helper function to check if a link is active
-  const isActiveLink = (path: string) => {
+  const isActiveLink = useCallback((path: string) => {
     if (path === "/blogs" && (location.pathname === "/" || location.pathname === "/blogs")) {
       return true;
     }
     return location.pathname === path;
-  };
+  }, [location.pathname]);
 
   // Helper function to get link styles with hover and active states
-  const getLinkStyles = (path: string, isMobileLink = false) => ({
+  const getLinkStyles = useCallback((path: string, isMobileLink = false) => ({
     color: "#333333",
     textDecoration: "none",
     fontWeight: isActiveLink(path) ? 700 : 500,
@@ -66,7 +74,137 @@ const MainNavBar: React.FC = () => {
     padding: isMobileLink ? "12px 16px" : undefined,
     transition: "all 0.2s ease",
     borderRadius: isMobileLink ? "4px" : undefined,
-  });
+  }), [isActiveLink]);
+
+  // Only show loading during initial auth resolution, not subsequent operations
+  const shouldShowLoading = authLoading && !hasInitiallyLoaded;
+
+  // Memoize desktop menu items to prevent re-renders when auth state is stable
+  const desktopMenuItems = useMemo(() => {
+    if (isMobile || shouldShowLoading) {
+      return shouldShowLoading && !isMobile ? (
+        <div
+          style={{
+            display: "flex",
+            gap: "24px",
+            alignItems: "center",
+          }}
+        >
+          <div
+            style={{
+              width: "60px",
+              height: "20px",
+              backgroundColor: "#f3f4f6",
+              borderRadius: "4px",
+              animation: "pulse 1.5s ease-in-out infinite alternate",
+            }}
+          />
+          <div
+            style={{
+              width: "80px",
+              height: "20px",
+              backgroundColor: "#f3f4f6",
+              borderRadius: "4px",
+              animation: "pulse 1.5s ease-in-out infinite alternate",
+            }}
+          />
+        </div>
+      ) : null;
+    }
+
+    return (
+      <div
+        style={{
+          display: "flex",
+          gap: "24px",
+          transition: "all 0.3s ease",
+        }}
+      >
+        {user ? (
+          <>
+            <Link
+              to="/blogs/mine"
+              style={getLinkStyles("/blogs/mine")}
+              onMouseEnter={(e) => {
+                e.currentTarget.style.color = "#3B82F6";
+              }}
+              onMouseLeave={(e) => {
+                e.currentTarget.style.color = "#333333";
+              }}
+            >
+              My Blogs
+            </Link>
+            <Link
+              to="/create-blog"
+              style={getLinkStyles("/create-blog")}
+              onMouseEnter={(e) => {
+                e.currentTarget.style.color = "#3B82F6";
+              }}
+              onMouseLeave={(e) => {
+                e.currentTarget.style.color = "#333333";
+              }}
+            >
+              Create Blog
+            </Link>
+            <Link
+              to="/profile"
+              style={getLinkStyles("/profile")}
+              onMouseEnter={(e) => {
+                e.currentTarget.style.color = "#3B82F6";
+              }}
+              onMouseLeave={(e) => {
+                e.currentTarget.style.color = "#333333";
+              }}
+            >
+              Profile
+            </Link>
+          </>
+        ) : (
+          <div
+            style={{
+              display: "flex",
+              alignItems: "center",
+              gap: "16px",
+            }}
+          >
+            <Link
+              to="/login"
+              style={getLinkStyles("/login")}
+              onMouseEnter={(e) => {
+                e.currentTarget.style.color = "#3B82F6";
+              }}
+              onMouseLeave={(e) => {
+                e.currentTarget.style.color = "#333333";
+              }}
+            >
+              Login
+            </Link>
+            <Link
+              to="/signup"
+              style={{
+                backgroundColor: isActiveLink("/signup") ? "#2563EB" : "#3B82F6",
+                color: "#FFFFFF",
+                padding: "8px 16px",
+                borderRadius: "4px",
+                textDecoration: "none",
+                fontWeight: isActiveLink("/signup") ? 700 : 500,
+                fontSize: "0.95rem",
+                transition: "all 0.2s ease",
+              }}
+              onMouseEnter={(e) => {
+                e.currentTarget.style.backgroundColor = "#2563EB";
+              }}
+              onMouseLeave={(e) => {
+                e.currentTarget.style.backgroundColor = isActiveLink("/signup") ? "#2563EB" : "#3B82F6";
+              }}
+            >
+              Sign Up
+            </Link>
+          </div>
+        )}
+      </div>
+    );
+  }, [isMobile, shouldShowLoading, user, getLinkStyles, isActiveLink]);
 
   return (
     <>
@@ -146,98 +284,7 @@ const MainNavBar: React.FC = () => {
           }}
         >
           {/* Desktop menu items */}
-          {!isMobile && (
-            <div
-              style={{
-                display: "flex",
-                gap: "24px",
-                transition: "all 0.3s ease",
-              }}
-            >
-              {user ? (
-                <>
-                  <Link
-                    to="/blogs/mine"
-                    style={getLinkStyles("/blogs/mine")}
-                    onMouseEnter={(e) => {
-                      e.currentTarget.style.color = "#3B82F6";
-                    }}
-                    onMouseLeave={(e) => {
-                      e.currentTarget.style.color = "#333333";
-                    }}
-                  >
-                    My Blogs
-                  </Link>
-                  <Link
-                    to="/create-blog"
-                    style={getLinkStyles("/create-blog")}
-                    onMouseEnter={(e) => {
-                      e.currentTarget.style.color = "#3B82F6";
-                    }}
-                    onMouseLeave={(e) => {
-                      e.currentTarget.style.color = "#333333";
-                    }}
-                  >
-                    Create Blog
-                  </Link>
-                  <Link
-                    to="/profile"
-                    style={getLinkStyles("/profile")}
-                    onMouseEnter={(e) => {
-                      e.currentTarget.style.color = "#3B82F6";
-                    }}
-                    onMouseLeave={(e) => {
-                      e.currentTarget.style.color = "#333333";
-                    }}
-                  >
-                    Profile
-                  </Link>
-                </>
-              ) : (
-                <div
-                  style={{
-                    display: "flex",
-                    alignItems: "center",
-                    gap: "16px",
-                  }}
-                >
-                  <Link
-                    to="/login"
-                    style={getLinkStyles("/login")}
-                    onMouseEnter={(e) => {
-                      e.currentTarget.style.color = "#3B82F6";
-                    }}
-                    onMouseLeave={(e) => {
-                      e.currentTarget.style.color = "#333333";
-                    }}
-                  >
-                    Login
-                  </Link>
-                  <Link
-                    to="/signup"
-                    style={{
-                      backgroundColor: isActiveLink("/signup") ? "#2563EB" : "#3B82F6",
-                      color: "#FFFFFF",
-                      padding: "8px 16px",
-                      borderRadius: "4px",
-                      textDecoration: "none",
-                      fontWeight: isActiveLink("/signup") ? 700 : 500,
-                      fontSize: "0.95rem",
-                      transition: "all 0.2s ease",
-                    }}
-                    onMouseEnter={(e) => {
-                      e.currentTarget.style.backgroundColor = "#2563EB";
-                    }}
-                    onMouseLeave={(e) => {
-                      e.currentTarget.style.backgroundColor = isActiveLink("/signup") ? "#2563EB" : "#3B82F6";
-                    }}
-                  >
-                    Sign Up
-                  </Link>
-                </div>
-              )}
-            </div>
-          )}
+          {desktopMenuItems}
 
           {/* Mobile Menu Button */}
           {isMobile && (
@@ -330,7 +377,7 @@ const MainNavBar: React.FC = () => {
               Blogs
             </Link>
 
-            {user ? (
+            {!shouldShowLoading && (user ? (
               <>
                 <Link
                   to="/blogs/mine"
@@ -401,12 +448,12 @@ const MainNavBar: React.FC = () => {
                   Sign Up
                 </Link>
               </>
-            )}
+            ))}
           </div>
         </>
       )}
     </>
   );
-};
+});
 
 export default MainNavBar;

@@ -209,52 +209,55 @@ function Profile() {
               flexWrap: "wrap",
             }}
           >
-            <a
-              href="/create-blog"
+            <button
+              onClick={() => navigate("/create-blog")}
               style={{
                 backgroundColor: "#3b82f6",
                 color: "white",
                 padding: "10px 20px",
                 borderRadius: "6px",
-                textDecoration: "none",
+                border: "none",
                 fontSize: "14px",
                 fontWeight: "500",
+                cursor: "pointer",
                 display: "inline-block",
               }}
             >
               Create New Blog
-            </a>
+            </button>
 
-            <a
-              href="/blogs"
+            <button
+              onClick={() => navigate("/blogs")}
               style={{
                 backgroundColor: "#6b7280",
                 color: "white",
                 padding: "10px 20px",
                 borderRadius: "6px",
-                textDecoration: "none",
+                border: "none",
                 fontSize: "14px",
                 fontWeight: "500",
+                cursor: "pointer",
                 display: "inline-block",
               }}
             >
               View All Blogs
-            </a>
-            <a
-              href="/blogs/mine"
+            </button>
+            <button
+              onClick={() => navigate("/blogs/mine")}
               style={{
                 backgroundColor: "#6b7280",
                 color: "white",
                 padding: "10px 20px",
                 borderRadius: "6px",
-                textDecoration: "none",
+                border: "none",
                 fontSize: "14px",
                 fontWeight: "500",
+                cursor: "pointer",
                 display: "inline-block",
               }}
             >
               View My Blogs
-            </a>
+            </button>
           </div>
         </div>
       </div>

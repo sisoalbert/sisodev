@@ -112,7 +112,9 @@ export const useBlogStore = create<BlogState>((set) => ({
   fetchPublicBlogs: async () => {
     set({ loading: true, error: null });
 
-    const { user } = useAuthStore.getState();
+    // Get user state directly without triggering subscriptions
+    const authState = useAuthStore.getState();
+    const user = authState.user;
 
     try {
       let q;
@@ -166,7 +168,8 @@ export const useBlogStore = create<BlogState>((set) => ({
     set({ loading: true, error: null });
     try {
       // Get the current user from auth
-      const { user } = useAuthStore.getState();
+      const authState = useAuthStore.getState();
+      const user = authState.user;
 
       if (!user) {
         set({ blogs: [], loading: false });
@@ -202,7 +205,8 @@ export const useBlogStore = create<BlogState>((set) => ({
     set({ loading: true, error: null });
     try {
       // Get the current user from auth
-      const { user } = useAuthStore.getState();
+      const authState = useAuthStore.getState();
+      const user = authState.user;
 
       let q;
       if (user) {

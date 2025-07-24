@@ -1,4 +1,5 @@
 import { useEffect } from "react";
+import { useNavigate } from "react-router-dom";
 import { useBlogStore } from "../store/blogStore";
 import { useAuthStore } from "../store/authStore";
 import type { Blog } from "../types";
@@ -6,6 +7,7 @@ import type { Blog } from "../types";
 function Blogs() {
   const { blogs, loading, error, fetchPublicBlogs } = useBlogStore();
   const { user } = useAuthStore();
+  const navigate = useNavigate();
 
   useEffect(() => {
     fetchPublicBlogs();
@@ -24,9 +26,7 @@ function Blogs() {
           transition: "transform 0.2s, box-shadow 0.2s",
         }}
         onClick={() =>
-          (window.location.href = `/blogs/${
-            blog.slug
-          }?returnTo=${encodeURIComponent(window.location.pathname)}`)
+          navigate(`/blogs/${blog.slug}?returnTo=${encodeURIComponent(window.location.pathname)}`)
         }
         onMouseOver={(e) => {
           e.currentTarget.style.transform = "translateY(-2px)";
@@ -238,21 +238,22 @@ function Blogs() {
               Be the first to create a blog post!
             </p>
             {user && (
-              <a
-                href="/create-blog"
+              <button
+                onClick={() => navigate("/create-blog")}
                 style={{
                   backgroundColor: "#3b82f6",
                   color: "white",
                   padding: "10px 20px",
                   borderRadius: "6px",
-                  textDecoration: "none",
+                  border: "none",
                   fontSize: "14px",
                   fontWeight: "500",
+                  cursor: "pointer",
                   display: "inline-block",
                 }}
               >
                 Create Your First Blog
-              </a>
+              </button>
             )}
           </div>
         ) : (

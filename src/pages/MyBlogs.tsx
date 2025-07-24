@@ -1,4 +1,5 @@
 import { useEffect } from "react";
+import { useNavigate, Link } from "react-router-dom";
 import { useBlogStore } from "../store/blogStore";
 import { useAuthStore } from "../store/authStore";
 import type { Blog } from "../types";
@@ -6,6 +7,7 @@ import type { Blog } from "../types";
 function MyBlogs() {
   const { blogs, loading, error, fetchMyBlogs, deleteBlog } = useBlogStore();
   const { user } = useAuthStore();
+  const navigate = useNavigate();
 
   useEffect(() => {
     fetchMyBlogs();
@@ -198,37 +200,38 @@ function MyBlogs() {
               justifyContent: "flex-end",
             }}
           >
-            <a
-              href={`/blogs/${blog.slug}?returnTo=${encodeURIComponent(
+            <button
+              onClick={() => navigate(`/blogs/${blog.slug}?returnTo=${encodeURIComponent(
                 window.location.pathname
-              )}`}
+              )}`)}
               style={{
                 backgroundColor: "#f3f4f6",
                 color: "#374151",
                 padding: "8px 16px",
                 borderRadius: "6px",
-                textDecoration: "none",
+                border: "1px solid #d1d5db",
                 fontSize: "14px",
                 fontWeight: "500",
-                border: "1px solid #d1d5db",
+                cursor: "pointer",
               }}
             >
               View
-            </a>
-            <a
-              href={`/edit-blog/${blog.id}`}
+            </button>
+            <button
+              onClick={() => navigate(`/edit-blog/${blog.id}`)}
               style={{
                 backgroundColor: "#3b82f6",
                 color: "white",
                 padding: "8px 16px",
                 borderRadius: "6px",
-                textDecoration: "none",
+                border: "none",
                 fontSize: "14px",
                 fontWeight: "500",
+                cursor: "pointer",
               }}
             >
               Edit
-            </a>
+            </button>
             <button
               onClick={() => handleDelete(blog.id, blog.title)}
               style={{
@@ -264,8 +267,8 @@ function MyBlogs() {
           <h1 style={{ fontSize: "24px", marginBottom: "16px" }}>
             Please log in to view your blogs
           </h1>
-          <a
-            href="/login"
+          <Link
+            to="/login"
             style={{
               backgroundColor: "#3b82f6",
               color: "white",
@@ -277,7 +280,7 @@ function MyBlogs() {
             }}
           >
             Login
-          </a>
+          </Link>
         </div>
       </div>
     );
@@ -309,8 +312,8 @@ function MyBlogs() {
           >
             My Blogs
           </h1>
-          <a
-            href="/create-blog"
+          <Link
+            to="/create-blog"
             style={{
               backgroundColor: "#3b82f6",
               color: "white",
@@ -322,7 +325,7 @@ function MyBlogs() {
             }}
           >
             Create New Blog
-          </a>
+          </Link>
         </div>
 
         {error && !error.includes("Missing or insufficient permissions") && (
@@ -381,8 +384,8 @@ function MyBlogs() {
             <p style={{ color: "#6b7280", marginBottom: "16px" }}>
               Start sharing your thoughts and ideas with the world!
             </p>
-            <a
-              href="/create-blog"
+            <Link
+              to="/create-blog"
               style={{
                 backgroundColor: "#3b82f6",
                 color: "white",
@@ -395,7 +398,7 @@ function MyBlogs() {
               }}
             >
               Create Your First Blog
-            </a>
+            </Link>
           </div>
         ) : (
           <div

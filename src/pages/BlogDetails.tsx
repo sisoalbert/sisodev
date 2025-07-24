@@ -15,6 +15,7 @@ function BlogDetails() {
   const [blog, setBlog] = useState<Blog | null>(null);
   const [showDeleteConfirm, setShowDeleteConfirm] = useState(false);
   const [currentSectionId, setCurrentSectionId] = useState<string | null>(null);
+  const [isInitialLoading, setIsInitialLoading] = useState(true);
 
   useEffect(() => {
     if (slug) {
@@ -27,6 +28,7 @@ function BlogDetails() {
             null;
           setCurrentSectionId(targetSection ? targetSection.id : fetchedBlog.sections[0].id);
         }
+        setIsInitialLoading(false);
       });
     }
   }, [slug, fetchBlogBySlug, user]);
@@ -101,7 +103,7 @@ function BlogDetails() {
   const hasPrevious = currentIndex > 0;
   const hasNext = currentIndex < (blog?.sections.length || 0) - 1;
 
-  if (loading) {
+  if (loading || isInitialLoading) {
     return (
       <div
         style={{
