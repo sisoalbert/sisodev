@@ -32,9 +32,9 @@ function AuthInit() {
 function App() {
   return (
     <BrowserRouter>
-      <div className="min-h-screen flex flex-col bg-gray-50">
+      <div style={{ height: "100vh", display: "flex", flexDirection: "column", backgroundColor: "#f9fafb", overflow: "hidden" }}>
         <MainNavBar />
-        <main className="flex-grow">
+        <main style={{ flex: 1, overflow: "hidden" }}>
           <Routes>
             <Route path="/" element={<Blogs />} />
             <Route path="/blogs" element={<Blogs />} />

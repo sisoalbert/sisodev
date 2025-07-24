@@ -15,14 +15,16 @@ const ReadOnlySectionSidebar: React.FC<ReadOnlySectionSidebarProps> = ({
   return (
     <div style={{
       width: '250px',
-      height: '100%',
+      height: '100vh',
       backgroundColor: '#f8fafc',
       borderRight: '1px solid #e2e8f0',
-      padding: '1rem',
-      overflowY: 'auto'
+      display: 'flex',
+      flexDirection: 'column'
     }}>
       <div style={{
-        marginBottom: '1rem'
+        padding: '1rem',
+        paddingBottom: '0.5rem',
+        flexShrink: 0
       }}>
         <h3 style={{
           fontSize: '1rem',
@@ -35,6 +37,9 @@ const ReadOnlySectionSidebar: React.FC<ReadOnlySectionSidebarProps> = ({
       </div>
 
       <div style={{
+        flex: 1,
+        padding: '0 1rem 1rem 1rem',
+        overflowY: 'auto',
         display: 'flex',
         flexDirection: 'column',
         gap: '0.5rem'

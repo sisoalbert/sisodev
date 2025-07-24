@@ -32,8 +32,8 @@ function BlogDetails() {
 
     try {
       await deleteBlog(blog.id);
-      const returnTo = searchParams.get('returnTo');
-      navigate(returnTo || '/');
+      const returnTo = searchParams.get("returnTo");
+      navigate(returnTo || "/");
     } catch (error) {
       console.error("Error deleting blog:", error);
     }
@@ -45,7 +45,7 @@ function BlogDetails() {
   };
 
   const getCurrentSection = () => {
-    return blog?.sections.find(section => section.id === currentSectionId);
+    return blog?.sections.find((section) => section.id === currentSectionId);
   };
 
   const currentSection = getCurrentSection();
@@ -104,8 +104,8 @@ function BlogDetails() {
           <p style={{ marginBottom: "1.5rem", color: "#6b7280" }}>{error}</p>
           <button
             onClick={() => {
-              const returnTo = searchParams.get('returnTo');
-              navigate(returnTo || '/');
+              const returnTo = searchParams.get("returnTo");
+              navigate(returnTo || "/");
             }}
             style={{
               backgroundColor: "#dc2626",
@@ -163,8 +163,8 @@ function BlogDetails() {
           </p>
           <button
             onClick={() => {
-              const returnTo = searchParams.get('returnTo');
-              navigate(returnTo || '/');
+              const returnTo = searchParams.get("returnTo");
+              navigate(returnTo || "/");
             }}
             style={{
               backgroundColor: "#3b82f6",
@@ -187,11 +187,10 @@ function BlogDetails() {
   return (
     <div
       style={{
-        minHeight: "100vh",
+        height: "100vh",
         backgroundColor: "#374151",
         display: "flex",
-        padding: "2rem",
-        gap: "2rem",
+        overflow: "hidden", // Prevent body scrolling
       }}
     >
       <ReadOnlySectionSidebar
@@ -199,13 +198,20 @@ function BlogDetails() {
         currentSectionId={currentSectionId}
         onSectionSelect={handleSectionSelect}
       />
-      
-      <div style={{ 
-        flex: 1, 
-        display: "flex", 
-        alignItems: "center", 
-        justifyContent: "center" 
-      }}>
+
+      <div
+        style={{
+          flex: 1,
+          display: "flex",
+          alignItems: "flex-start",
+          justifyContent: "center",
+          height: "100vh",
+          overflow: "auto",
+          padding: "2rem",
+          paddingTop: "4rem", // Add top margin for navbar clearance
+          paddingBottom: "4rem", // Add bottom margin
+        }}
+      >
         <div
           style={{
             width: "8.5in",
@@ -215,6 +221,8 @@ function BlogDetails() {
             color: "black",
             position: "relative",
             overflow: "hidden",
+            display: "flex",
+            flexDirection: "column",
           }}
         >
           {/* Blue Header Section */}
@@ -227,6 +235,7 @@ function BlogDetails() {
               display: "flex",
               flexDirection: "column",
               justifyContent: "center",
+              flexShrink: 0, // Prevent header from shrinking
             }}
           >
             <h1
@@ -239,7 +248,7 @@ function BlogDetails() {
             >
               {blog.title}
             </h1>
-            
+
             <div
               style={{
                 display: "flex",
@@ -250,11 +259,14 @@ function BlogDetails() {
                 flexWrap: "wrap",
               }}
             >
-              <span>📅 Last updated: {blog.createdAt.toLocaleDateString("en-US", {
-                year: "numeric",
-                month: "long",
-                day: "numeric",
-              })}</span>
+              <span>
+                📅 Last updated:{" "}
+                {blog.createdAt.toLocaleDateString("en-US", {
+                  year: "numeric",
+                  month: "long",
+                  day: "numeric",
+                })}
+              </span>
               <span>👤 By: {blog.contributors || "Anonymous"}</span>
               <span>👁 Views: 43</span>
             </div>
@@ -273,8 +285,8 @@ function BlogDetails() {
           >
             <button
               onClick={() => {
-                const returnTo = searchParams.get('returnTo');
-                navigate(returnTo || '/');
+                const returnTo = searchParams.get("returnTo");
+                navigate(returnTo || "/");
               }}
               style={{
                 padding: "0.5rem 1rem",
@@ -289,7 +301,7 @@ function BlogDetails() {
             >
               ← Back
             </button>
-            
+
             {user && user.uid === blog.userId && (
               <>
                 <button
@@ -307,7 +319,7 @@ function BlogDetails() {
                 >
                   Edit
                 </button>
-                
+
                 <button
                   onClick={() => setShowDeleteConfirm(true)}
                   style={{
@@ -328,30 +340,46 @@ function BlogDetails() {
           </div>
 
           {/* Content Area */}
-          <div style={{ 
-            padding: "2rem",
-            paddingTop: "1rem",
-            height: "calc(11in - 200px - 1rem)",
-            overflow: "auto",
-          }}>
+          <div
+            style={{
+              flex: 1,
+              overflow: "auto", // Enable scrolling for content area
+              padding: "2rem",
+              paddingTop: "1rem",
+            }}
+          >
             {currentSection && (
-              <div>
+              <div
+                style={{
+                  height: "100%",
+                  display: "flex",
+                  flexDirection: "column",
+                }}
+              >
                 <h2
                   style={{
                     fontSize: "1.5rem",
                     fontWeight: "600",
                     color: "#1f2937",
                     marginBottom: "1rem",
+                    flexShrink: 0,
                   }}
                 >
                   {currentSection.name}
                 </h2>
-                
-                <Editor
-                  content={currentSection.content}
-                  onContentChange={() => {}}
-                  isReadOnly={true}
-                />
+
+                <div
+                  style={{
+                    flex: 1,
+                    minHeight: 0,
+                  }}
+                >
+                  <Editor
+                    content={currentSection.content}
+                    onContentChange={() => {}}
+                    isReadOnly={true}
+                  />
+                </div>
               </div>
             )}
           </div>

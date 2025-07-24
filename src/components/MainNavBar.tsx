@@ -1,13 +1,12 @@
 import React, { useState, useEffect } from "react";
-import { Link, useNavigate, useLocation } from "react-router-dom";
+import { Link, useLocation } from "react-router-dom";
 import { useAuthStore } from "../store/authStore";
 import logo from "../assets/logo.svg";
 
 const MainNavBar: React.FC = () => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [isMobile, setIsMobile] = useState(window.innerWidth <= 768);
-  const { user, signOut } = useAuthStore();
-  const navigate = useNavigate();
+  const { user } = useAuthStore();
   const location = useLocation();
 
   // Listen for authentication state changes
