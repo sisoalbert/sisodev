@@ -6,6 +6,7 @@ import { logBlogEvent } from "../lib/firebase";
 import ReadOnlySectionSidebar from "../components/ReadOnlySectionSidebar";
 import Editor from "../components/Editor";
 import { Calendar, User, Eye, Menu, X } from "lucide-react";
+import { LetterShimmer } from "../components/shimmers";
 import type { Blog, Section } from "../types";
 
 // Media query hook for responsive behavior
@@ -141,8 +142,6 @@ function BlogDetails() {
       >
         <div
           style={{
-            fontSize: "1.125rem",
-            color: "#4B5563",
             backgroundColor: "white",
             padding: "2rem",
             borderRadius: "0.5rem",
@@ -151,10 +150,58 @@ function BlogDetails() {
             width: "100%",
             maxWidth: "8.5in",
             minHeight: "11in",
-            textAlign: "center",
           }}
         >
-          Loading blog post...
+          {/* Blog title shimmer */}
+          <LetterShimmer 
+            lines={2} 
+            wordsPerLine={[6, 8]} 
+            showAvatar={false} 
+            showTimestamp={false}
+            style={{ marginBottom: "24px", border: "none", padding: "0" }}
+          />
+          
+          {/* Blog metadata shimmer */}
+          <LetterShimmer 
+            lines={1} 
+            wordsPerLine={[12]} 
+            showAvatar={true} 
+            showTimestamp={true}
+            style={{ marginBottom: "32px", border: "none", padding: "0" }}
+          />
+          
+          {/* Blog content paragraphs */}
+          <LetterShimmer 
+            lines={4} 
+            wordsPerLine={[15, 18, 12, 16]} 
+            showAvatar={false} 
+            showTimestamp={false}
+            style={{ marginBottom: "24px", border: "none", padding: "0" }}
+          />
+          
+          <LetterShimmer 
+            lines={3} 
+            wordsPerLine={[14, 20, 8]} 
+            showAvatar={false} 
+            showTimestamp={false}
+            style={{ marginBottom: "24px", border: "none", padding: "0" }}
+          />
+          
+          <LetterShimmer 
+            lines={5} 
+            wordsPerLine={[12, 16, 18, 10, 14]} 
+            showAvatar={false} 
+            showTimestamp={false}
+            style={{ marginBottom: "24px", border: "none", padding: "0" }}
+          />
+          
+          <LetterShimmer 
+            lines={2} 
+            wordsPerLine={[16, 11]} 
+            showAvatar={false} 
+            showTimestamp={false}
+            style={{ border: "none", padding: "0" }}
+          />
         </div>
       </div>
     );

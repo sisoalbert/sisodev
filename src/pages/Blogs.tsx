@@ -5,6 +5,7 @@ import { useAuthStore } from "../store/authStore";
 import { logBlogEvent } from "../lib/firebase";
 import Footer from "../components/Footer";
 import BlogCard from "../components/cards/BlogCard";
+import { BlogCardShimmer } from "../components/shimmers";
 
 function Blogs() {
   const { blogs, loading, error, fetchPublicBlogs } = useBlogStore();
@@ -179,20 +180,14 @@ function Blogs() {
         {loading ? (
           <div
             style={{
-              display: "flex",
-              justifyContent: "center",
-              alignItems: "center",
-              height: "200px",
+              display: "grid",
+              gridTemplateColumns: "repeat(auto-fill, minmax(350px, 1fr))",
+              gap: "24px",
             }}
           >
-            <div
-              style={{
-                fontSize: "16px",
-                color: "#6b7280",
-              }}
-            >
-              Loading blogs...
-            </div>
+            {Array.from({ length: 6 }).map((_, index) => (
+              <BlogCardShimmer key={`shimmer-${index}`} />
+            ))}
           </div>
         ) : (
           <div
