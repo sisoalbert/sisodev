@@ -9,7 +9,7 @@ import type { Blog, Section } from "../types";
 function BlogDetails() {
   const { slug } = useParams<{ slug: string }>();
   const navigate = useNavigate();
-  const [searchParams] = useSearchParams();
+  const [searchParams, setSearchParams] = useSearchParams();
   const { fetchBlogBySlug, deleteBlog, loading, error } = useBlogStore();
   const { user } = useAuthStore();
   const [blog, setBlog] = useState<Blog | null>(null);
@@ -21,11 +21,27 @@ function BlogDetails() {
       fetchBlogBySlug(slug).then((fetchedBlog) => {
         setBlog(fetchedBlog);
         if (fetchedBlog && fetchedBlog.sections.length > 0) {
-          setCurrentSectionId(fetchedBlog.sections[0].id);
+          const sectionParam = searchParams.get('s');
+          const targetSection = sectionParam ? 
+            fetchedBlog.sections.find(section => section.id === sectionParam) :
+            null;
+          setCurrentSectionId(targetSection ? targetSection.id : fetchedBlog.sections[0].id);
         }
       });
     }
   }, [slug, fetchBlogBySlug, user]);
+
+  useEffect(() => {
+    if (blog && blog.sections.length > 0) {
+      const sectionParam = searchParams.get('s');
+      if (sectionParam) {
+        const targetSection = blog.sections.find(section => section.id === sectionParam);
+        if (targetSection && targetSection.id !== currentSectionId) {
+          setCurrentSectionId(targetSection.id);
+        }
+      }
+    }
+  }, [searchParams, blog, currentSectionId]);
 
   const handleDeleteBlog = async () => {
     if (!blog) return;
@@ -42,6 +58,9 @@ function BlogDetails() {
 
   const handleSectionSelect = (section: Section) => {
     setCurrentSectionId(section.id);
+    const newSearchParams = new URLSearchParams(searchParams);
+    newSearchParams.set('s', section.id);
+    setSearchParams(newSearchParams);
   };
 
   const getCurrentSection = () => {
@@ -58,14 +77,22 @@ function BlogDetails() {
   const handlePreviousSection = () => {
     const currentIndex = getCurrentSectionIndex();
     if (currentIndex > 0 && blog) {
-      setCurrentSectionId(blog.sections[currentIndex - 1].id);
+      const prevSection = blog.sections[currentIndex - 1];
+      setCurrentSectionId(prevSection.id);
+      const newSearchParams = new URLSearchParams(searchParams);
+      newSearchParams.set('s', prevSection.id);
+      setSearchParams(newSearchParams);
     }
   };
 
   const handleNextSection = () => {
     const currentIndex = getCurrentSectionIndex();
     if (currentIndex < (blog?.sections.length || 0) - 1 && blog) {
-      setCurrentSectionId(blog.sections[currentIndex + 1].id);
+      const nextSection = blog.sections[currentIndex + 1];
+      setCurrentSectionId(nextSection.id);
+      const newSearchParams = new URLSearchParams(searchParams);
+      newSearchParams.set('s', nextSection.id);
+      setSearchParams(newSearchParams);
     }
   };
 
